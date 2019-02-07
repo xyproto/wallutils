@@ -1,4 +1,4 @@
-# Monitor
+# Monitor [![Build Status](https://travis-ci.org/xyproto/monitor.svg?branch=master)](https://travis-ci.org/xyproto/monitor)
 
 Detect monitor resolutions and set the desktop wallpaper, for any windowmanager (please file an issue if your windowmanager is not supported yet).
 
