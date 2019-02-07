@@ -13,6 +13,14 @@ type WM interface {
 	SetWallpaper(imageFilename string) error
 }
 
+type Wallpaper struct {
+	CollectionName   string // the name of the directory containing this wallpaper, if it's not "pixmaps", "images" or "contents". May use the parent of the parent.
+	Path             string // full path to the image filename
+	Width            uint   // width of the image
+	Height           uint   // height of the image
+	PartOfCollection bool   // likely to be part of a wallpaper collection
+}
+
 // Default mode when setting the wallpaper for Gnome / Mate / Cinnamon
 const defaultMode = "fill"
 
@@ -30,6 +38,10 @@ var WMs = []WM{
 	&Feh{}, // using feh
 	&X11{}, // using a C+Go .so plugin
 }
+
+var (
+	DefaultWallpaperDirectories = []string{"/usr/share/pixmaps", "/usr/share/wallpapers", "/usr/share/backgrounds", "/usr/local/share/pixmaps", "/usr/local/share/wallpapers", "/usr/local/share/backgrounds"}
+)
 
 // Set the desktop wallpaper (filled/stretched), for any supported windowmanager.
 // The fallback is to use `feh`.
@@ -59,4 +71,12 @@ func SetWallpaper(imageFilename string) error {
 		return fmt.Errorf("Found no working method for setting the desktop wallpaper:\n%s", lastErr)
 	}
 	return errors.New("Found no working method for setting the desktop wallpaper")
+}
+
+func (wp *Wallpaper) String() string {
+	star := " "
+	if wp.PartOfCollection {
+		star = "*"
+	}
+	return fmt.Sprintf("(%s) %dx%d\t%16s\t%s", star, wp.Width, wp.Height, wp.CollectionName, wp.Path)
 }

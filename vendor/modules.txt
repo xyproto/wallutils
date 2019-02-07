@@ -1,0 +1,2 @@
+# github.com/stretchr/powerwalk v0.0.0-20151124150408-bceb9d014549
+github.com/stretchr/powerwalk
