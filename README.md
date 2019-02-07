@@ -7,12 +7,16 @@ Detect monitor resolutions and set the desktop wallpaper, for any windowmanager 
 * The `monitor.Detect()` function can return a `[]Monitor` slice in Go, with information about all connected monitors.
 * The `wallpaper` package also provides functions for changing the desktop wallpaper.
 * Includes these utilities:
-  * `lsmon` lists the connected monitors and resolutions.
-  * `xinfo` shows detailed information about the connected monitors, via X11.
-  * `wayinfo` shows detailed information about the connected monitors, via Wayland.
-  * `setwallpaper` can be used for setting a wallpaper (works both for X11 and Wayland).
-  * `setrandom`, for setting a random wallpaper.
   * `getdpi`, for retrieving the average DPI, for wall monitors.
+  * `lscollections`, for listing installed wallpaper collections.
+  * `lsgnomewallpaper`, for listing installed GNOME wallpaper collections.
+  * `lsmon` lists the connected monitors and resolutions.
+  * `lswallpaper`, for listing all installed wallpapers.
+  * `setcollection`, for setting a suitable (in terms of resolution) wallpaper from a wallpaper collection.
+  * `setrandom`, for setting a random wallpaper.
+  * `setwallpaper` can be used for setting a wallpaper (works both for X11 and Wayland).
+  * `wayinfo` shows detailed information about the connected monitors, via Wayland.
+  * `xinfo` shows detailed information about the connected monitors, via X11.
 
 ## Example use of the `lsmon` utility
 
