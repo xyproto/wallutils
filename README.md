@@ -30,7 +30,12 @@ $ lsmon
 
 ## Building and installing utilities
 
-Using Go 1.11 or later:
+Using make, for building and installing all included utilities:
+
+    make
+    make install
+
+Using Go 1.11 or later, for a single utility:
 
     go get -u github.com/xyproto/monitor/cmd/setwallpaper
 
