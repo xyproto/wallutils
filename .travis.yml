@@ -1,0 +1,13 @@
+language: go
+
+addons:
+  apt:
+    packages:
+      - build-essential
+      - libx11-dev
+      - libxcursor-dev
+      - libwayland-dev
+
+go:
+    - "1.11"
+    - tip
