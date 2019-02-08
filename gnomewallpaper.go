@@ -7,14 +7,31 @@ import (
 )
 
 type GnomeWallpaper struct {
-	CollectionName string       // the name of the directory containing this XML file, if it's not "pixmaps", "images" or "contents". May use the parent of the parent.
-	Path           string       // full path to the XML filename
-	Config         *GBackground // parsed XML, see: gnomeXML.go
+
+	// The name of the directory containing this XML file, if it's not
+	// "pixmaps", "images" or "contents". May use the parent of the parent.
+	CollectionName string
+
+	// Path is the full path to the XML file
+	Path string
+
+	// Config contains the parsed XML. See: gnomexml.go
+	Config *GBackground
 }
 
 func (gw *GnomeWallpaper) Time() time.Time {
 	st := gw.Config.StartTime
 	return time.Date(st.Year, time.Month(st.Month), st.Day, st.Hour, st.Minute, 0, 0, time.Local)
+}
+
+func (gw *GnomeWallpaper) TodayTime() time.Time {
+	// Get hour, minute and second from the timed wallpaper
+	st := gw.Config.StartTime
+	hour, min, sec := st.Clock()
+
+	// Get the rest of the fields from the current time
+	now := time.Now()
+	return time.Date(now.Year(), now.Month(), now.Day(), hour, min, sec, now.Nanosecond(), now.Location())
 }
 
 func (gw *GnomeWallpaper) Images() []string {
