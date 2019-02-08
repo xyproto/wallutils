@@ -4,4 +4,5 @@ require (
 	github.com/davecgh/go-spew v1.1.1 // indirect
 	github.com/stretchr/powerwalk v0.0.0-20151124150408-bceb9d014549
 	github.com/stretchr/testify v1.3.0 // indirect
+	github.com/xyproto/event v0.0.0-20190208095907-0998621e7a72
 )

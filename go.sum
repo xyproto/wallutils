@@ -9,3 +9,5 @@ github.com/stretchr/powerwalk v0.0.0-20151124150408-bceb9d014549 h1:zjTKDjwZy1IV
 github.com/stretchr/powerwalk v0.0.0-20151124150408-bceb9d014549/go.mod h1:RhJzAYfVBD/ULOCeUUaTn0CHDRQBYHjDY7yYpSt6+4M=
 github.com/stretchr/testify v1.3.0 h1:TivCn/peBQ7UY8ooIcPgZFpTNSz0Q2U6UrFlUfqbe0Q=
 github.com/stretchr/testify v1.3.0/go.mod h1:M5WIy9Dh21IEIfnGCwXGc5bZfKNJtfHm1UVUgZn+9EI=
+github.com/xyproto/event v0.0.0-20190208095907-0998621e7a72 h1:8oBCSkrkpcQlAnjxIQv5aXdbPRFdrWsWZ5ByTzinPro=
+github.com/xyproto/event v0.0.0-20190208095907-0998621e7a72/go.mod h1:IAzZJ4LWfM+NVUT/NK5u0Xzvlyo0kFrsRlyrKoHiPp4=
