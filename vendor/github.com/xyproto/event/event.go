@@ -13,11 +13,12 @@ import (
 type Event struct {
 	from       time.Time
 	upTo       time.Time
-	cooldown   time.Duration // how long to cool down before retriggering
+	cooldown   time.Duration // How long to cool down before retriggering
 	actionFunc func()        // Action takes no arguments
-	triggered  time.Time     // when was the event last triggered
+	triggered  time.Time     // When was the event last triggered
 	mutex      *sync.RWMutex
 	ongoing    bool
+	dateEvent  bool // Is the triggering based on the clock or date?
 }
 
 // New creates a new Event, that should happen at the given "when" time,
@@ -25,7 +26,13 @@ type Event struct {
 // event has been triggered. The event can be retriggered after every cooldown,
 // within the time window.
 func New(when time.Time, window, cooldown time.Duration, action func()) *Event {
-	return &Event{when, when.Add(window), cooldown, action, time.Time{}, &sync.RWMutex{}, false}
+	e := &Event{when, when.Add(window), cooldown, action, time.Time{}, &sync.RWMutex{}, false, false}
+	e.update()
+	return e
+}
+
+func NewDateEvent(when time.Time, window, cooldown time.Duration, action func()) *Event {
+	return &Event{when, when.Add(window), cooldown, action, time.Time{}, &sync.RWMutex{}, false, true}
 }
 
 // From is the time from when the event should be able to be triggered.
@@ -55,9 +62,29 @@ func Between(t, a, b time.Time) bool {
 	return (t.Sub(a) >= 0) && (t.Sub(b) < 0)
 }
 
+// Update every field, except the hour/minute/second, to the current day.
+func (e *Event) update() {
+	now := time.Now()
+
+	// Get hour, minute and second from the event
+	hour, min, sec := e.from.Clock()
+	// Schedule a new time
+	e.from = time.Date(now.Year(), now.Month(), now.Day(), hour, min, sec, now.Nanosecond(), now.Location())
+
+	// Get hour, minute and second from the event
+	hour, min, sec = e.upTo.Clock()
+	// Schedule a new time
+	e.upTo = time.Date(now.Year(), now.Month(), now.Day(), hour, min, sec, now.Nanosecond(), now.Location())
+}
+
 // Has checks if the Event has time t in its interval:
 // from p.From() and up to but not including p.UpTo()
 func (e *Event) Has(t time.Time) bool {
+	// If it's not a date-event, update the year/month/day to the current
+	// year/month/day before checking
+	if !e.dateEvent {
+		e.update()
+	}
 	return Between(t, e.From(), e.UpTo())
 }
 

@@ -4,42 +4,44 @@ import (
 	"time"
 )
 
-// Events is a collection of events
-type Events []*Event
+// EventLoop is a collection of events
+type EventLoop []*Event
 
-// NewEvents creates an empty collection of events
-func NewEvents() *Events {
-	return &Events{}
+// NewEventLoop creates an empty collection of events
+func NewEventLoop() *EventLoop {
+	return &EventLoop{}
 }
 
 // Add adds an event to the collection
-func (es *Events) Add(e *Event) {
-	*es = append(*es, e)
+func (el *EventLoop) Add(e *Event) {
+	*el = append(*el, e)
 }
 
 // Once runs a given action only once, within a 1 second window of time
-func (es *Events) Once(when time.Time, action func()) {
+func (el *EventLoop) Once(when time.Time, action func()) {
 	// The window is also used as the cooldown
-	es.Add(New(when, 1*time.Second, 1*time.Second, action))
+	el.Add(New(when, 1*time.Second, 1*time.Second, action))
 }
 
 // OnceWindow runs a given action only once, within a custom duration
-func (es *Events) OnceWindow(when time.Time, window time.Duration, action func()) {
+func (el *EventLoop) OnceWindow(when time.Time, window time.Duration, action func()) {
 	// The window is also used as the cooldown
-	es.Add(New(when, window, window, action))
+	el.Add(New(when, window, window, action))
 }
 
 // Loop launches an event loop that will sleep the given duration at every loop.
-func (es *Events) Loop(sleep time.Duration) {
+func (el *EventLoop) Go(sleep time.Duration) {
 	// Use an endless event loop
 	for {
 		// For each possible event
-		for _, e := range *es {
+		for _, e := range *el {
 			// Check if the event should trigger
 			if e.ShouldTrigger() {
 				// When triggering an event, run it in the background
 				go e.Trigger()
 			}
+			// If the window for an event is in the past, remove it,
+			// unless it is a clock-event.
 		}
 		// How long to sleep before checking again
 		time.Sleep(sleep)
