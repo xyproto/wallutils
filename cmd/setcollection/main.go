@@ -4,7 +4,9 @@ import (
 	"fmt"
 	"os"
 	"path/filepath"
+	"time"
 
+	"github.com/xyproto/event"
 	"github.com/xyproto/monitor"
 )
 
@@ -63,8 +65,36 @@ func setWallpaper(wallpapers []*monitor.Wallpaper) error {
 }
 
 func setGnomeWallpaper(gw *monitor.GnomeWallpaper) error {
-	// TODO: Launch this timed background in a new event loop, and run forever
-	fmt.Println(gw)
+
+	events := event.NewEvents()
+
+	fmt.Println("--- setGnomeWallpaper ---")
+	fmt.Println("collection name:", gw.CollectionName)
+
+	// Plan:
+	// List all "static" wallpaper filenames, with associated starttime + duration
+
+	// Get the base start time for today
+	timedWallpaperStart := gw.StartTimeToday()
+
+	fmt.Println("start time:", gw.Time())
+	for _, s := range gw.Config.Statics {
+		seconds := time.Duration(s.Seconds) * time.Second
+		eventStart := timedWallpaperStart.Add(seconds)
+
+		// TODO: Add support for hour/minute/second events in the even package.
+		//       For now, these events only work for one day.
+
+		fmt.Println("trigger time", triggerStart.Add(seconds))
+		fn := s.Filename
+		fmt.Println("image", fn, seconds)
+
+		events.Add
+
+	}
+
+	fmt.Println("start time:", gw.Time())
+
 	fmt.Println("TO IMPLEMENT: GNOME TIMED BACKGROUND")
 	os.Exit(1)
 	return nil
