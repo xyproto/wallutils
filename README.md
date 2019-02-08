@@ -8,9 +8,9 @@ Detect monitor resolutions and set the desktop wallpaper, for any windowmanager 
 
 ## Included utilities
 
-  * `getdpi`, for retrieving the average DPI, for wall monitors.
+  * `getdpi`, for retrieving the average DPI, for all monitors.
   * `lscollections`, for listing installed wallpaper collections.
-  * `lsgnomewallpaper`, for listing installed GNOME wallpaper collections.
+  * `lsgnomewallpaper`, for listing installed GNOME timed wallpapers.
   * `lsmon` lists the connected monitors and resolutions.
   * `lswallpaper`, for listing all installed wallpapers.
   * `setcollection`, for setting a suitable (in terms of resolution) wallpaper from a wallpaper collection.
@@ -45,8 +45,6 @@ On Ubuntu, from a fresh installation:
     sudo apt get install libxcursor-dev libxmu-dev libx11-dev git golang-go
     go get -u github.com/xyproto/monitor/cmd/setwallpaper
     cd ~/go/src/github.com/xyproto/monitor
-    make
-    sudo make install
 
 Manually:
 
@@ -56,7 +54,7 @@ Manually:
     # build and install the setmonitor command
     cd monitor/cmd/setmonitor
     go build
-	install -Dm755 setmonitor /usr/bin/setmonitor
+    install -Dm755 setmonitor /usr/bin/setmonitor
 
 ## Example use of `setwallpaper`
 
