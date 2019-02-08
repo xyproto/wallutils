@@ -51,7 +51,7 @@ func collectionName(path string) string {
 
 // partOfCollection checks if it is likely that a given filename is part of a wallpaper collection
 func partOfCollection(filename string) bool {
-	// filename contains width x height and is preceeded by either a "_" or nothing
+	// filename contains width x height and is preceded by either a "_" or nothing
 	_, err := FilenameToRes(filename)
 	return err == nil
 }
