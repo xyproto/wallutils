@@ -1,4 +1,4 @@
-# Monitor [![Build Status](https://travis-ci.org/xyproto/monitor.svg?branch=master)](https://travis-ci.org/xyproto/monitor)
+# Monitor [![Build Status](https://travis-ci.org/xyproto/monitor.svg?branch=master)](https://travis-ci.org/xyproto/monitor) [![GoDoc](https://godoc.org/github.com/xyproto/monitor?status.svg)](http://godoc.org/github.com/xyproto/monitor) [![License](http://img.shields.io/badge/license-MIT-green.svg?style=flat)](https://raw.githubusercontent.com/xyproto/monitor/master/LICENSE) [![Go Report Card](https://goreportcard.com/badge/github.com/xyproto/monitor)](https://goreportcard.com/report/github.com/xyproto/monitor)
 
 Detect monitor resolutions and set the desktop wallpaper, for any windowmanager (please file an issue if your windowmanager is not supported yet).
 
