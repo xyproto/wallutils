@@ -5,6 +5,8 @@ cmd/wayinfo/wayinfo
 cmd/xinfo/xinfo
 cmd/getdpi/getdpi
 cmd/lscollections/lscollections
-cmd/lsgnomewallpaper/lsgnomewallpaper
+cmd/timedinfo/timedinfo
 cmd/lswallpaper/lswallpaper
 cmd/setcollection/setcollection
+cmd/settimed/settimed
+cmd/lstimed/lstimed
