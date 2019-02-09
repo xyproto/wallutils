@@ -2,9 +2,10 @@
 
 Detect monitor resolutions and set the desktop wallpaper, for any windowmanager (please file an issue if your windowmanager is not supported yet).
 
-## Highlighted function
+## Highlighted functions
 
-* The `monitor.Detect()` function can return a `[]Monitor` slice in Go, with information about all connected monitors.
+* The `monitor.Detect` function can return a `[]Monitor` slice in Go, with information about all connected monitors.
+* The `monitor.SetTimedWallpaper` function can be used for launching an event loop that handles GNOME timed wallpapers.
 
 ## Included utilities
 
@@ -106,7 +107,7 @@ func main() {
 ## Build requirements
 
 * Go 1.11 or later.
-* Working C compiler (tested with GCC 8.2.1)
+* A working C compiler (tested with GCC 8.2.1)
 * `libwayland-client.so` and header files available, for Wayland support.
 * `libX11.so` and header files available, for X11 support.
 
