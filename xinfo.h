@@ -1,4 +1,3 @@
-/* Thanks: https://stackoverflow.com/a/48843306/131264 */
 #ifdef WIN32
 #include <X11/Xwindows.h>
 #endif
@@ -7,6 +6,12 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+
+/* This file uses a buffer that is estimated to be large enough to collect all
+ * required information.
+ *
+ * Also, thanks to the author of this answer: https://stackoverflow.com/a/48843306/131264
+ */
 
 #define BUF buf + strlen(buf)
 #define RETBUF                                                                                    \

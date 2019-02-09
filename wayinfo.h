@@ -7,6 +7,8 @@
 #include <sys/types.h>
 #include <wayland-client.h>
 
+/* This file uses a buffer that is estimated to be large enough to collect all needed information */
+
 #define BUF buf + strlen(buf)
 #define RETBUF                                                                                    \
     char* str = calloc(strlen(buf) + 1, sizeof(char));                                            \
