@@ -10,11 +10,13 @@ Detect monitor resolutions and set the desktop wallpaper, for any windowmanager 
 
   * `getdpi`, for retrieving the average DPI, for all monitors.
   * `lscollections`, for listing installed wallpaper collections.
-  * `lsgnomewallpaper`, for listing installed GNOME timed wallpapers.
+  * `timedinfo`, for showing more information about installed GNOME timed wallpapers.
   * `lsmon` lists the connected monitors and resolutions.
+  * `lstimed` for listing installed GNOME timed wallpapers.
   * `lswallpaper`, for listing all installed wallpapers.
   * `setcollection`, for setting a suitable (in terms of resolution) wallpaper from a wallpaper collection.
   * `setrandom`, for setting a random wallpaper.
+  * `settimed`, for setting GNOME timed wallpapers (will continue to run, to handle time events).
   * `setwallpaper` can be used for setting a wallpaper (works both for X11 and Wayland).
   * `wayinfo` shows detailed information about the connected monitors, via Wayland.
   * `xinfo` shows detailed information about the connected monitors, via X11.
@@ -112,4 +114,4 @@ func main() {
 
 * Author: Alexander F. Rødseth &lt;xyproto@archlinux.org&gt;
 * License: MIT
-* Version: 3.0.0
+* Version: 3.1.0
