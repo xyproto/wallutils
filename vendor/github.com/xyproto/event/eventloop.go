@@ -4,37 +4,37 @@ import (
 	"time"
 )
 
-// EventLoop is a collection of events
-type EventLoop []*Event
+// Loop is a collection of events
+type Loop []*Event
 
-// NewEventLoop creates an empty collection of events
-func NewEventLoop() *EventLoop {
-	return &EventLoop{}
+// NewLoop creates an empty collection of events
+func NewLoop() *Loop {
+	return &Loop{}
 }
 
 // Add adds an event to the collection
-func (el *EventLoop) Add(e *Event) {
-	*el = append(*el, e)
+func (l *Loop) Add(e *Event) {
+	*l = append(*l, e)
 }
 
 // Once runs a given action only once, within a 1 second window of time
-func (el *EventLoop) Once(when time.Time, action func()) {
+func (l *Loop) Once(when time.Time, action func()) {
 	// The window is also used as the cooldown
-	el.Add(New(when, 1*time.Second, 1*time.Second, action))
+	l.Add(New(when, 1*time.Second, 1*time.Second, action))
 }
 
 // OnceWindow runs a given action only once, within a custom duration
-func (el *EventLoop) OnceWindow(when time.Time, window time.Duration, action func()) {
+func (l *Loop) OnceWindow(when time.Time, window time.Duration, action func()) {
 	// The window is also used as the cooldown
-	el.Add(New(when, window, window, action))
+	l.Add(New(when, window, window, action))
 }
 
-// Loop launches an event loop that will sleep the given duration at every loop.
-func (el *EventLoop) Go(sleep time.Duration) {
+// Go launches an event loop that will sleep the given duration at every loop.
+func (l *Loop) Go(sleep time.Duration) {
 	// Use an endless event loop
 	for {
 		// For each possible event
-		for _, e := range *el {
+		for _, e := range *l {
 			// Check if the event should trigger
 			if e.ShouldTrigger() {
 				// When triggering an event, run it in the background

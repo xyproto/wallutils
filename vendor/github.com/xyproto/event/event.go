@@ -18,21 +18,20 @@ type Event struct {
 	triggered  time.Time     // When was the event last triggered
 	mutex      *sync.RWMutex
 	ongoing    bool
-	dateEvent  bool // Is the triggering based on the clock or date?
+	clockOnly  bool // Is the triggering based on the clock or date?
 }
 
 // New creates a new Event, that should happen at the given "when" time,
 // within the given time window, with an associated cooldown period after the
 // event has been triggered. The event can be retriggered after every cooldown,
-// within the time window.
+// within the time window. Only hour/minute/second will be considered.
 func New(when time.Time, window, cooldown time.Duration, action func()) *Event {
-	e := &Event{when, when.Add(window), cooldown, action, time.Time{}, &sync.RWMutex{}, false, false}
-	e.update()
-	return e
+	return &Event{when, when.Add(window), cooldown, action, time.Time{}, &sync.RWMutex{}, false, true}
 }
 
+// NewDateEvent is like New, but the date will also be considered when triggering events.
 func NewDateEvent(when time.Time, window, cooldown time.Duration, action func()) *Event {
-	return &Event{when, when.Add(window), cooldown, action, time.Time{}, &sync.RWMutex{}, false, true}
+	return &Event{when, when.Add(window), cooldown, action, time.Time{}, &sync.RWMutex{}, false, false}
 }
 
 // From is the time from when the event should be able to be triggered.
@@ -62,43 +61,51 @@ func Between(t, a, b time.Time) bool {
 	return (t.Sub(a) >= 0) && (t.Sub(b) < 0)
 }
 
-// Update every field, except the hour/minute/second, to the current day.
-func (e *Event) update() {
+// ToToday moves the date of a given time.Time to today's date.
+// The hour/minute/second is kept as it is.
+func ToToday(d time.Time) time.Time {
+	// Get hour, minute and second from the event
+	hour, min, sec := d.Clock()
+
+	// Get the current time and date
 	now := time.Now()
 
-	// Get hour, minute and second from the event
-	hour, min, sec := e.from.Clock()
-	// Schedule a new time
-	e.from = time.Date(now.Year(), now.Month(), now.Day(), hour, min, sec, now.Nanosecond(), now.Location())
+	// Return a new time.Time
+	return time.Date(now.Year(), now.Month(), now.Day(), hour, min, sec, now.Nanosecond(), now.Location())
+}
 
-	// Get hour, minute and second from the event
-	hour, min, sec = e.upTo.Clock()
-	// Schedule a new time
-	e.upTo = time.Date(now.Year(), now.Month(), now.Day(), hour, min, sec, now.Nanosecond(), now.Location())
+// BetweenClock returns true if the given time t is between the two timestamps
+// a (inclusive) and b (exclusive), where only hours/minutes/seconds count.
+func BetweenClock(t, a, b time.Time) bool {
+	tToday := ToToday(t)
+	return (tToday.Sub(ToToday(a)) >= 0) && (tToday.Sub(ToToday(b)) < 0)
 }
 
 // Has checks if the Event has time t in its interval:
 // from p.From() and up to but not including p.UpTo()
 func (e *Event) Has(t time.Time) bool {
-	// If it's not a date-event, update the year/month/day to the current
-	// year/month/day before checking
-	if !e.dateEvent {
-		e.update()
+	// If only the hour/minute/second matters, use BetweenClock
+	if e.clockOnly {
+		return BetweenClock(t, e.From(), e.UpTo())
 	}
 	return Between(t, e.From(), e.UpTo())
 }
 
 // ShouldTrigger returns true if the current time is in the interval
 // of the event AND it is not ongoing AND it is not in the cooldown period.
-func (e *Event) ShouldTrigger() bool {
+func (e *Event) ShouldTrigger() (retval bool) {
 	t := time.Now()
 
 	// Safely read the status
 	e.mutex.RLock()
-	retval := !e.ongoing && e.Has(t) && !Between(t, e.triggered, e.triggered.Add(e.cooldown))
+	if e.clockOnly {
+		retval = !e.ongoing && e.Has(t) && !BetweenClock(t, e.triggered, e.triggered.Add(e.cooldown))
+	} else {
+		retval = !e.ongoing && e.Has(t) && !Between(t, e.triggered, e.triggered.Add(e.cooldown))
+	}
 	e.mutex.RUnlock()
 
-	return retval
+	return
 }
 
 // Trigger triggers this event. The trigger time is noted, the associated
