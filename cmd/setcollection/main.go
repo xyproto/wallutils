@@ -2,6 +2,7 @@ package main
 
 import (
 	"fmt"
+	"log"
 	"os"
 	"path/filepath"
 	"time"
@@ -76,10 +77,15 @@ func clockDuration(a, b time.Time) time.Duration {
 	return bt.Sub(at)
 }
 
+func c(t time.Time) string {
+	return fmt.Sprintf("%.2d:%.2d", t.Hour(), t.Minute())
+}
+
 func setGnomeWallpaper(gw *monitor.GnomeWallpaper) error {
 
-	fmt.Println("--- setGnomeWallpaper ---")
-	fmt.Println("collection name:", gw.CollectionName)
+	loopWait := 5 * time.Second
+
+	fmt.Println("Using timed wallpaper:", gw.CollectionName)
 
 	eventloop := event.NewLoop()
 
@@ -87,38 +93,42 @@ func setGnomeWallpaper(gw *monitor.GnomeWallpaper) error {
 	// seconds per static wallpaper)
 	startTime := gw.StartTime()
 
-	fmt.Println("Timed wallpaper start time:", startTime)
+	// The start time of the timed wallpaper as a whole
+	fmt.Println("Timed wallpaper start time:", c(startTime))
 
 	totalElements := len(gw.Config.Statics) + len(gw.Config.Transitions)
 
 	// Keep track of the total time. It is increased every time a new element duration is encountered.
 	eventTime := startTime
 
-	// The cooldown for every event is 15 minutes. It can not be retriggered in that time period.
-	cooldown := 15 * time.Minute
-
 	for i := 0; i < totalElements; i++ {
 		// The duration of the event is specified in the XML file, but not when it should start
-		var window time.Duration
 
+		// Get an element, by index. This is an interface{} and is expected to be a GStatic or a GTransition
 		eInterface, err := gw.Config.Get(i)
 		if err != nil {
-			fmt.Println("GAH!", err)
-			break
+			return err
 		}
 		if s, ok := eInterface.(monitor.GStatic); ok {
-			//fmt.Println("GOT STATIC", s)
-			window = s.Duration()
-			fmt.Println("WINDOW", window)
-			fmt.Println("EVENT TIME", eventTime)
+			window := s.Duration()
+			// We have a static GNOME wallpaper element, with a duration and an image filename
 
-			// Place the filename into a variable, before enclosing it in the
-			// function below.
-			imageFilename := s.Filename
+			fmt.Printf("Registering STATIC at %s for changing to %s\n", c(eventTime), s.Filename)
 
-			fmt.Printf("Registering event at %s for changing to %s\n", eventTime, imageFilename)
-			eventloop.Add(event.New(eventTime, window, cooldown, func() {
-				fmt.Println("WALLPAPER EVENT", imageFilename)
+			// Place values into variables, before enclosing it in the function below.
+			from := eventTime
+			cooldown := window
+			//imageFilename := s.Filename
+			eventloop.Add(event.New(from, window, cooldown, func() {
+				fmt.Println("TRIGGERED STATIC WALLPAPER EVENT")
+
+				fmt.Println("FROM", c(from))
+				fmt.Println("WINDOW", window)
+				fmt.Println("COOLDOWN", cooldown)
+
+				// Enclose variable
+				imageFilename := s.Filename
+				fmt.Println("FILENAME", imageFilename)
 
 				// Find the absolute path
 				absImageFilename, err := filepath.Abs(imageFilename)
@@ -138,38 +148,76 @@ func setGnomeWallpaper(gw *monitor.GnomeWallpaper) error {
 					return // return from anon func
 				}
 			}))
-
-			fmt.Println("EVENT START", eventTime)
-			// Increase the variable that keeps track of the time!
+			// Increase the variable that keeps track of the time
+			//eventTime = event.ToToday(eventTime.Add(window))
 			eventTime = eventTime.Add(window)
-			fmt.Println("EVENT END", eventTime)
+
 		} else if t, ok := eInterface.(monitor.GTransition); ok {
-			//fmt.Println("GOT TRANSITION", t)
-			window = t.Duration()
-			fmt.Println("WINDOW", window)
+			// Increase the variable that keeps track of the time
+			window := t.Duration()
 
-			fmt.Println("TYPE         ", t.Type)
-			fmt.Println("FROM FILENAME", t.FromFilename)
-			fmt.Println("TO FILENAME  ", t.ToFilename)
+			// We have a GNOME wallpaper transition, with a duration, a type,
+			// and two image filenames.
 
-			fmt.Println("!!!TO IMPLEMENT!!!")
+			fmt.Printf("Registering TRANSITION at %s for transitioning to %s.\n", c(eventTime), t.ToFilename)
 
-			fmt.Println("EVENT START", eventTime)
-			// Increase the variable that keeps track of the time!
+			from := eventTime
+			cooldown := window
+			upTo := eventTime.Add(window)
+			eventloop.Add(event.New(from, window, cooldown, event.ProgressWrapperInterval(from, upTo, loopWait, func(p float64) {
+
+				fmt.Println("TRIGGERED TRANSITION EVENT")
+
+				fmt.Println("TO IMPLEMENT: A smooth transition")
+
+				// Enclose variables
+				tType := t.Type
+				tFromFilename := t.FromFilename
+				tToFilename := t.ToFilename
+
+				fmt.Println("TYPE         ", tType)
+				fmt.Println("FROM FILENAME", tFromFilename)
+				fmt.Println("TO FILENAME  ", tToFilename)
+				fmt.Printf("PERCENTAGE COMPLETE: %d%%\n", int(p*100))
+				fmt.Println("FROM", c(from))
+				fmt.Println("WINDOW", window)
+				fmt.Println("COOLDOWN", cooldown)
+				fmt.Println("EVENT TIME", c(eventTime))
+				fmt.Println("UP TO", c(upTo))
+				fmt.Println("LOOP WAIT", loopWait)
+
+				// TODO: Create a temporary image that is a mix between t.FromFilename and t.ToFilename, using p as the ratio
+				imageFilename := tToFilename
+
+				// Find the absolute path
+				absImageFilename, err := filepath.Abs(imageFilename)
+				if err == nil {
+					imageFilename = absImageFilename
+				}
+
+				// Check that the file exists
+				if _, err := os.Stat(imageFilename); os.IsNotExist(err) {
+					fmt.Errorf("File does not exist: %s\n", imageFilename)
+					return // return from anon func
+				}
+
+				// Set the desktop wallpaper, if possible
+				if err := monitor.SetWallpaper(imageFilename); err != nil {
+					fmt.Errorf("Could not set wallpaper: %s\n", err)
+					return // return from anon func
+				}
+			})))
+
+			//eventTime = event.ToToday(eventTime.Add(window))
 			eventTime = eventTime.Add(window)
-			fmt.Println("EVENT END", eventTime)
 		} else {
-			fmt.Println("GOT NOTHING")
-			break
+			log.Println("warning: got an element that is not a monitor.GStatic and not a monitor.GTransition")
+			continue
 		}
-
 	}
 
-	// QUIT
-	return nil
-
-	// Endless loop! Will wait 5 seconds between each event loop cycle
-	eventloop.Go(5 * time.Second)
+	// Endless loop! Will wait loopWait duration between each event loop cycle
+	eventloop.Go(loopWait)
 
 	return nil
 }

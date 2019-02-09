@@ -53,8 +53,8 @@ func (s *GStatic) Duration() time.Duration {
 }
 
 // Duration returns how long a transition should last
-func (s *GTransition) Duration() time.Duration {
-	return time.Duration(s.Seconds) * time.Second
+func (t *GTransition) Duration() time.Duration {
+	return time.Duration(t.Seconds) * time.Second
 }
 
 func Parse(XMLFilename string) (*GBackground, error) {
