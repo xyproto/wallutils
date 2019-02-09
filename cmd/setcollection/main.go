@@ -64,39 +64,113 @@ func setWallpaper(wallpapers []*monitor.Wallpaper) error {
 	return nil
 }
 
-func setGnomeWallpaper(gw *monitor.GnomeWallpaper) error {
+// clockDuration finds the length of time between two given times,
+// ignoring year/month day. A positive duration number will be returned.
+func clockDuration(a, b time.Time) time.Duration {
+	now := time.Now()
+	at := time.Date(now.Year(), now.Month(), now.Day(), a.Hour(), a.Minute(), a.Second(), a.Nanosecond(), a.Location())
+	bt := time.Date(now.Year(), now.Month(), now.Day(), b.Hour(), b.Minute(), b.Second(), b.Nanosecond(), b.Location())
+	if at.Sub(bt) > 0 {
+		return at.Sub(bt)
+	}
+	return bt.Sub(at)
+}
 
-	events := event.NewEvents()
+func setGnomeWallpaper(gw *monitor.GnomeWallpaper) error {
 
 	fmt.Println("--- setGnomeWallpaper ---")
 	fmt.Println("collection name:", gw.CollectionName)
 
-	// Plan:
-	// List all "static" wallpaper filenames, with associated starttime + duration
+	eventloop := event.NewLoop()
 
-	// Get the base start time for today
-	timedWallpaperStart := gw.StartTimeToday()
+	// Get the start time for the wallpaper collection (which is offset by X
+	// seconds per static wallpaper)
+	startTime := gw.StartTime()
 
-	fmt.Println("start time:", gw.Time())
-	for _, s := range gw.Config.Statics {
-		seconds := time.Duration(s.Seconds) * time.Second
-		eventStart := timedWallpaperStart.Add(seconds)
+	fmt.Println("Timed wallpaper start time:", startTime)
 
-		// TODO: Add support for hour/minute/second events in the even package.
-		//       For now, these events only work for one day.
+	totalElements := len(gw.Config.Statics) + len(gw.Config.Transitions)
 
-		fmt.Println("trigger time", triggerStart.Add(seconds))
-		fn := s.Filename
-		fmt.Println("image", fn, seconds)
+	// Keep track of the total time. It is increased every time a new element duration is encountered.
+	eventTime := startTime
 
-		events.Add
+	// The cooldown for every event is 15 minutes. It can not be retriggered in that time period.
+	cooldown := 15 * time.Minute
+
+	for i := 0; i < totalElements; i++ {
+		// The duration of the event is specified in the XML file, but not when it should start
+		var window time.Duration
+
+		eInterface, err := gw.Config.Get(i)
+		if err != nil {
+			fmt.Println("GAH!", err)
+			break
+		}
+		if s, ok := eInterface.(monitor.GStatic); ok {
+			//fmt.Println("GOT STATIC", s)
+			window = s.Duration()
+			fmt.Println("WINDOW", window)
+			fmt.Println("EVENT TIME", eventTime)
+
+			// Place the filename into a variable, before enclosing it in the
+			// function below.
+			imageFilename := s.Filename
+
+			fmt.Printf("Registering event at %s for changing to %s\n", eventTime, imageFilename)
+			eventloop.Add(event.New(eventTime, window, cooldown, func() {
+				fmt.Println("WALLPAPER EVENT", imageFilename)
+
+				// Find the absolute path
+				absImageFilename, err := filepath.Abs(imageFilename)
+				if err == nil {
+					imageFilename = absImageFilename
+				}
+
+				// Check that the file exists
+				if _, err := os.Stat(imageFilename); os.IsNotExist(err) {
+					fmt.Errorf("File does not exist: %s\n", imageFilename)
+					return // return from anon func
+				}
+
+				// Set the desktop wallpaper, if possible
+				if err := monitor.SetWallpaper(imageFilename); err != nil {
+					fmt.Errorf("Could not set wallpaper: %s\n", err)
+					return // return from anon func
+				}
+			}))
+
+			fmt.Println("EVENT START", eventTime)
+			// Increase the variable that keeps track of the time!
+			eventTime = eventTime.Add(window)
+			fmt.Println("EVENT END", eventTime)
+		} else if t, ok := eInterface.(monitor.GTransition); ok {
+			//fmt.Println("GOT TRANSITION", t)
+			window = t.Duration()
+			fmt.Println("WINDOW", window)
+
+			fmt.Println("TYPE         ", t.Type)
+			fmt.Println("FROM FILENAME", t.FromFilename)
+			fmt.Println("TO FILENAME  ", t.ToFilename)
+
+			fmt.Println("!!!TO IMPLEMENT!!!")
+
+			fmt.Println("EVENT START", eventTime)
+			// Increase the variable that keeps track of the time!
+			eventTime = eventTime.Add(window)
+			fmt.Println("EVENT END", eventTime)
+		} else {
+			fmt.Println("GOT NOTHING")
+			break
+		}
 
 	}
 
-	fmt.Println("start time:", gw.Time())
+	// QUIT
+	return nil
 
-	fmt.Println("TO IMPLEMENT: GNOME TIMED BACKGROUND")
-	os.Exit(1)
+	// Endless loop! Will wait 5 seconds between each event loop cycle
+	eventloop.Go(5 * time.Second)
+
 	return nil
 }
 
