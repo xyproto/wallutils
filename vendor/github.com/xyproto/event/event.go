@@ -36,11 +36,17 @@ func NewDateEvent(when time.Time, window, cooldown time.Duration, action func())
 
 // From is the time from when the event should be able to be triggered.
 func (e *Event) From() time.Time {
+	if e.clockOnly {
+		return ToToday(e.from)
+	}
 	return e.from
 }
 
 // UpTo is the time where the event should no longer be able to be triggered.
 func (e *Event) UpTo() time.Time {
+	if e.clockOnly {
+		return ToToday(e.upTo)
+	}
 	return e.upTo
 }
 
@@ -52,6 +58,9 @@ func (e *Event) Cooldown() time.Duration {
 
 // Duration is for how long the window that this event can be triggered is
 func (e *Event) Duration() time.Duration {
+	if e.clockOnly {
+		return ToToday(e.upTo).Sub(ToToday(e.from))
+	}
 	return e.upTo.Sub(e.from)
 }
 
