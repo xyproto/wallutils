@@ -41,7 +41,7 @@ func main() {
 	fmt.Println("ok")
 
 	if len(gnomeWallpapers) == 0 {
-		fmt.Fprintln(os.Stderr, "No such tiemd wallpaper: "+collectionName)
+		fmt.Fprintln(os.Stderr, "No such timed wallpaper: "+collectionName)
 		os.Exit(1)
 	}
 

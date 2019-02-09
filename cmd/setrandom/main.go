@@ -21,7 +21,7 @@ func init() {
 func main() {
 	fmt.Println(versionString)
 	reader := bufio.NewReader(os.Stdin)
-	fmt.Print("Please type \"yes\" if you want to change the desktop wallpaper to a random image: ")
+	fmt.Print("Type \"yes\" if you want to change the desktop wallpaper to a random image from /usr/share/pixmaps: ")
 	text, err := reader.ReadString('\n')
 	if err != nil {
 		fmt.Fprintln(os.Stderr, err)
