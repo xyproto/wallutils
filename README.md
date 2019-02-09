@@ -63,22 +63,9 @@ Manually:
 
     setwallpaper /path/to/background/image.png
 
-## Example use from Go: change the wallpaper
+## Example use of the Go package
 
-```go
-import (
-	"github.com/xyproto/monitor"
-)
-```
-
-```go
-fmt.Println("Setting background image to: " + imageFilename)
-if err := monitor.SetWallpaper(imageFilename); err != nil {
-	return err
-}
-```
-
-## Example use from Go: retrieve the monitor resolution(s)
+### Retrieve monitor resolution(s)
 
 ~~~go
 package main
@@ -103,6 +90,15 @@ func main() {
 	}
 }
 ~~~
+
+### Change the wallpaper
+
+```go
+fmt.Println("Setting background image to: " + imageFilename)
+if err := monitor.SetWallpaper(imageFilename); err != nil {
+	return err
+}
+```
 
 ## Build requirements
 
