@@ -4,6 +4,7 @@ import (
 	"bytes"
 	"encoding/xml"
 	"errors"
+	"fmt"
 	"io/ioutil"
 	"time"
 )
@@ -77,26 +78,40 @@ func Parse(XMLFilename string) (*GBackground, error) {
 	return &background, nil
 }
 
-// Given a transition, find the index in the total collection of elements with
-// a duration.
-func (gb *GBackground) TransitionOrder(t *GTransition) (int, error) {
-	for i, tElement := range gb.Transitions {
-		if t == &tElement {
-			return gb.transitionOrder[i], nil
-		}
+// TransitionOrder finds the total position of a given GTransition position
+func (gb *GBackground) TransitionOrder(i int) (int, error) {
+	pos, ok := gb.transitionOrder[i]
+	if !ok {
+		return -1, errors.New("Could not find the given GTransition index in the collection")
 	}
-	return -1, errors.New("Could not find the given GTransition in the collection")
+	return pos, nil
 }
 
-// Given a static, find the index in the total collection of elements with
-// a duration.
-func (gb *GBackground) StaticOrder(s *GStatic) (int, error) {
-	for i, sElement := range gb.Statics {
-		if s == &sElement {
-			return gb.staticOrder[i], nil
+// StaticOrder finds the total position of a given GStatic position
+func (gb *GBackground) StaticOrder(i int) (int, error) {
+	pos, ok := gb.staticOrder[i]
+	if !ok {
+		return -1, errors.New("Could not find the given GStatic index in the collection")
+	}
+	return pos, nil
+}
+
+// Get either a GStatic or a GTransition, given a total position.
+// Will return nil and an error if nothing is found.
+func (gb *GBackground) Get(i int) (interface{}, error) {
+	for k, v := range gb.staticOrder {
+		if v == i {
+			// Found it
+			return gb.Statics[k], nil
 		}
 	}
-	return -1, errors.New("Could not find the given GStatic in the collection")
+	for k, v := range gb.transitionOrder {
+		if v == i {
+			// Found it
+			return gb.Transitions[k], nil
+		}
+	}
+	return nil, fmt.Errorf("Could not find an element with the given index: %d", i)
 }
 
 // The order in the XML matters when calculating the timing.
