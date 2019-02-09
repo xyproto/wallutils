@@ -19,19 +19,12 @@ type GnomeWallpaper struct {
 	Config *GBackground
 }
 
-func (gw *GnomeWallpaper) Time() time.Time {
+// StartTime returns the timed wallpaper start time, as a time.Time
+func (gw *GnomeWallpaper) StartTime() time.Time {
+	// gw.Config.StartTime is a struct that contains ints,
+	// where the values are directly from the parsed XML.
 	st := gw.Config.StartTime
 	return time.Date(st.Year, time.Month(st.Month), st.Day, st.Hour, st.Minute, 0, 0, time.Local)
-}
-
-func (gw *GnomeWallpaper) TodayTime() time.Time {
-	// Get hour, minute and second from the timed wallpaper
-	st := gw.Config.StartTime
-	hour, min, sec := st.Clock()
-
-	// Get the rest of the fields from the current time
-	now := time.Now()
-	return time.Date(now.Year(), now.Month(), now.Day(), hour, min, sec, now.Nanosecond(), now.Location())
 }
 
 func (gw *GnomeWallpaper) Images() []string {
@@ -54,7 +47,7 @@ func (gw *GnomeWallpaper) String() string {
 	sb.WriteString("---\npath\t\t\t= ")
 	sb.WriteString(gw.Path)
 	sb.WriteString("\nstart time\t\t= ")
-	sb.WriteString(gw.Time().String())
+	sb.WriteString(gw.StartTime().String())
 	sb.WriteString("\nnumber of static tags\t= ")
 	sb.WriteString(strconv.Itoa(len(gw.Config.Statics)))
 	sb.WriteString("\nnumber of transitions\t= ")
