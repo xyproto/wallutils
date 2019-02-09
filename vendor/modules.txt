@@ -1,4 +1,4 @@
 # github.com/stretchr/powerwalk v0.0.0-20151124150408-bceb9d014549
 github.com/stretchr/powerwalk
-# github.com/xyproto/event v0.0.0-20190209085808-ad60f958f9d6
+# github.com/xyproto/event v0.0.0-20190209132726-0b422d60bf27
 github.com/xyproto/event

@@ -5,13 +5,9 @@ github.com/davecgh/go-spew v1.1.1/go.mod h1:J7Y8YcW2NihsgmVo/mv3lAwl/skON4iLHjSs
 github.com/pmezard/go-difflib v1.0.0 h1:4DBwDE0NGyQoBHbLQYPwSUPoCMWR5BEzIk/f1lZbAQM=
 github.com/pmezard/go-difflib v1.0.0/go.mod h1:iKH77koFhYxTK1pcRnkKkqfTogsbg7gZNVY4sRDYZ/4=
 github.com/stretchr/objx v0.1.0/go.mod h1:HFkY916IF+rwdDfMAkV7OtwuqBVzrE8GR6GFx+wExME=
-github.com/stretchr/objx v0.1.1/go.mod h1:HFkY916IF+rwdDfMAkV7OtwuqBVzrE8GR6GFx+wExME=
 github.com/stretchr/powerwalk v0.0.0-20151124150408-bceb9d014549 h1:zjTKDjwZy1IVyLos+s70iYMwL/ZVojUbIDX5kghHa1Q=
 github.com/stretchr/powerwalk v0.0.0-20151124150408-bceb9d014549/go.mod h1:RhJzAYfVBD/ULOCeUUaTn0CHDRQBYHjDY7yYpSt6+4M=
 github.com/stretchr/testify v1.3.0 h1:TivCn/peBQ7UY8ooIcPgZFpTNSz0Q2U6UrFlUfqbe0Q=
 github.com/stretchr/testify v1.3.0/go.mod h1:M5WIy9Dh21IEIfnGCwXGc5bZfKNJtfHm1UVUgZn+9EI=
-github.com/xyproto/event v0.0.0-20190208222534-6124ab6088ca h1:mv9UPTs35VBP0h9cwk3+nHSbOMXIPcCyNHh6N8Vp6fs=
-github.com/xyproto/event v0.0.0-20190208222534-6124ab6088ca/go.mod h1:IAzZJ4LWfM+NVUT/NK5u0Xzvlyo0kFrsRlyrKoHiPp4=
-github.com/xyproto/event v0.0.0-20190209085808-ad60f958f9d6 h1:s/CvTDyFI2m+ASYm8qZY7YCn9wOaA6JvgI+dT0NAhlk=
-github.com/xyproto/event v0.0.0-20190209085808-ad60f958f9d6/go.mod h1:IAzZJ4LWfM+NVUT/NK5u0Xzvlyo0kFrsRlyrKoHiPp4=
+github.com/xyproto/event v0.0.0-20190209132726-0b422d60bf27 h1:KZoLu7IIvblmwv2qvV8R7+G/yrRB4cOenGruKlEoAS0=
 github.com/xyproto/event v0.0.0-20190209132726-0b422d60bf27/go.mod h1:IAzZJ4LWfM+NVUT/NK5u0Xzvlyo0kFrsRlyrKoHiPp4=

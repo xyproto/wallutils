@@ -26,7 +26,8 @@ func (l *Loop) Once(when time.Time, action func()) {
 // OnceWindow runs a given action only once, within a custom duration
 func (l *Loop) OnceWindow(when time.Time, window time.Duration, action func()) {
 	// The window is also used as the cooldown
-	l.Add(New(when, window, window, action))
+	cooldown := window
+	l.Add(New(when, window, cooldown, action))
 }
 
 // Go launches an event loop that will sleep the given duration at every loop.
