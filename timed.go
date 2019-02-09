@@ -8,18 +8,6 @@ import (
 	"time"
 )
 
-// clockDuration finds the length of time between two given times,
-// ignoring year/month day. A positive duration number will be returned.
-func clockDuration(a, b time.Time) time.Duration {
-	now := time.Now()
-	at := time.Date(now.Year(), now.Month(), now.Day(), a.Hour(), a.Minute(), a.Second(), a.Nanosecond(), a.Location())
-	bt := time.Date(now.Year(), now.Month(), now.Day(), b.Hour(), b.Minute(), b.Second(), b.Nanosecond(), b.Location())
-	if at.Sub(bt) > 0 {
-		return at.Sub(bt)
-	}
-	return bt.Sub(at)
-}
-
 // c formats a timestamp as HH:MM
 func c(t time.Time) string {
 	return fmt.Sprintf("%.2d:%.2d", t.Hour(), t.Minute())
