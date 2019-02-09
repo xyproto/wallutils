@@ -103,8 +103,11 @@ func main() {
 			os.Exit(1)
 		}
 	} else if len(wallpapers) == 0 && len(gnomeWallpapers) == 1 {
-		fmt.Fprintln(os.Stderr, "Timed wallpapers are not supported by this utility")
-		os.Exit(1)
+		err := monitor.SetTimedWallpaper(gnomeWallpapers[0], true)
+		if err != nil {
+			fmt.Fprintln(os.Stderr, err)
+			os.Exit(1)
+		}
 	} else if len(wallpapers) == 0 && len(gnomeWallpapers) > 1 {
 		fmt.Fprintln(os.Stderr, "Found several GNOME timed backgrounds, with the same collection name!")
 		os.Exit(1)
