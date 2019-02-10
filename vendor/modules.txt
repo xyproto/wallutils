@@ -1,4 +1,8 @@
 # github.com/stretchr/powerwalk v0.0.0-20151124150408-bceb9d014549
 github.com/stretchr/powerwalk
+# github.com/xyproto/crossfade v0.0.0-20190210121323-d884599bd751
+github.com/xyproto/crossfade
 # github.com/xyproto/event v0.0.0-20190209144958-6bbdc7eb57e4
 github.com/xyproto/event
+# github.com/xyproto/imagelib v0.0.0-20190209194312-bbbf5649f300
+github.com/xyproto/imagelib

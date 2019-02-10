@@ -1,7 +1,5 @@
 github.com/davecgh/go-spew v1.1.0 h1:ZDRjVQ15GmhC3fiQ8ni8+OwkZQO4DARzQgrnXU1Liz8=
 github.com/davecgh/go-spew v1.1.0/go.mod h1:J7Y8YcW2NihsgmVo/mv3lAwl/skON4iLHjSsI+c5H38=
-github.com/davecgh/go-spew v1.1.1 h1:vj9j/u1bqnvCEfJOwUhtlOARqs3+rkHYY13jYWTU97c=
-github.com/davecgh/go-spew v1.1.1/go.mod h1:J7Y8YcW2NihsgmVo/mv3lAwl/skON4iLHjSsI+c5H38=
 github.com/pmezard/go-difflib v1.0.0 h1:4DBwDE0NGyQoBHbLQYPwSUPoCMWR5BEzIk/f1lZbAQM=
 github.com/pmezard/go-difflib v1.0.0/go.mod h1:iKH77koFhYxTK1pcRnkKkqfTogsbg7gZNVY4sRDYZ/4=
 github.com/stretchr/objx v0.1.0/go.mod h1:HFkY916IF+rwdDfMAkV7OtwuqBVzrE8GR6GFx+wExME=
@@ -9,5 +7,9 @@ github.com/stretchr/powerwalk v0.0.0-20151124150408-bceb9d014549 h1:zjTKDjwZy1IV
 github.com/stretchr/powerwalk v0.0.0-20151124150408-bceb9d014549/go.mod h1:RhJzAYfVBD/ULOCeUUaTn0CHDRQBYHjDY7yYpSt6+4M=
 github.com/stretchr/testify v1.3.0 h1:TivCn/peBQ7UY8ooIcPgZFpTNSz0Q2U6UrFlUfqbe0Q=
 github.com/stretchr/testify v1.3.0/go.mod h1:M5WIy9Dh21IEIfnGCwXGc5bZfKNJtfHm1UVUgZn+9EI=
+github.com/xyproto/crossfade v0.0.0-20190210121323-d884599bd751 h1:9Gj2LYEpPqSE24gIXTak9Ej6HJtZOgFuDlr4xZ2SI3M=
+github.com/xyproto/crossfade v0.0.0-20190210121323-d884599bd751/go.mod h1:EW9b0FpDSnr36patXgO6i09AJJpZ6z+kFxerNwrIoCU=
 github.com/xyproto/event v0.0.0-20190209144958-6bbdc7eb57e4 h1:PONowSXG5DlIoLEsXKQt58GzREAjH0P5Rr5bflIOTi8=
 github.com/xyproto/event v0.0.0-20190209144958-6bbdc7eb57e4/go.mod h1:IAzZJ4LWfM+NVUT/NK5u0Xzvlyo0kFrsRlyrKoHiPp4=
+github.com/xyproto/imagelib v0.0.0-20190209194312-bbbf5649f300 h1:Qje6856C+ZLSjBbX9cW3bTycIT2RD4xYebbE2b+la80=
+github.com/xyproto/imagelib v0.0.0-20190209194312-bbbf5649f300/go.mod h1:28DiltQEyXiqtA/q9l1+cRteOIozAh1J7/oyzbiR4iM=
