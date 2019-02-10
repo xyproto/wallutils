@@ -2,7 +2,9 @@ package monitor
 
 import (
 	"fmt"
+	"github.com/xyproto/crossfade"
 	"github.com/xyproto/event"
+	"io/ioutil"
 	"os"
 	"path/filepath"
 	"time"
@@ -104,10 +106,13 @@ func SetTimedWallpaper(gw *GnomeWallpaper, verbose bool) error {
 				fmt.Printf("Registering TRANSITION at %s for transitioning to %s.\n", c(eventTime), t.ToFilename)
 			}
 
+			// cross fade steps
+			steps := 10
+
 			from := eventTime
-			cooldown := window
+			cooldown := window / time.Duration(steps)
 			upTo := eventTime.Add(window)
-			eventloop.Add(event.New(from, window, cooldown, event.ProgressWrapperInterval(from, upTo, loopWait, func(p float64) {
+			eventloop.Add(event.New(from, window, cooldown, event.ProgressWrapperInterval(from, upTo, loopWait, func(ratio float64) {
 
 				// Enclose variables
 				tType := t.Type
@@ -116,11 +121,10 @@ func SetTimedWallpaper(gw *GnomeWallpaper, verbose bool) error {
 
 				if verbose {
 					fmt.Println("TRIGGERED TRANSITION EVENT")
-					fmt.Println("TO IMPLEMENT: A smooth transition")
 					fmt.Println("TYPE         ", tType)
 					fmt.Println("FROM FILENAME", tFromFilename)
 					fmt.Println("TO FILENAME  ", tToFilename)
-					fmt.Printf("PERCENTAGE COMPLETE: %d%%\n", int(p*100))
+					fmt.Printf("PERCENTAGE COMPLETE: %d%%\n", int(ratio*100))
 					fmt.Println("FROM", c(from))
 					fmt.Println("WINDOW", window)
 					fmt.Println("COOLDOWN", cooldown)
@@ -129,23 +133,31 @@ func SetTimedWallpaper(gw *GnomeWallpaper, verbose bool) error {
 					fmt.Println("LOOP WAIT", loopWait)
 				}
 
-				// TODO: Create a temporary image that is a mix between t.FromFilename and t.ToFilename, using p as the ratio
-				imageFilename := tToFilename
+				tempDir, err := ioutil.TempDir("", "crossfade")
+				if err != nil {
+					fmt.Fprintf(os.Stderr, "Could not create temporary directory: %s\n", err)
+					return // return from anon func
+				}
+				// TODO: Find out if it is safe to remove the wallpaper image while it is in use, or not
+				defer os.RemoveAll(tempDir) // clean up
 
-				// Find the absolute path
-				absImageFilename, err := filepath.Abs(imageFilename)
-				if err == nil {
-					imageFilename = absImageFilename
+				// Prepare to write an image to the temporary directory
+				tempImageFilename := filepath.Join(tempDir, "out.png") // .jpg is also possible
+
+				// Crossfade and write the new image to the temporary directory
+				if crossfade.Files(tFromFilename, tToFilename, tempImageFilename, ratio) != nil {
+					fmt.Fprintf(os.Stderr, "Could not crossfade images in transition: %s\n", err)
+					return // return from anon func
 				}
 
-				// Check that the file exists
-				if _, err := os.Stat(imageFilename); os.IsNotExist(err) {
-					fmt.Fprintf(os.Stderr, "File does not exist: %s\n", imageFilename)
+				// Double check that the generated file exists
+				if _, err := os.Stat(tempImageFilename); os.IsNotExist(err) {
+					fmt.Fprintf(os.Stderr, "File does not exist: %s\n", tempImageFilename)
 					return // return from anon func
 				}
 
 				// Set the desktop wallpaper, if possible
-				if err := SetWallpaper(imageFilename); err != nil {
+				if err := SetWallpaper(tempImageFilename); err != nil {
 					fmt.Fprintf(os.Stderr, "Could not set wallpaper: %s\n", err)
 					return // return from anon func
 				}
