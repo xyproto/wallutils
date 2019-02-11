@@ -8,28 +8,6 @@ import (
 	"github.com/xyproto/monitor"
 )
 
-// filterWallpapers will filter out wallpapers that both match with the collection name, and are also marked as part of a collection
-func filterWallpapers(collectionName string, wallpapers []*monitor.Wallpaper) []*monitor.Wallpaper {
-	var collection []*monitor.Wallpaper
-	for _, wp := range wallpapers {
-		if wp.PartOfCollection && wp.CollectionName == collectionName {
-			collection = append(collection, wp)
-		}
-	}
-	return collection
-}
-
-// filterGnomeWallpapers will filter out gnome timed wallpapers that match with the collection name
-func filterGnomeWallpapers(collectionName string, gnomeWallpapers []*monitor.GnomeWallpaper) []*monitor.GnomeWallpaper {
-	var collection []*monitor.GnomeWallpaper
-	for _, gw := range gnomeWallpapers {
-		if gw.CollectionName == collectionName {
-			collection = append(collection, gw)
-		}
-	}
-	return collection
-}
-
 func setWallpaper(wallpapers []*monitor.Wallpaper) error {
 	// Gather a slice of filenames
 	var filenames []string
@@ -72,8 +50,8 @@ func main() {
 	fmt.Printf("Setting wallpaper collection \"%s\"\n", collectionName)
 
 	fmt.Print("Searching for wallpapers...")
-	wallpapers, gnomeWallpapers := monitor.FindWallpapers()
-	if len(wallpapers) == 0 && len(gnomeWallpapers) == 0 {
+	wallpapers, gnomeWallpapers, simpleTimedWallpapers := monitor.FindWallpapers()
+	if len(wallpapers) == 0 && len(gnomeWallpapers) == 0 && len(simpleTimedWallpapers) == 0 {
 		fmt.Fprintln(os.Stderr, "Could not find any wallpapers on the system.")
 		os.Exit(1)
 	} else {
@@ -81,11 +59,12 @@ func main() {
 	}
 
 	fmt.Print("Filtering wallpapers by collection name...")
-	wallpapers = filterWallpapers(collectionName, wallpapers)
-	gnomeWallpapers = filterGnomeWallpapers(collectionName, gnomeWallpapers)
+	wallpapers = monitor.FilterWallpapers(collectionName, wallpapers)
+	gnomeWallpapers = monitor.FilterGnomeWallpapers(collectionName, gnomeWallpapers)
+	simpleTimedWallpapers = monitor.FilterSimpleTimedWallpapers(collectionName, simpleTimedWallpapers)
 	fmt.Println("ok")
 
-	if len(wallpapers) == 0 && len(gnomeWallpapers) == 0 {
+	if len(wallpapers) == 0 && len(gnomeWallpapers) == 0 && len(simpleTimedWallpapers) == 0 {
 		fmt.Fprintln(os.Stderr, "No such collection: "+collectionName)
 		os.Exit(1)
 	}
