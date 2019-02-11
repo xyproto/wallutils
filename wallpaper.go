@@ -40,7 +40,7 @@ var WMs = []WM{
 }
 
 var (
-	DefaultWallpaperDirectories = []string{"/usr/share/pixmaps", "/usr/share/wallpapers", "/usr/share/backgrounds", "/usr/local/share/pixmaps", "/usr/local/share/wallpapers", "/usr/local/share/backgrounds"}
+	DefaultWallpaperDirectories = []string{"/usr/share/pixmaps", "/usr/share/wallpapers", "/usr/share/backgrounds", "/usr/local/share/pixmaps", "/usr/local/share/wallpapers", "/usr/local/share/backgrounds", "/usr/share/archlinux"}
 )
 
 // Set the desktop wallpaper (filled/stretched), for any supported windowmanager.
