@@ -33,6 +33,7 @@ var (
 func ResetSearch() {
 	images = sync.Map{}
 	gnomeWallpapers = sync.Map{}
+	simpleTimedWallpapers = sync.Map{}
 	searchComplete = false
 }
 
@@ -110,11 +111,9 @@ func visit(path string, f os.FileInfo, err error) error {
 		images.Store(path, wp)
 	case ".svg":
 		// TODO: Consider supporting SVG wallpapers in the future
-		//fmt.Println("SVG ", path)
 		return nil
 	case ".xpm", ".xbm":
 		// TODO: Consider supporting XPM and/or XBM wallpapers in the future
-		//fmt.Println("X bitmap", path)
 		return nil
 	case ".stw": // Simple Timed Wallpaper
 		stw, err := ParseSTW(path)
@@ -201,7 +200,7 @@ func foundSimpleTimedWallpapers() []*SimpleTimedWallpaper {
 }
 
 // SearchPaths will concurrently collect all wallpapers that are large enough.
-// Also parse Gnome Background XML files.
+// Will also parse Gnome timed wallpaper XML files and Simple Timed Wallpaper stw files.
 func SearchPaths(paths []string) ([]*Wallpaper, []*GnomeWallpaper, []*SimpleTimedWallpaper) {
 	for _, path := range paths {
 		searchPath(path)
