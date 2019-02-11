@@ -13,6 +13,7 @@ type SimpleTimedWallpaper struct {
 	STWVersion  string
 	Name        string
 	Format      string
+	Path        string // not part of the file data, but handy when parsing
 	Statics     []*Static
 	Transitions []*Transition
 }
@@ -28,6 +29,10 @@ type Transition struct {
 	FromFilename string
 	ToFilename   string
 	Type         string
+}
+
+func (t *Transition) Duration() time.Duration {
+	return t.UpTo.Sub(t.From)
 }
 
 func (t *Transition) String(format string) string {
@@ -74,7 +79,7 @@ func (stw *SimpleTimedWallpaper) String() string {
 func NewSimpleTimedWallpaper(version, name, format string) *SimpleTimedWallpaper {
 	statics := make([]*Static, 0)
 	transitions := make([]*Transition, 0)
-	return &SimpleTimedWallpaper{version, name, format, statics, transitions}
+	return &SimpleTimedWallpaper{version, name, format, "", statics, transitions}
 }
 
 func (stw *SimpleTimedWallpaper) AddStatic(at time.Time, filename string) {
@@ -192,6 +197,7 @@ func ParseSTW(filename string) (*SimpleTimedWallpaper, error) {
 	//pacman, _ := parsed["ILoveCandy"] // optional
 
 	stw := NewSimpleTimedWallpaper(version, name, format)
+	stw.Path = filename
 	for _, t := range ts {
 		// Adding transitions in a way that make sure the format string is used when interpreting the filenames
 		stw.AddTransition(t.From, t.UpTo, t.FromFilename, t.ToFilename, t.Type)
