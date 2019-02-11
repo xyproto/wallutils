@@ -7,17 +7,6 @@ import (
 	"github.com/xyproto/monitor"
 )
 
-// filterGnomeWallpapers will filter out gnome timed wallpapers that match with the collection name
-func filterGnomeWallpapers(collectionName string, gnomeWallpapers []*monitor.GnomeWallpaper) []*monitor.GnomeWallpaper {
-	var collection []*monitor.GnomeWallpaper
-	for _, gw := range gnomeWallpapers {
-		if gw.CollectionName == collectionName {
-			collection = append(collection, gw)
-		}
-	}
-	return collection
-}
-
 func main() {
 	if len(os.Args) <= 1 {
 		fmt.Fprintln(os.Stderr, "Please give a timed wallpaper name as the first argument.")
@@ -28,8 +17,8 @@ func main() {
 	fmt.Printf("Setting wallpaper collection \"%s\"\n", collectionName)
 
 	fmt.Print("Searching for wallpapers...")
-	_, gnomeWallpapers := monitor.FindWallpapers()
-	if len(gnomeWallpapers) == 0 {
+	_, gnomeWallpapers, simpleTimedWallpapers := monitor.FindWallpapers()
+	if len(gnomeWallpapers) == 0 && len(simpleTimedWallpapers) == 0 {
 		fmt.Fprintln(os.Stderr, "Could not find any timed wallpapers on the system.")
 		os.Exit(1)
 	} else {
@@ -37,24 +26,31 @@ func main() {
 	}
 
 	fmt.Print("Filtering wallpapers by name...")
-	gnomeWallpapers = filterGnomeWallpapers(collectionName, gnomeWallpapers)
+	simpleTimedWallpapers = monitor.FilterSimpleTimedWallpapers(collectionName, simpleTimedWallpapers)
+	gnomeWallpapers = monitor.FilterGnomeWallpapers(collectionName, gnomeWallpapers)
 	fmt.Println("ok")
 
-	if len(gnomeWallpapers) == 0 {
+	// gnomeWallpapers and simpleTimedWallpapers have now been filtered so that they only contain elements with matching collection names
+
+	if (len(gnomeWallpapers) == 0) && (len(simpleTimedWallpapers) == 0) {
 		fmt.Fprintln(os.Stderr, "No such timed wallpaper: "+collectionName)
 		os.Exit(1)
 	}
 
-	// gnomeWallpapers are now filtered to only contain elements with matching collection names
-
-	if len(gnomeWallpapers) == 1 {
-		err := monitor.SetTimedWallpaper(gnomeWallpapers[0], true)
+	if len(simpleTimedWallpapers) == 1 {
+		err := monitor.SetSimpleTimedWallpaper(simpleTimedWallpapers[0], true)
 		if err != nil {
 			fmt.Fprintln(os.Stderr, err)
 			os.Exit(1)
 		}
-	} else if len(gnomeWallpapers) > 1 {
-		fmt.Fprintln(os.Stderr, "Found several GNOME timed backgrounds, with the same name.")
+	} else if len(gnomeWallpapers) == 1 {
+		err := monitor.SetGnomeTimedWallpaper(gnomeWallpapers[0], true)
+		if err != nil {
+			fmt.Fprintln(os.Stderr, err)
+			os.Exit(1)
+		}
+	} else if (len(gnomeWallpapers) > 1) || (len(simpleTimedWallpapers) > 1) {
+		fmt.Fprintln(os.Stderr, "Found several timed backgrounds, with the same name.")
 		os.Exit(1)
 	}
 }
