@@ -36,7 +36,7 @@ var WMs = []WM{
 	&Gnome2{},
 	&Weston{},
 	&Feh{}, // using feh
-	&X11{}, // using a C+Go .so plugin
+	&X11{},
 }
 
 var (
