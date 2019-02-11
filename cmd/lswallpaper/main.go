@@ -6,7 +6,7 @@ import (
 )
 
 func main() {
-	wallpapers, _ := monitor.FindWallpapers()
+	wallpapers, _, _ := monitor.FindWallpapers()
 	for _, wp := range wallpapers {
 		fmt.Println(wp)
 	}
