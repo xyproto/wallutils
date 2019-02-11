@@ -38,7 +38,7 @@ Alternatively, a format string may be used. That would make the above example lo
     format: /usr/share/wallpapers/%s.jpg
     @08:00: morning
 
-The `%s` marker will be replaced with the word `morning` when interpreting the filename for the `@08:00` timing information.
+The `%s` marker will be replaced with the word `morning` when interpreting the filename for the `@08:00` event.
 
 ### Image transitions
 
@@ -50,16 +50,16 @@ This will change the wallpaper to `/usr/share/wallpapers/morning.jpg` at `10:00`
 
 `overlay` is the default transition type and may be omitted. Implementing a cross fade between the first and second image is acceptable.
 
-It is up to the implementation how often the wallpaper should be updated in the transition period from `10:00` to `12:00`. The default is 10 times, regardless of the length of the time interval.
+It is up to the implementation how often the wallpaper should be updated in the transition period from `10:00` to `12:00`. The recommendation is 10 times, regardless of the length of the time interval.
 
 Format description:
 
 * The line must start with `@` followed by two digits which is the hour number.
 * Then comes a colon `:` and two digits which is the minute number.
-* Then comes an optional whitespace, a dash `:` and another optional whitespace.
+* Then comes an optional whitespace, a dash `-` and another optional whitespace.
 * Then comes two digits which is the hour number.
 * Then comes a colon `:` and two digits which is the minute number.
-* The first timestamp is inclusive, while the second timestamp is exclusive.
+* The first of the two timestamps is inclusive, while the second one is exclusive.
 * Then comes a colon `:`, an optional whitespace, and an image filename that will be transitioned from.
 * Then comes an optional whitespace, two dots `..` and another optional whitespace.
 * Then comes an image filename that will be transitioned to.
