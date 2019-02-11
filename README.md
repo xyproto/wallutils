@@ -45,12 +45,24 @@ Using Go 1.11 or later, for a single utility:
 
     go get -u github.com/xyproto/monitor/cmd/setwallpaper
 
-On Ubuntu, from a fresh installation:
+On Arch Linux:
+
+Install `monitor` from AUR, or:
+
+    sudo pacman -Syu git go
+    go get -u github.com/xyproto/monitor/cmd/setwallpaper
+    cd ~/go/src/github.com/xyproto/monitor
+    make
+    sudo make install
+
+On Ubuntu:
 
     sudo apt get update
     sudo apt get install libxcursor-dev libxmu-dev libx11-dev git golang-go
     go get -u github.com/xyproto/monitor/cmd/setwallpaper
     cd ~/go/src/github.com/xyproto/monitor
+    make
+    sudo make install
 
 Manually:
 
@@ -106,9 +118,13 @@ if err := monitor.SetWallpaper(imageFilename); err != nil {
 ## Build requirements
 
 * Go 1.11 or later.
-* A working C compiler (tested with GCC 8.2.1)
-* `libwayland-client.so` and header files available, for Wayland support.
-* `libX11.so` and header files available, for X11 support.
+* A working C compiler (tested with GCC 8.2.1).
+* Header files for Wayland and X.
+
+## Runtime requirements
+
+* `libwayland-client.so`, for Wayland support.
+* `libX11.so`, for X support.
 
 ## General info
 
