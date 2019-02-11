@@ -16,7 +16,7 @@ func SetSimpleTimedWallpaper(stw *SimpleTimedWallpaper, verbose bool) error {
 	loopWait := 5 * time.Second
 
 	if verbose {
-		fmt.Println("Using the Simple Timed Wallpaper format:", stw.Name)
+		fmt.Println("Using the Simple Timed Wallpaper format.")
 	}
 
 	eventloop := event.NewLoop()
@@ -156,7 +156,7 @@ func SetGnomeTimedWallpaper(gw *GnomeWallpaper, verbose bool) error {
 	loopWait := 5 * time.Second
 
 	if verbose {
-		fmt.Println("Using the GNOME Timed Wallpaper format:", gw.CollectionName)
+		fmt.Println("Using the GNOME Timed Wallpaper format")
 	}
 
 	eventloop := event.NewLoop()
