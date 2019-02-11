@@ -22,19 +22,16 @@ func SetSimpleTimedWallpaper(stw *SimpleTimedWallpaper, verbose bool) error {
 	eventloop := event.NewLoop()
 
 	for _, s := range stw.Statics {
-		// TODO: The duration of a static is until the next event, not 15 minutes!
-		window := 15 * time.Minute // s.Duration()
-		eventTime := s.At
-
-		// We have a static wallpaper element, with an image filename
 		if verbose {
-			fmt.Printf("Registering STATIC at %s for changing to %s\n", c(eventTime), s.Filename)
+			fmt.Printf("Registering STATIC event at %s for setting %s\n", c(s.At), s.Filename)
 		}
 
 		// Place values into variables, before enclosing it in the function below.
-		from := eventTime
+		from := s.At
+		window := stw.UntilNext(s.At) // duration until next event start
 		cooldown := window
-		//imageFilename := s.Filename
+
+		// Register a static event
 		eventloop.Add(event.New(from, window, cooldown, func() {
 
 			// Enclose variable
@@ -66,30 +63,23 @@ func SetSimpleTimedWallpaper(stw *SimpleTimedWallpaper, verbose bool) error {
 				return // return from anon func
 			}
 		}))
-
-		// Increase the variable that keeps track of the time
-		eventTime = eventTime.Add(window)
-
 	}
 	for _, t := range stw.Transitions {
-		window := t.Duration()
-		eventTime := t.From
-
-		// We have a GNOME wallpaper transition, with a duration, a type,
-		// and two image filenames.
-
 		if verbose {
-			fmt.Printf("Registering TRANSITION at %s for transitioning to %s.\n", c(eventTime), t.ToFilename)
+			fmt.Printf("Registering TRANSITION at %s for transitioning to %s.\n", c(t.From), t.ToFilename)
 		}
 
 		// cross fade steps
 		steps := 10
 
-		from := eventTime
+		// Set variables
+		from := t.From
+		window := t.Duration()
 		cooldown := window / time.Duration(steps)
-		upTo := eventTime.Add(window)
-		eventloop.Add(event.New(from, window, cooldown, event.ProgressWrapperInterval(from, upTo, loopWait, func(p float64) {
+		upTo := from.Add(window)
 
+		// Register a transition event
+		eventloop.Add(event.New(from, window, cooldown, event.ProgressWrapperInterval(from, upTo, loopWait, func(p float64) {
 			// Enclose variables
 			tType := t.Type
 			tFromFilename := t.FromFilename
@@ -103,10 +93,9 @@ func SetSimpleTimedWallpaper(stw *SimpleTimedWallpaper, verbose bool) error {
 				fmt.Println("TO FILENAME  ", tToFilename)
 				fmt.Printf("PERCENTAGE COMPLETE: %d%%\n", int(ratio*100))
 				fmt.Println("FROM", c(from))
+				fmt.Println("UP TO", c(upTo))
 				fmt.Println("WINDOW", window)
 				fmt.Println("COOLDOWN", cooldown)
-				fmt.Println("EVENT TIME", c(eventTime))
-				fmt.Println("UP TO", c(upTo))
 				fmt.Println("LOOP WAIT", loopWait)
 			}
 
@@ -139,10 +128,6 @@ func SetSimpleTimedWallpaper(stw *SimpleTimedWallpaper, verbose bool) error {
 				return // return from anon func
 			}
 		})))
-
-		// Increase the variable that keeps track of the time
-		eventTime = eventTime.Add(window)
-
 	}
 
 	// Endless loop! Will wait loopWait duration between each event loop cycle.
@@ -184,17 +169,16 @@ func SetGnomeTimedWallpaper(gw *GnomeWallpaper, verbose bool) error {
 			return err
 		}
 		if s, ok := eInterface.(GStatic); ok {
-			window := s.Duration()
-			// We have a static GNOME wallpaper element, with a duration and an image filename
-
 			if verbose {
-				fmt.Printf("Registering STATIC at %s for changing to %s\n", c(eventTime), s.Filename)
+				fmt.Printf("Registering STATIC at %s for setting %s\n", c(eventTime), s.Filename)
 			}
 
 			// Place values into variables, before enclosing it in the function below.
 			from := eventTime
+			window := s.Duration()
 			cooldown := window
-			//imageFilename := s.Filename
+
+			// Register a static event
 			eventloop.Add(event.New(from, window, cooldown, func() {
 
 				// Enclose variable
@@ -231,11 +215,6 @@ func SetGnomeTimedWallpaper(gw *GnomeWallpaper, verbose bool) error {
 			eventTime = eventTime.Add(window)
 
 		} else if t, ok := eInterface.(GTransition); ok {
-			window := t.Duration()
-
-			// We have a GNOME wallpaper transition, with a duration, a type,
-			// and two image filenames.
-
 			if verbose {
 				fmt.Printf("Registering TRANSITION at %s for transitioning to %s.\n", c(eventTime), t.ToFilename)
 			}
@@ -244,8 +223,11 @@ func SetGnomeTimedWallpaper(gw *GnomeWallpaper, verbose bool) error {
 			steps := 10
 
 			from := eventTime
+			window := t.Duration()
 			cooldown := window / time.Duration(steps)
 			upTo := eventTime.Add(window)
+
+			// Register a transition event
 			eventloop.Add(event.New(from, window, cooldown, event.ProgressWrapperInterval(from, upTo, loopWait, func(p float64) {
 
 				// Enclose variables

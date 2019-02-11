@@ -209,3 +209,24 @@ func ParseSTW(filename string) (*SimpleTimedWallpaper, error) {
 	//fmt.Println(stw)
 	return stw, nil
 }
+
+// UntilNext finds the duration until the next event starts
+func (stw *SimpleTimedWallpaper) UntilNext(et time.Time) time.Duration {
+	var startTimes []time.Time
+	for _, t := range stw.Transitions {
+		startTimes = append(startTimes, t.From)
+	}
+	for _, s := range stw.Statics {
+		startTimes = append(startTimes, s.At)
+	}
+	var mindiff = 24 * time.Hour
+	// OK, have all start times, now to find the ones that are both positive and smallest
+	for _, st := range startTimes {
+		diff := st.Sub(et)
+		if diff > 0 && diff < mindiff {
+			mindiff = diff
+			//fmt.Println("NEW SMALLEST DIFF FOR:", c(et), mindiff)
+		}
+	}
+	return mindiff
+}
