@@ -91,12 +91,11 @@ func SetTimedWallpaper(gw *GnomeWallpaper, verbose bool) error {
 					return // return from anon func
 				}
 			}))
+
 			// Increase the variable that keeps track of the time
-			//eventTime = event.ToToday(eventTime.Add(window))
 			eventTime = eventTime.Add(window)
 
 		} else if t, ok := eInterface.(GTransition); ok {
-			// Increase the variable that keeps track of the time
 			window := t.Duration()
 
 			// We have a GNOME wallpaper transition, with a duration, a type,
@@ -164,7 +163,7 @@ func SetTimedWallpaper(gw *GnomeWallpaper, verbose bool) error {
 				}
 			})))
 
-			//eventTime = event.ToToday(eventTime.Add(window))
+			// Increase the variable that keeps track of the time
 			eventTime = eventTime.Add(window)
 		} else {
 			// This should never happen, it would be an implementation error

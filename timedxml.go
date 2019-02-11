@@ -62,8 +62,11 @@ func Parse(XMLFilename string) (*GBackground, error) {
 	if err != nil {
 		return nil, err
 	}
+
 	var background GBackground
-	xml.Unmarshal(data, &background)
+	if err = xml.Unmarshal(data, &background); err != nil {
+		return nil, err
+	}
 
 	// After parsing the XML, find the order of the <static> and <transition>
 	// tags. This is needed later, when calculating the event times.

@@ -7,7 +7,6 @@ import (
 )
 
 type GnomeWallpaper struct {
-
 	// The name of the directory containing this XML file, if it's not
 	// "pixmaps", "images" or "contents". May use the parent of the parent.
 	CollectionName string
@@ -17,6 +16,10 @@ type GnomeWallpaper struct {
 
 	// Config contains the parsed XML. See: gnomexml.go
 	Config *GBackground
+}
+
+func NewGnomeWallpaper(name string, path string, config *GBackground) *GnomeWallpaper {
+	return &GnomeWallpaper{name, path, config}
 }
 
 // StartTime returns the timed wallpaper start time, as a time.Time
