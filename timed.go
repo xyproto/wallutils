@@ -112,12 +112,13 @@ func SetTimedWallpaper(gw *GnomeWallpaper, verbose bool) error {
 			from := eventTime
 			cooldown := window / time.Duration(steps)
 			upTo := eventTime.Add(window)
-			eventloop.Add(event.New(from, window, cooldown, event.ProgressWrapperInterval(from, upTo, loopWait, func(ratio float64) {
+			eventloop.Add(event.New(from, window, cooldown, event.ProgressWrapperInterval(from, upTo, loopWait, func(p float64) {
 
 				// Enclose variables
 				tType := t.Type
 				tFromFilename := t.FromFilename
 				tToFilename := t.ToFilename
+				ratio := p
 
 				if verbose {
 					fmt.Println("TRIGGERED TRANSITION EVENT")
