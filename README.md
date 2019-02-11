@@ -2,7 +2,7 @@
 
 * Detect monitor resolutions and set the desktop wallpaper, for any window manager (please file an issue if your window manager is not supported yet).
 * Supports GNOME timed wallpapers, and includes a utility that can run an event loop for changing them (also supports cross fading).
-* Introduces a new file format for timed wallpapers: The **Simple Timed Wallpaper** Format: [SPEC.md](cmd/xml2stw/SPEC.md).
+* Introduces a new file format for timed wallpapers: The **Simple Timed Wallpaper** format: [FORMAT SPEC](cmd/xml2stw/SPEC.md).
 
 ## Highlighted functions
 
@@ -23,6 +23,7 @@
   * `setwallpaper` can be used for setting a wallpaper (works both for X11 and Wayland).
   * `wayinfo` shows detailed information about the connected monitors, via Wayland.
   * `xinfo` shows detailed information about the connected monitors, via X11.
+  * `xml2stw` for converting GNOME timed wallpapers to the Simple Timed Wallpaper format.
 
 ## Example use of the `lsmon` utility
 
