@@ -49,7 +49,7 @@ On Arch Linux:
 
 Install `monitor` from AUR, or:
 
-    sudo pacman -Syu git go
+    sudo pacman -Syu git go libxcursor libxmu wayland xbitmaps xorgproto
     go get -u github.com/xyproto/monitor/cmd/setwallpaper
     cd ~/go/src/github.com/xyproto/monitor
     make
