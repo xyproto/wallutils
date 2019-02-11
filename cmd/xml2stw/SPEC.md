@@ -270,6 +270,8 @@ format: /usr/share/backgrounds/gnome/adwaita-%s.jpg
 @05:00-07:00: night .. morning
 ```
 
-### Final note
+### Final remarks
+
+The `xml2stw` utility can be used for converting GNOME timed XML files to the Simple Timed Wallpaper format. It was used for converting the examples above.
 
 This is a draft. Pull requests are welcome: https://github.com/xyproto/monitor/pulls
