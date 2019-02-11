@@ -31,7 +31,7 @@ func main() {
 	w := tabwriter.NewWriter(os.Stdout, 0, 0, 10, ' ', tabwriter.AlignRight)
 
 	// Find all wallpapers
-	wallpapers, gnomeWallpapers := monitor.FindWallpapers()
+	wallpapers, gnomeWallpapers, simpleTimedWallpapers := monitor.FindWallpapers()
 	var collectionNames []string
 
 	// Output all wallpaper collection names and paths (these are directories
@@ -40,24 +40,36 @@ func main() {
 		if wp.PartOfCollection {
 			name := wp.CollectionName
 			dir := filepath.Dir(wp.Path) + "/"
-			if !has(collectionNames, name) {
+			if alsoPrintPath || !has(collectionNames, name) {
 				fmt.Fprintf(w, "%s\t(%s)\t\t%s\n", name, "wallpaper collection", dir)
 				collectionNames = append(collectionNames, wp.CollectionName)
 			}
 		}
 	}
 
-	// Output all timed wallpaper names and paths.
 	// Timed wallpapers is a collection in the sense that it may point to
 	// several wallpaper images.
-	for _, gw := range gnomeWallpapers {
-		name := gw.CollectionName
-		path := gw.Path
-		if !has(collectionNames, name) {
-			fmt.Fprintf(w, "%s\t(%s)\t\t%s\n", name, "timed wallpaper", path)
+
+	// Output all Simple Timed Wallpaper names and paths.
+	for _, stw := range simpleTimedWallpapers {
+		name := stw.Name
+		path := stw.Path
+		if alsoPrintPath || !has(collectionNames, name) {
+			fmt.Fprintf(w, "%s\t(%s)\t\t%s\n", name, "simple timed wallpaper", path)
 			collectionNames = append(collectionNames, name)
 		}
 	}
+
+	// Output all GNOME timed wallpaper names and paths.
+	for _, gw := range gnomeWallpapers {
+		name := gw.CollectionName
+		path := gw.Path
+		if alsoPrintPath || !has(collectionNames, name) {
+			fmt.Fprintf(w, "%s\t(%s)\t\t%s\n", name, "GNOME timed wallpaper", path)
+			collectionNames = append(collectionNames, name)
+		}
+	}
+
 
 	// Write the output to stdout
 	w.Flush()
