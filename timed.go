@@ -30,13 +30,10 @@ func SetSimpleTimedWallpaper(stw *SimpleTimedWallpaper, verbose bool) error {
 		from := s.At
 		window := stw.UntilNext(s.At) // duration until next event start
 		cooldown := window
+		imageFilename := s.Filename
 
 		// Register a static event
 		eventloop.Add(event.New(from, window, cooldown, func() {
-
-			// Enclose variable
-			imageFilename := s.Filename
-
 			if verbose {
 				fmt.Println("TRIGGERED STATIC WALLPAPER EVENT")
 				fmt.Println("FROM", c(from))
@@ -77,15 +74,12 @@ func SetSimpleTimedWallpaper(stw *SimpleTimedWallpaper, verbose bool) error {
 		window := t.Duration()
 		cooldown := window / time.Duration(steps)
 		upTo := from.Add(window)
+		tType := t.Type
+		tFromFilename := t.FromFilename
+		tToFilename := t.ToFilename
 
 		// Register a transition event
-		eventloop.Add(event.New(from, window, cooldown, event.ProgressWrapperInterval(from, upTo, loopWait, func(p float64) {
-			// Enclose variables
-			tType := t.Type
-			tFromFilename := t.FromFilename
-			tToFilename := t.ToFilename
-			ratio := p
-
+		eventloop.Add(event.New(from, window, cooldown, event.ProgressWrapperInterval(from, upTo, loopWait, func(ratio float64) {
 			if verbose {
 				fmt.Println("TRIGGERED TRANSITION EVENT")
 				fmt.Println("TYPE         ", tType)
@@ -177,13 +171,10 @@ func SetGnomeTimedWallpaper(gw *GnomeWallpaper, verbose bool) error {
 			from := eventTime
 			window := s.Duration()
 			cooldown := window
+			imageFilename := s.Filename
 
 			// Register a static event
 			eventloop.Add(event.New(from, window, cooldown, func() {
-
-				// Enclose variable
-				imageFilename := s.Filename
-
 				if verbose {
 					fmt.Println("TRIGGERED STATIC WALLPAPER EVENT")
 					fmt.Println("FROM", c(from))
@@ -226,16 +217,12 @@ func SetGnomeTimedWallpaper(gw *GnomeWallpaper, verbose bool) error {
 			window := t.Duration()
 			cooldown := window / time.Duration(steps)
 			upTo := eventTime.Add(window)
+			tType := t.Type
+			tFromFilename := t.FromFilename
+			tToFilename := t.ToFilename
 
 			// Register a transition event
-			eventloop.Add(event.New(from, window, cooldown, event.ProgressWrapperInterval(from, upTo, loopWait, func(p float64) {
-
-				// Enclose variables
-				tType := t.Type
-				tFromFilename := t.FromFilename
-				tToFilename := t.ToFilename
-				ratio := p
-
+			eventloop.Add(event.New(from, window, cooldown, event.ProgressWrapperInterval(from, upTo, loopWait, func(ratio float64) {
 				if verbose {
 					fmt.Println("TRIGGERED TRANSITION EVENT")
 					fmt.Println("TYPE         ", tType)
