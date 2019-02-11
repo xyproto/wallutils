@@ -1,6 +1,8 @@
 # Monitor [![Build Status](https://travis-ci.org/xyproto/monitor.svg?branch=master)](https://travis-ci.org/xyproto/monitor) [![GoDoc](https://godoc.org/github.com/xyproto/monitor?status.svg)](http://godoc.org/github.com/xyproto/monitor) [![License](http://img.shields.io/badge/license-MIT-green.svg?style=flat)](https://raw.githubusercontent.com/xyproto/monitor/master/LICENSE) [![Go Report Card](https://goreportcard.com/badge/github.com/xyproto/monitor)](https://goreportcard.com/report/github.com/xyproto/monitor)
 
-Detect monitor resolutions and set the desktop wallpaper, for any windowmanager (please file an issue if your windowmanager is not supported yet). Also supports timed wallpapers.
+* Detect monitor resolutions and set the desktop wallpaper, for any window manager (please file an issue if your window manager is not supported yet).
+* Supports GNOME timed wallpapers, and includes a utility that can run an event loop for changing them (also supports cross fading).
+* Introduces a new file format for timed wallpapers: The **Simple Timed Wallpaper** Format: [SPEC.md](cmd/xml2stw/SPEC.md).
 
 ## Highlighted functions
 
@@ -54,10 +56,10 @@ Manually:
     # clone the repository
     git clone https://github.com/xyproto/monitor
 
-    # build and install the setmonitor command
-    cd monitor/cmd/setmonitor
+    # build and install the setwallpaper command
+    cd monitor/cmd/setwallpaper
     go build
-    install -Dm755 setmonitor /usr/bin/setmonitor
+    install -Dm755 setwallpaper /usr/bin/setwallpaper
 
 ## Example use of `setwallpaper`
 
