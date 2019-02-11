@@ -219,13 +219,20 @@ func (stw *SimpleTimedWallpaper) UntilNext(et time.Time) time.Duration {
 	for _, s := range stw.Statics {
 		startTimes = append(startTimes, s.At)
 	}
-	var mindiff = 24 * time.Hour
+	h24 := 24 * time.Hour
+	mindiff := h24
 	// OK, have all start times, now to find the ones that are both positive and smallest
 	for _, st := range startTimes {
 		diff := st.Sub(et)
 		if diff > 0 && diff < mindiff {
 			mindiff = diff
 			//fmt.Println("NEW SMALLEST DIFF FOR:", c(et), mindiff)
+		} else if diff < 0 {
+			wrapDiff := h24 + st.Sub(et)
+			if wrapDiff > 0 && wrapDiff < mindiff {
+				mindiff = wrapDiff
+				//fmt.Println("NEW SMALLEST DIFF FOR:", c(et), mindiff)
+			}
 		}
 	}
 	return mindiff
