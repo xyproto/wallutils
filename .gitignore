@@ -10,3 +10,4 @@ cmd/lswallpaper/lswallpaper
 cmd/setcollection/setcollection
 cmd/settimed/settimed
 cmd/lstimed/lstimed
+cmd/xml2stw/xml2stw
