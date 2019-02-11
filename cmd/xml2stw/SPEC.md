@@ -269,3 +269,7 @@ format: /usr/share/backgrounds/gnome/adwaita-%s.jpg
 @00:00: night
 @05:00-07:00: night .. morning
 ```
+
+### Final note
+
+This is a draft. Pull requests are welcome: https://github.com/xyproto/monitor/pulls
