@@ -84,7 +84,7 @@ func main() {
 
 	filename := os.Args[1]
 
-	gb, err := monitor.Parse(filename)
+	gb, err := monitor.ParseXML(filename)
 	if err != nil {
 		fmt.Fprintf(os.Stderr, "Could not parse %s as XML: error: %s\n", filename, err)
 		os.Exit(1)

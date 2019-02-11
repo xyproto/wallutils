@@ -22,8 +22,9 @@ const (
 var (
 	numCPU = runtime.NumCPU()
 
-	images          sync.Map // stores the full path -> *Wallpaper struct, for png + jpeg files
-	gnomeWallpapers sync.Map // stores the full path -> *GnomeWallpaper struct, for xml files
+	images                sync.Map // stores the full path -> *Wallpaper struct, for png + jpeg files
+	gnomeWallpapers       sync.Map // stores the full path -> *GnomeWallpaper struct, for xml files
+	simpleTimedWallpapers sync.Map // stores the full path -> *SimpleTimedWallpaper struct, for stw files
 
 	searchComplete bool // will only search once, until the search is reset
 )
@@ -115,8 +116,14 @@ func visit(path string, f os.FileInfo, err error) error {
 		// TODO: Consider supporting XPM and/or XBM wallpapers in the future
 		//fmt.Println("X bitmap", path)
 		return nil
+	case ".stw": // Simple Timed Wallpaper
+		stw, err := ParseSTW(path)
+		if err != nil {
+			return err
+		}
+		simpleTimedWallpapers.Store(path, stw)
 	case ".xml":
-		gb, err := Parse(path)
+		gb, err := ParseXML(path)
 		if err != nil {
 			return err
 		}
@@ -125,7 +132,6 @@ func visit(path string, f os.FileInfo, err error) error {
 		gw := &GnomeWallpaper{name, path, gb}
 		gnomeWallpapers.Store(path, gw)
 	}
-	//fmt.Println("@" + path)
 	return nil
 }
 
@@ -176,23 +182,41 @@ func foundGnomeWallpapers() []*GnomeWallpaper {
 	return collected
 }
 
+func foundSimpleTimedWallpapers() []*SimpleTimedWallpaper {
+	var collected []*SimpleTimedWallpaper
+	simpleTimedWallpapers.Range(func(_, value interface{}) bool {
+		stw, ok := value.(*SimpleTimedWallpaper)
+		if !ok {
+			// internal error
+			panic("a value in the simpleTimedWallpapers map is not a pointer to a SimpleTimedWallpaper struct")
+		}
+		collected = append(collected, stw)
+		return true
+	})
+	// Now sort the collected Simple Timed Wallpapers by the collection name
+	sort.Slice(collected, func(i, j int) bool {
+		return collected[i].Name < collected[j].Name
+	})
+	return collected
+}
+
 // SearchPaths will concurrently collect all wallpapers that are large enough.
 // Also parse Gnome Background XML files.
-func SearchPaths(paths []string) ([]*Wallpaper, []*GnomeWallpaper) {
+func SearchPaths(paths []string) ([]*Wallpaper, []*GnomeWallpaper, []*SimpleTimedWallpaper) {
 	for _, path := range paths {
 		searchPath(path)
 	}
-	return foundWallpapers(), foundGnomeWallpapers()
+	return foundWallpapers(), foundGnomeWallpapers(), foundSimpleTimedWallpapers()
 }
 
 // FindWallpapers will collect and parse wallpapers and GNOME background XML files in all default wallpaper directories
-func FindWallpapers() ([]*Wallpaper, []*GnomeWallpaper) {
+func FindWallpapers() ([]*Wallpaper, []*GnomeWallpaper, []*SimpleTimedWallpaper) {
 	return SearchPaths(DefaultWallpaperDirectories)
 }
 
 // FindCollectionNames gathers all the names of all available wallpaper packs or GNOME timed backgrounds
 func FindCollectionNames() []string {
-	wallpapers, gnomeWallpapers := FindWallpapers()
+	wallpapers, gnomeWallpapers, simpleTimedWallpapers := FindWallpapers()
 	var collectionNames []string
 	for _, wp := range wallpapers {
 		if wp.PartOfCollection {
@@ -201,6 +225,9 @@ func FindCollectionNames() []string {
 	}
 	for _, gw := range gnomeWallpapers {
 		collectionNames = append(collectionNames, gw.CollectionName)
+	}
+	for _, stw := range simpleTimedWallpapers {
+		collectionNames = append(collectionNames, stw.Name)
 	}
 	return unique(collectionNames)
 }

@@ -4,8 +4,8 @@ import (
 	"fmt"
 )
 
-func ExampleParse() {
-	b, err := Parse("testdata/example1.xml")
+func ExampleParseXML() {
+	b, err := ParseXML("testdata/example1.xml")
 	if err != nil {
 		panic(err)
 	}
@@ -14,7 +14,7 @@ func ExampleParse() {
 
 	// ---
 
-	b, err = Parse("testdata/example2.xml")
+	b, err = ParseXML("testdata/example2.xml")
 	if err != nil {
 		panic(err)
 	}
@@ -22,7 +22,7 @@ func ExampleParse() {
 
 	// ---
 
-	b, err = Parse("testdata/adwaita-timed.xml")
+	b, err = ParseXML("testdata/adwaita-timed.xml")
 	if err != nil {
 		panic(err)
 	}

@@ -57,8 +57,8 @@ func (t *GTransition) Duration() time.Duration {
 	return time.Duration(t.Seconds) * time.Second
 }
 
-func Parse(XMLFilename string) (*GBackground, error) {
-	data, err := ioutil.ReadFile(XMLFilename)
+func ParseXML(filename string) (*GBackground, error) {
+	data, err := ioutil.ReadFile(filename)
 	if err != nil {
 		return nil, err
 	}
