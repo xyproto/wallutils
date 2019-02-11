@@ -17,6 +17,7 @@ all:
 	(cd cmd/setcollection; go build)
 	(cd cmd/lstimed; go build)
 	(cd cmd/settimed; go build)
+	(cd cmd/xml2stw; go build)
 
 install:
 	install -Dm755 -t "$(DESTDIR)$(PREFIX)/bin" cmd/getdpi/getdpi
@@ -31,6 +32,7 @@ install:
 	install -Dm755 -t "$(DESTDIR)$(PREFIX)/bin" cmd/setcollection/setcollection
 	install -Dm755 -t "$(DESTDIR)$(PREFIX)/bin" cmd/settimed/settimed
 	install -Dm755 -t "$(DESTDIR)$(PREFIX)/bin" cmd/lstimed/lstimed
+	install -Dm755 -t "$(DESTDIR)$(PREFIX)/bin" cmd/xml2stw/xml2stw
 
 clean:
 	(cd cmd/getdpi; go clean)
@@ -45,4 +47,5 @@ clean:
 	(cd cmd/setcollection; go clean)
 	(cd cmd/lstimed; go clean)
 	(cd cmd/settimed; go clean)
+	(cd cmd/xml2stw; go clean)
 	go clean
