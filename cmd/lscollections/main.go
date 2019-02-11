@@ -70,7 +70,6 @@ func main() {
 		}
 	}
 
-
 	// Write the output to stdout
 	w.Flush()
 }
