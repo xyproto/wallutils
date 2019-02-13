@@ -5,28 +5,24 @@ import (
 )
 
 func ExampleParseXML() {
-	b, err := ParseXML("testdata/example1.xml")
+	gtw, err := ParseXML("testdata/example1.xml")
 	if err != nil {
 		panic(err)
 	}
-	fmt.Println(b.StartTime.Year)
-	fmt.Println(b.Transitions[0].ToFilename)
+	fmt.Println(gtw.Config.StartTime.Year)
+	fmt.Println(gtw.Config.Transitions[0].ToFilename)
 
-	// ---
-
-	b, err = ParseXML("testdata/example2.xml")
+	gtw, err = ParseXML("testdata/example2.xml")
 	if err != nil {
 		panic(err)
 	}
-	fmt.Println(b.StartTime.Year)
+	fmt.Println(gtw.Config.StartTime.Year)
 
-	// ---
-
-	b, err = ParseXML("testdata/adwaita-timed.xml")
+	gtw, err = ParseXML("testdata/adwaita-timed.xml")
 	if err != nil {
 		panic(err)
 	}
-	fmt.Println(b.StartTime.Year)
+	fmt.Println(gtw.Config.StartTime.Year)
 
 	// Output:
 	// 2009

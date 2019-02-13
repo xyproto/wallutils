@@ -16,6 +16,7 @@ type SimpleTimedWallpaper struct {
 	Path        string // not part of the file data, but handy when parsing
 	Statics     []*Static
 	Transitions []*Transition
+	LoopWait    time.Duration // how long the main event loop should sleep
 }
 
 type Static struct {
@@ -79,7 +80,7 @@ func (stw *SimpleTimedWallpaper) String() string {
 func NewSimpleTimedWallpaper(version, name, format string) *SimpleTimedWallpaper {
 	statics := make([]*Static, 0)
 	transitions := make([]*Transition, 0)
-	return &SimpleTimedWallpaper{version, name, format, "", statics, transitions}
+	return &SimpleTimedWallpaper{version, name, format, "", statics, transitions, defaultLoopTime}
 }
 
 func (stw *SimpleTimedWallpaper) AddStatic(at time.Time, filename string) {
@@ -111,13 +112,18 @@ func (stw *SimpleTimedWallpaper) AddTransition(from, upto time.Time, fromFilenam
 	}
 	stw.Transitions = append(stw.Transitions, &t)
 }
-
 func ParseSTW(filename string) (*SimpleTimedWallpaper, error) {
 	data, err := ioutil.ReadFile(filename)
 	if err != nil {
 		return nil, err
 	}
-	//fmt.Println("PARSE STW")
+	return DataToSimple(filename, data)
+}
+
+// DataToSimple converts from the contents of a Simple Timed Wallpaper file to
+// a SimpleTimedWallpaper structs. The given path is used in the error messages
+// and for setting stw.Path.
+func DataToSimple(path string, data []byte) (*SimpleTimedWallpaper, error) {
 	var ts []*Transition
 	var ss []*Static
 	parsed := make(map[string]string)
@@ -129,18 +135,18 @@ func ParseSTW(filename string) (*SimpleTimedWallpaper, error) {
 		if strings.HasPrefix(trimmed, "@") {
 			if len(trimmed) > 6 && (trimmed[6] == ' ' || trimmed[6] == '-') && (trimmed[7] != ':') {
 				if strings.Count(trimmed, "-") < 1 {
-					return nil, fmt.Errorf("could not parse %s (no dash), line %d: %s", filename, lineCount, trimmed)
+					return nil, fmt.Errorf("could not parse %s (no dash), line %d: %s", path, lineCount, trimmed)
 				}
 				fields := strings.SplitN(trimmed[1:], "-", 2)
 				time1 := strings.TrimSpace(fields[0])
 				if strings.Count(fields[1], ":") < 2 {
-					return nil, fmt.Errorf("could not parse %s (missing colon), line %d: %s", filename, lineCount, trimmed)
+					return nil, fmt.Errorf("could not parse %s (missing colon), line %d: %s", path, lineCount, trimmed)
 				}
 				fields = strings.SplitN(fields[1], ":", 3)
 				time2 := strings.TrimSpace(fields[0] + ":" + fields[1])
 				filenames := fields[2]
 				if !strings.Contains(filenames, "..") {
-					return nil, fmt.Errorf("could not parse %s (missing \"..\"), line %d: %s", filename, lineCount, trimmed)
+					return nil, fmt.Errorf("could not parse %s (missing \"..\"), line %d: %s", path, lineCount, trimmed)
 				}
 				fields = strings.SplitN(filenames, "..", 2)
 				filename1 := strings.TrimSpace(fields[0])
@@ -154,16 +160,16 @@ func ParseSTW(filename string) (*SimpleTimedWallpaper, error) {
 				//fmt.Println("TRANSITION", time1, "|", time2, "|", filename1, "|", filename2, "|", transitionType)
 				t1, err := time.Parse("15:04", time1)
 				if err != nil {
-					return nil, fmt.Errorf("could not parse %s (time), line %d: %s", filename, lineCount, trimmed)
+					return nil, fmt.Errorf("could not parse %s (time), line %d: %s", path, lineCount, trimmed)
 				}
 				t2, err := time.Parse("15:04", time2)
 				if err != nil {
-					return nil, fmt.Errorf("could not parse %s (time), line %d: %s", filename, lineCount, trimmed)
+					return nil, fmt.Errorf("could not parse %s (time), line %d: %s", path, lineCount, trimmed)
 				}
 				ts = append(ts, &Transition{t1, t2, filename1, filename2, transitionType})
 			} else {
 				if strings.Count(trimmed, ":") < 2 {
-					return nil, fmt.Errorf("could not parse %s (missing colon), line %d: %s", filename, lineCount, trimmed)
+					return nil, fmt.Errorf("could not parse %s (missing colon), line %d: %s", path, lineCount, trimmed)
 				}
 				fields := strings.SplitN(trimmed[1:], ":", 3)
 				time1 := strings.TrimSpace(fields[0] + ":" + fields[1])
@@ -171,33 +177,33 @@ func ParseSTW(filename string) (*SimpleTimedWallpaper, error) {
 				//fmt.Println("STATIC", time1, "|", filename)
 				t1, err := time.Parse("15:04", time1)
 				if err != nil {
-					return nil, fmt.Errorf("could not parse %s (time), line %d: %s", filename, lineCount, trimmed)
+					return nil, fmt.Errorf("could not parse %s (time), line %d: %s", path, lineCount, trimmed)
 				}
 				ss = append(ss, &Static{t1, filename})
 			}
 		} else if strings.Contains(trimmed, ":") {
 			//fmt.Println("FIELD", trimmed)
 			if strings.Count(trimmed, ":") < 1 {
-				return nil, fmt.Errorf("could not parse %s (missing colon), line %d: %s", filename, lineCount, trimmed)
+				return nil, fmt.Errorf("could not parse %s (missing colon), line %d: %s", path, lineCount, trimmed)
 			}
 			fields := strings.SplitN(trimmed, ":", 2)
 			key := strings.TrimSpace(fields[0])
 			value := strings.TrimSpace(fields[1])
 			parsed[key] = value
 		} else {
-			return nil, fmt.Errorf("could not parse %s (invalid syntax), line %d: %s", filename, lineCount, trimmed)
+			return nil, fmt.Errorf("could not parse %s (invalid syntax), line %d: %s", path, lineCount, trimmed)
 		}
 	}
 	version, ok := parsed["stw"]
 	if !ok {
-		return nil, fmt.Errorf("could not find stw field in %s", filename)
+		return nil, fmt.Errorf("could not find stw field in %s", path)
 	}
 	name, _ := parsed["name"]     // optional
 	format, _ := parsed["format"] // optional
 	//pacman, _ := parsed["ILoveCandy"] // optional
 
 	stw := NewSimpleTimedWallpaper(version, name, format)
-	stw.Path = filename
+	stw.Path = path
 	for _, t := range ts {
 		// Adding transitions in a way that make sure the format string is used when interpreting the filenames
 		stw.AddTransition(t.From, t.UpTo, t.FromFilename, t.ToFilename, t.Type)
@@ -208,32 +214,4 @@ func ParseSTW(filename string) (*SimpleTimedWallpaper, error) {
 	}
 	//fmt.Println(stw)
 	return stw, nil
-}
-
-// UntilNext finds the duration until the next event starts
-func (stw *SimpleTimedWallpaper) UntilNext(et time.Time) time.Duration {
-	var startTimes []time.Time
-	for _, t := range stw.Transitions {
-		startTimes = append(startTimes, t.From)
-	}
-	for _, s := range stw.Statics {
-		startTimes = append(startTimes, s.At)
-	}
-	h24 := 24 * time.Hour
-	mindiff := h24
-	// OK, have all start times, now to find the ones that are both positive and smallest
-	for _, st := range startTimes {
-		diff := st.Sub(et)
-		if diff > 0 && diff < mindiff {
-			mindiff = diff
-			//fmt.Println("NEW SMALLEST DIFF FOR:", c(et), mindiff)
-		} else if diff < 0 {
-			wrapDiff := h24 + st.Sub(et)
-			if wrapDiff > 0 && wrapDiff < mindiff {
-				mindiff = wrapDiff
-				//fmt.Println("NEW SMALLEST DIFF FOR:", c(et), mindiff)
-			}
-		}
-	}
-	return mindiff
 }

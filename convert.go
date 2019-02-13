@@ -2,26 +2,35 @@ package monitor
 
 import (
 	"fmt"
-	"path/filepath"
 	"strings"
 )
 
 const simpleTimedWallpaperFormatVersion = "1.0"
 
-func GnomeXMLToSimpleTimed(filename string) (string, error) {
-	var sb strings.Builder
+// GnomeToSimple converts a Gnome Timed Wallpaper to a Simple Timed Wallpaper
+func GnomeToSimple(gw *GnomeTimedWallpaper) (*SimpleTimedWallpaper, error) {
 
-	gb, err := ParseXML(filename)
+	// TODO: Convert from struct to struct, without excercising the serializer and the parser
+
+	// Convert the given struct to the string contents of a SimpleTimedWallpaper file
+	s, err := GnomeToSimpleString(gw)
 	if err != nil {
-		return "", fmt.Errorf("Could not parse %s as XML: error: %s", filename, err)
+		return nil, err
 	}
+	return DataToSimple(gw.Path, []byte(s))
+}
+
+// GnomeToSimpleString converts a Gnome Timed Wallpaper to a string
+// representing a Simple Timed Wallpaper. The Path field in the given
+// struct is not included in the output string.
+func GnomeToSimpleString(gw *GnomeTimedWallpaper) (string, error) {
+	//filename := gw.Path
+	name := gw.Name
+
+	var sb strings.Builder
 
 	// Output the version of the format
 	sb.WriteString("stw: " + simpleTimedWallpaperFormatVersion + "\n")
-
-	// Use the name of the file, without the extension, as the name of this timed wallpaper
-	name := filepath.Base(filename[:len(filename)-len(filepath.Ext(filename))])
-	gw := NewGnomeWallpaper(name, filename, gb)
 
 	// Output the name of the timed wallpaper
 	sb.WriteString("name: " + name + "\n")
@@ -92,4 +101,14 @@ func GnomeXMLToSimpleTimed(filename string) (string, error) {
 	}
 
 	return strings.TrimSpace(sb.String()), nil
+}
+
+// GnomeFileToSimpleString reads and parses an XML file, then returns a string
+// representing the contents of a Simple Timed Wallpaper file.
+func GnomeFileToSimpleString(filename string) (string, error) {
+	gw, err := ParseXML(filename)
+	if err != nil {
+		return "", fmt.Errorf("Could not parse %s: %s", filename, err)
+	}
+	return GnomeToSimpleString(gw)
 }

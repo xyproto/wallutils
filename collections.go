@@ -9,6 +9,7 @@ import (
 	"runtime"
 	"sort"
 	"sync"
+	"time"
 )
 
 const (
@@ -17,33 +18,47 @@ const (
 	minimumHeight = 480
 )
 
-// TODO: Move these global variables into structs
+var (
+	DefaultWallpaperDirectories = []string{"/usr/share/pixmaps", "/usr/share/wallpapers", "/usr/share/backgrounds", "/usr/local/share/pixmaps", "/usr/local/share/wallpapers", "/usr/local/share/backgrounds", "/usr/share/archlinux"}
+)
+
+type SearchResults struct {
+	wallpapers                  sync.Map                // stores the full path -> *Wallpaper struct, for png + jpeg files
+	gnomeWallpapers             sync.Map                // stores the full path -> *GnomeTimedWallpaper struct, for xml files
+	simpleTimedWallpapers       sync.Map                // stores the full path -> *SimpleTimedWallpaper struct, for stw files
+	sortedWallpapers            []*Wallpaper            // holds sorted wallpapers
+	sortedGnomeTimedWallpapers  []*GnomeTimedWallpaper  // holds sorted Gnome Timed Wallpapers
+	sortedSimpleTimedWallpapers []*SimpleTimedWallpaper // holds sorted Simple Timed Wallpapers
+}
 
 var (
 	numCPU = runtime.NumCPU()
 
-	images                sync.Map // stores the full path -> *Wallpaper struct, for png + jpeg files
-	gnomeWallpapers       sync.Map // stores the full path -> *GnomeWallpaper struct, for xml files
-	simpleTimedWallpapers sync.Map // stores the full path -> *SimpleTimedWallpaper struct, for stw files
+	defaultLoopTime = 5 * time.Second
 
-	searchComplete bool // will only search once, until the search is reset
+	// Global search results struct, to be filled by the visit function that is passed to the powerwalk.WalkLimit function
+	sr *SearchResults
 )
 
 // Reset the search, prepare to search again
-func ResetSearch() {
-	images = sync.Map{}
-	gnomeWallpapers = sync.Map{}
-	simpleTimedWallpapers = sync.Map{}
-	searchComplete = false
+func NewSearchResults() *SearchResults {
+	return &SearchResults{
+		wallpapers:                  sync.Map{},
+		gnomeWallpapers:             sync.Map{},
+		simpleTimedWallpapers:       sync.Map{},
+		sortedWallpapers:            []*Wallpaper{},
+		sortedGnomeTimedWallpapers:  []*GnomeTimedWallpaper{},
+		sortedSimpleTimedWallpapers: []*SimpleTimedWallpaper{},
+	}
 }
 
+// collectionName will strip away the last part of the path, until the remaining last word is no "pixmaps", "contents", "images", "backgrounds", or "wallpapers".
+// This is usually the name of the wallpaper collection.
 func collectionName(path string) string {
 	dir := filepath.Dir(path)
-	// Strip away the latest directory of the path until it is not a generic
-	// folder name, but may be the name of the wallpaper collection.
 	for {
 		switch filepath.Base(dir) {
-		case "pixmaps", "contents", "images", "wallpapers":
+		case "pixmaps", "contents", "images", "wallpapers", "backgrounds":
 			dir = filepath.Dir(dir)
 		default:
 			return filepath.Base(dir)
@@ -58,6 +73,7 @@ func partOfCollection(filename string) bool {
 	return err == nil
 }
 
+// pngSize returns the with and height of a PNG file, without reading the entire file
 func pngSize(path string) (uint, uint, error) {
 	pngFile, err := os.Open(path)
 	if err != nil {
@@ -70,6 +86,7 @@ func pngSize(path string) (uint, uint, error) {
 	return uint(ic.Width), uint(ic.Height), nil
 }
 
+// jpegSize returns the with and height of a JPEG file, without reading the entire file
 func jpegSize(path string) (uint, uint, error) {
 	jpegFile, err := os.Open(path)
 	if err != nil {
@@ -82,12 +99,13 @@ func jpegSize(path string) (uint, uint, error) {
 	return uint(ic.Width), uint(ic.Height), nil
 }
 
+// largeEnough checks if the given size is equal to or larger than the global minimum size
 func largeEnough(width, height uint) bool {
 	return (width >= minimumWidth) && (height >= minimumHeight)
 }
 
-// visit is called per file that is found, and will be called concurrently
-func visit(path string, f os.FileInfo, err error) error {
+// visit is called per file that is found, and will be called concurrently by powerwalk.WalkLimit
+func (sr *SearchResults) visit(path string, f os.FileInfo, err error) error {
 	switch filepath.Ext(path) {
 	case ".png":
 		width, height, err := pngSize(path)
@@ -98,7 +116,7 @@ func visit(path string, f os.FileInfo, err error) error {
 			return nil
 		}
 		wp := &Wallpaper{collectionName(path), path, width, height, partOfCollection(path)}
-		images.Store(path, wp)
+		sr.wallpapers.Store(path, wp)
 	case ".jpg", ".jpeg":
 		width, height, err := jpegSize(path)
 		if err != nil {
@@ -108,7 +126,7 @@ func visit(path string, f os.FileInfo, err error) error {
 			return nil
 		}
 		wp := &Wallpaper{collectionName(path), path, width, height, partOfCollection(path)}
-		images.Store(path, wp)
+		sr.wallpapers.Store(path, wp)
 	case ".svg":
 		// TODO: Consider supporting SVG wallpapers in the future
 		return nil
@@ -120,35 +138,25 @@ func visit(path string, f os.FileInfo, err error) error {
 		if err != nil {
 			return err
 		}
-		simpleTimedWallpapers.Store(path, stw)
+		sr.simpleTimedWallpapers.Store(path, stw)
 	case ".xml":
-		gb, err := ParseXML(path)
+		gw, err := ParseXML(path)
 		if err != nil {
 			return err
 		}
-		// Use the name of the XML, before the filename extension, as the collection name
-		name := firstname(filepath.Base(path))
-		gw := &GnomeWallpaper{name, path, gb}
-		gnomeWallpapers.Store(path, gw)
+		sr.gnomeWallpapers.Store(path, gw)
 	}
 	return nil
 }
 
-func searchPath(path string) {
-	err := powerwalk.WalkLimit(path, visit, numCPU)
-	if err != nil {
-		panic(err)
-	}
-	searchComplete = true
-}
-
-func foundWallpapers() []*Wallpaper {
+// sortWallpapers sorts the found wallpapers
+func (sr *SearchResults) sortWallpapers() {
 	var collected []*Wallpaper
-	images.Range(func(_, value interface{}) bool {
+	sr.wallpapers.Range(func(_, value interface{}) bool {
 		wp, ok := value.(*Wallpaper)
 		if !ok {
 			// internal error
-			panic("a value in the images map is not a pointer to a Wallpaper struct")
+			panic("a value in the wallpapers map is not a pointer to a Wallpaper struct")
 		}
 		collected = append(collected, wp)
 		return true
@@ -160,30 +168,32 @@ func foundWallpapers() []*Wallpaper {
 		}
 		return collected[i].CollectionName < collected[j].CollectionName
 	})
-	return collected
+	sr.sortedWallpapers = collected
 }
 
-func foundGnomeWallpapers() []*GnomeWallpaper {
-	var collected []*GnomeWallpaper
-	gnomeWallpapers.Range(func(_, value interface{}) bool {
-		gw, ok := value.(*GnomeWallpaper)
+// sortGnomeTimedWallpapers sorts the Found gnome Timed Wallpapers
+func (sr *SearchResults) sortGnomeTimedWallpapers() {
+	var collected []*GnomeTimedWallpaper
+	sr.gnomeWallpapers.Range(func(_, value interface{}) bool {
+		gw, ok := value.(*GnomeTimedWallpaper)
 		if !ok {
 			// internal error
-			panic("a value in the gnomeWallpapers map is not a pointer to a GnomeWallpaper struct")
+			panic("a value in the gnomeWallpapers map is not a pointer to a GnomeTimedWallpaper struct")
 		}
 		collected = append(collected, gw)
 		return true
 	})
 	// Now sort the collected GNOME wallpapers by the collection name
 	sort.Slice(collected, func(i, j int) bool {
-		return collected[i].CollectionName < collected[j].CollectionName
+		return collected[i].Name < collected[j].Name
 	})
-	return collected
+	sr.sortedGnomeTimedWallpapers = collected
 }
 
-func foundSimpleTimedWallpapers() []*SimpleTimedWallpaper {
+// sortSimpleTimedWallpapers sorts the found Simple Timed Wallpapers
+func (sr *SearchResults) sortSimpleTimedWallpapers() {
 	var collected []*SimpleTimedWallpaper
-	simpleTimedWallpapers.Range(func(_, value interface{}) bool {
+	sr.simpleTimedWallpapers.Range(func(_, value interface{}) bool {
 		stw, ok := value.(*SimpleTimedWallpaper)
 		if !ok {
 			// internal error
@@ -196,37 +206,93 @@ func foundSimpleTimedWallpapers() []*SimpleTimedWallpaper {
 	sort.Slice(collected, func(i, j int) bool {
 		return collected[i].Name < collected[j].Name
 	})
-	return collected
-}
-
-// SearchPaths will concurrently collect all wallpapers that are large enough.
-// Will also parse Gnome timed wallpaper XML files and Simple Timed Wallpaper stw files.
-func SearchPaths(paths []string) ([]*Wallpaper, []*GnomeWallpaper, []*SimpleTimedWallpaper) {
-	for _, path := range paths {
-		searchPath(path)
-	}
-	return foundWallpapers(), foundGnomeWallpapers(), foundSimpleTimedWallpapers()
+	sr.sortedSimpleTimedWallpapers = collected
 }
 
 // FindWallpapers will collect and parse wallpapers and GNOME background XML files in all default wallpaper directories
-func FindWallpapers() ([]*Wallpaper, []*GnomeWallpaper, []*SimpleTimedWallpaper) {
-	return SearchPaths(DefaultWallpaperDirectories)
+func FindWallpapers() (*SearchResults, error) {
+	sr := NewSearchResults()
+	for _, path := range DefaultWallpaperDirectories {
+		// Search the given path, using the sr.visit function
+		if err := powerwalk.WalkLimit(path, sr.visit, numCPU); err != nil {
+			return nil, err
+		}
+	}
+	sr.sortWallpapers()
+	sr.sortSimpleTimedWallpapers()
+	sr.sortGnomeTimedWallpapers()
+	return sr, nil
 }
 
 // FindCollectionNames gathers all the names of all available wallpaper packs or GNOME timed backgrounds
-func FindCollectionNames() []string {
-	wallpapers, gnomeWallpapers, simpleTimedWallpapers := FindWallpapers()
+func (sr *SearchResults) CollectionNames() []string {
 	var collectionNames []string
-	for _, wp := range wallpapers {
+	for _, wp := range sr.sortedWallpapers {
 		if wp.PartOfCollection {
 			collectionNames = append(collectionNames, wp.CollectionName)
 		}
 	}
-	for _, gw := range gnomeWallpapers {
-		collectionNames = append(collectionNames, gw.CollectionName)
+	for _, gw := range sr.sortedGnomeTimedWallpapers {
+		collectionNames = append(collectionNames, gw.Name)
 	}
-	for _, stw := range simpleTimedWallpapers {
+	for _, stw := range sr.sortedSimpleTimedWallpapers {
 		collectionNames = append(collectionNames, stw.Name)
 	}
 	return unique(collectionNames)
+}
+
+// Wallpapers returns a sorted slice of all found wallpapers
+func (sr *SearchResults) Wallpapers() []*Wallpaper {
+	return sr.sortedWallpapers
+}
+
+// GnomeTimedWallpapers returns a sorted slice of all found gnome timed wallpapers
+func (sr *SearchResults) GnomeTimedWallpapers() []*GnomeTimedWallpaper {
+	return sr.sortedGnomeTimedWallpapers
+}
+
+// SimpleTimedWallpapers returns a sorted slice of all found simple timed wallpapers
+func (sr *SearchResults) SimpleTimedWallpapers() []*SimpleTimedWallpaper {
+	return sr.sortedSimpleTimedWallpapers
+}
+
+// WallpapersByName will return simple timed wallpapers that match with the collection name
+func (sr *SearchResults) WallpapersByName(name string) []*Wallpaper {
+	var collection []*Wallpaper
+	for _, wp := range sr.sortedWallpapers {
+		if wp.PartOfCollection && wp.CollectionName == name {
+			collection = append(collection, wp)
+		}
+	}
+	return collection
+}
+
+// GnomeTimedWallpapersByName will return gnome timed wallpapers that match with the collection name
+func (sr *SearchResults) GnomeTimedWallpapersByName(name string) []*GnomeTimedWallpaper {
+	var collection []*GnomeTimedWallpaper
+	for _, gw := range sr.sortedGnomeTimedWallpapers {
+		if gw.Name == name {
+			collection = append(collection, gw)
+		}
+	}
+	return collection
+}
+
+// SimpleTimedWallpapersByName will return simple timed wallpapers that match with the collection name
+func (sr *SearchResults) SimpleTimedWallpapersByName(name string) []*SimpleTimedWallpaper {
+	var collection []*SimpleTimedWallpaper
+	for _, stw := range sr.sortedSimpleTimedWallpapers {
+		if stw.Name == name {
+			collection = append(collection, stw)
+		}
+	}
+	return collection
+}
+
+func (sr *SearchResults) Empty() bool {
+	return len(sr.sortedSimpleTimedWallpapers) == 0 && len(sr.sortedGnomeTimedWallpapers) == 0 && len(sr.sortedWallpapers) == 0
+}
+
+func (sr *SearchResults) NoTimedWallpapers() bool {
+	return len(sr.sortedSimpleTimedWallpapers) == 0 && len(sr.sortedGnomeTimedWallpapers) == 0
 }

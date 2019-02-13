@@ -7,27 +7,32 @@ import (
 )
 
 type Feh struct {
+	verbose bool
 }
 
-func (g *Feh) Name() string {
+func (f *Feh) Name() string {
 	return "Feh"
 }
 
-func (g *Feh) ExecutablesExists() bool {
+func (f *Feh) ExecutablesExists() bool {
 	return which("feh") != ""
 }
 
-func (g *Feh) Running() bool {
+func (f *Feh) Running() bool {
 	return true
+}
+
+func (f *Feh) SetVerbose(verbose bool) {
+	f.verbose = verbose
 }
 
 // SetWallpaper sets the desktop wallpaper, given an image filename.
 // The image must exist and be readable.
 // `feh` is used for setting the desktop background, and must be in the PATH.
-func (g *Feh) SetWallpaper(imageFilename string) error {
+func (f *Feh) SetWallpaper(imageFilename string) error {
 	// bg-fill | bg-center | bg-max | bg-scale | bg-tile
 	command := "feh --bg-fill " + imageFilename
-	if err := run(command); err != nil {
+	if err := run(command, f.verbose); err != nil {
 		return errors.New(command + " failed to run")
 	}
 	return nil

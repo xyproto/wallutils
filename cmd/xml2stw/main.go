@@ -14,7 +14,7 @@ func main() {
 	}
 	filename := os.Args[1]
 
-	s, err := monitor.GnomeXMLToSimpleTimed(filename)
+	s, err := monitor.GnomeFileToSimpleString(filename)
 	if err != nil {
 		fmt.Fprintf(os.Stderr, "error: %s\n", err)
 		os.Exit(1)

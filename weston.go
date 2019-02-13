@@ -8,18 +8,23 @@ import (
 
 // Weston windowmanager detector
 type Weston struct {
+	verbose bool
 }
 
-func (s *Weston) Name() string {
+func (w *Weston) Name() string {
 	return "Weston"
 }
 
-func (s *Weston) ExecutablesExists() bool {
+func (w *Weston) ExecutablesExists() bool {
 	return which("weston") != ""
 }
 
-func (s *Weston) Running() bool {
+func (w *Weston) Running() bool {
 	return containsE("GDMSESSION", "weston") || containsE("XDG_SESSION_DESKTOP", "weston") || containsE("XDG_CURRENT_DESKTOP", "weston")
+}
+
+func (w *Weston) SetVerbose(verbose bool) {
+	w.verbose = verbose
 }
 
 // SetWallpaper sets the desktop wallpaper, given an image filename.

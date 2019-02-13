@@ -6,31 +6,33 @@ import (
 	"time"
 )
 
-type GnomeWallpaper struct {
-	// The name of the directory containing this XML file, if it's not
-	// "pixmaps", "images" or "contents". May use the parent of the parent.
-	CollectionName string
+type GnomeTimedWallpaper struct {
+	// The name of this timed wallpaper
+	Name string
 
 	// Path is the full path to the XML file
 	Path string
 
 	// Config contains the parsed XML. See: gnomexml.go
 	Config *GBackground
+
+	// LoopWait is for how long the event loop should sleep at every iteration
+	LoopWait time.Duration
 }
 
-func NewGnomeWallpaper(name string, path string, config *GBackground) *GnomeWallpaper {
-	return &GnomeWallpaper{name, path, config}
+func NewGnomeTimedWallpaper(name string, path string, config *GBackground) *GnomeTimedWallpaper {
+	return &GnomeTimedWallpaper{name, path, config, 5 * time.Second}
 }
 
 // StartTime returns the timed wallpaper start time, as a time.Time
-func (gw *GnomeWallpaper) StartTime() time.Time {
+func (gw *GnomeTimedWallpaper) StartTime() time.Time {
 	// gw.Config.StartTime is a struct that contains ints,
 	// where the values are directly from the parsed XML.
 	st := gw.Config.StartTime
 	return time.Date(st.Year, time.Month(st.Month), st.Day, st.Hour, st.Minute, 0, 0, time.Local)
 }
 
-func (gw *GnomeWallpaper) Images() []string {
+func (gw *GnomeTimedWallpaper) Images() []string {
 	var filenames []string
 	for _, static := range gw.Config.Statics {
 		filenames = append(filenames, static.Filename)
@@ -43,11 +45,9 @@ func (gw *GnomeWallpaper) Images() []string {
 }
 
 // String builds a string with various information about this GNOME timed wallpaper
-func (gw *GnomeWallpaper) String() string {
+func (gw *GnomeTimedWallpaper) String() string {
 	var sb strings.Builder
-	sb.WriteString("--- ")
-	sb.WriteString(gw.CollectionName)
-	sb.WriteString("---\npath\t\t\t= ")
+	sb.WriteString("path\t\t\t= ")
 	sb.WriteString(gw.Path)
 	sb.WriteString("\nstart time\t\t= ")
 	sb.WriteString(gw.StartTime().String())

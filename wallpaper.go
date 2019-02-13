@@ -4,13 +4,15 @@ package monitor
 import (
 	"errors"
 	"fmt"
+	"os"
 )
 
 type WM interface {
 	Name() string
 	ExecutablesExists() bool
 	Running() bool
-	SetWallpaper(imageFilename string) error
+	SetWallpaper(string) error
+	SetVerbose(bool)
 }
 
 type Wallpaper struct {
@@ -39,18 +41,21 @@ var WMs = []WM{
 	&X11{},
 }
 
-var (
-	DefaultWallpaperDirectories = []string{"/usr/share/pixmaps", "/usr/share/wallpapers", "/usr/share/backgrounds", "/usr/local/share/pixmaps", "/usr/local/share/wallpapers", "/usr/local/share/backgrounds", "/usr/share/archlinux"}
-)
+func SetWallpaper(imageFilename string) error {
+	return SetWallpaperVerbose(imageFilename, false)
+}
 
 // Set the desktop wallpaper (filled/stretched), for any supported windowmanager.
 // The fallback is to use `feh`.
-func SetWallpaper(imageFilename string) error {
+func SetWallpaperVerbose(imageFilename string, verbose bool) error {
 	var lastErr error
 	// Loop through all available WM structs
 	for _, wm := range WMs {
 		if wm.Running() && wm.ExecutablesExists() {
-			fmt.Printf("Setting wallpaper with the %s backend.\n", wm.Name())
+			if verbose {
+				fmt.Printf("Using the %s backend.\n", wm.Name())
+			}
+			wm.SetVerbose(verbose)
 			if err := wm.SetWallpaper(imageFilename); err != nil {
 				lastErr = err
 				switch wm.Name() {
@@ -58,7 +63,9 @@ func SetWallpaper(imageFilename string) error {
 					// If the current windowmanager is Weston, no method is currently available
 					return err
 				default:
-					fmt.Println("failed:", err)
+					if verbose {
+						fmt.Fprintf(os.Stderr, "failed: %v\n", err)
+					}
 					// Try the next one
 					continue
 				}
@@ -68,7 +75,15 @@ func SetWallpaper(imageFilename string) error {
 		}
 	}
 	if lastErr != nil {
-		return fmt.Errorf("Found no working method for setting the desktop wallpaper:\n%s", lastErr)
+		return fmt.Errorf("Found no working method for setting the desktop wallpaper:\n%v", lastErr)
+	}
+	// Flush stderr
+	if err := os.Stderr.Sync(); err != nil {
+		return err
+	}
+	// Flush stdout
+	if err := os.Stdout.Sync(); err != nil {
+		return err
 	}
 	return errors.New("Found no working method for setting the desktop wallpaper")
 }

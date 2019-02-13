@@ -6,6 +6,7 @@ import (
 	"errors"
 	"fmt"
 	"io/ioutil"
+	"path/filepath"
 	"time"
 )
 
@@ -57,7 +58,8 @@ func (t *GTransition) Duration() time.Duration {
 	return time.Duration(t.Seconds) * time.Second
 }
 
-func ParseXML(filename string) (*GBackground, error) {
+// Parse a Gnome XML file to a GnomeTimedWallpaper struct
+func ParseXML(filename string) (*GnomeTimedWallpaper, error) {
 	data, err := ioutil.ReadFile(filename)
 	if err != nil {
 		return nil, err
@@ -65,7 +67,7 @@ func ParseXML(filename string) (*GBackground, error) {
 
 	var background GBackground
 	if err = xml.Unmarshal(data, &background); err != nil {
-		return nil, err
+		return nil, fmt.Errorf("Could not parse %s as XML: error: %s", filename, err)
 	}
 
 	// After parsing the XML, find the order of the <static> and <transition>
@@ -75,10 +77,10 @@ func ParseXML(filename string) (*GBackground, error) {
 		return nil, err
 	}
 
-	//log.Println("staticOrder", background.staticOrder)
-	//log.Println("transitionOrder", background.transitionOrder)
-
-	return &background, nil
+	// Use the name of the file, without the extension, as the name of this timed wallpaper
+	// name := filepath.Base(filename[:len(filename)-len(filepath.Ext(filename))])
+	name := firstname(filepath.Base(filename))
+	return NewGnomeTimedWallpaper(name, filename, &background), nil
 }
 
 // TransitionOrder finds the total position of a given GTransition position

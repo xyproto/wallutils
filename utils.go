@@ -61,8 +61,10 @@ func which(executable string) string {
 	return p
 }
 
-func run(shellCommand string) error {
-	fmt.Println(shellCommand)
+func run(shellCommand string, verbose bool) error {
+	if verbose {
+		fmt.Println(shellCommand)
+	}
 	cmd := exec.Command("sh", "-c", shellCommand)
 	if _, err := cmd.CombinedOutput(); err != nil {
 		return err
@@ -70,8 +72,10 @@ func run(shellCommand string) error {
 	return nil
 }
 
-func output(shellCommand string) string {
-	fmt.Println(shellCommand)
+func output(shellCommand string, verbose bool) string {
+	if verbose {
+		fmt.Println(shellCommand)
+	}
 	cmd := exec.Command("sh", "-c", shellCommand)
 	stdoutStderr, err := cmd.CombinedOutput()
 	if err != nil {

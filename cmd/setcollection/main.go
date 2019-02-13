@@ -8,7 +8,8 @@ import (
 	"github.com/xyproto/monitor"
 )
 
-func setWallpaper(wallpapers []*monitor.Wallpaper) error {
+// Select the wallpaper that is closest to the current monitor resolution and set that as the wallpaper
+func SelectAndSetWallpaper(wallpapers []*monitor.Wallpaper) error {
 	// Gather a slice of filenames
 	var filenames []string
 	for _, wp := range wallpapers {
@@ -50,8 +51,17 @@ func main() {
 	fmt.Printf("Setting wallpaper collection \"%s\"\n", collectionName)
 
 	fmt.Print("Searching for wallpapers...")
-	wallpapers, gnomeWallpapers, simpleTimedWallpapers := monitor.FindWallpapers()
-	if len(wallpapers) == 0 && len(gnomeWallpapers) == 0 && len(simpleTimedWallpapers) == 0 {
+	searchResults, err := monitor.FindWallpapers()
+	if err != nil {
+		fmt.Fprintf(os.Stderr, "error: %v\n", err)
+		os.Exit(1)
+	}
+
+	wallpapers := searchResults.Wallpapers()
+	gnomeTimedWallpapers := searchResults.GnomeTimedWallpapers()
+	simpleTimedWallpapers := searchResults.SimpleTimedWallpapers()
+
+	if searchResults.Empty() {
 		fmt.Fprintln(os.Stderr, "Could not find any wallpapers on the system.")
 		os.Exit(1)
 	} else {
@@ -59,33 +69,23 @@ func main() {
 	}
 
 	fmt.Print("Filtering wallpapers by collection name...")
-	wallpapers = monitor.FilterWallpapers(collectionName, wallpapers)
-	gnomeWallpapers = monitor.FilterGnomeWallpapers(collectionName, gnomeWallpapers)
-	simpleTimedWallpapers = monitor.FilterSimpleTimedWallpapers(collectionName, simpleTimedWallpapers)
+	wallpapers = searchResults.WallpapersByName(collectionName)
+	gnomeTimedWallpapers = searchResults.GnomeTimedWallpapersByName(collectionName)
+	simpleTimedWallpapers = searchResults.SimpleTimedWallpapersByName(collectionName)
 	fmt.Println("ok")
 
-	if len(wallpapers) == 0 && len(gnomeWallpapers) == 0 && len(simpleTimedWallpapers) == 0 {
+	if len(wallpapers) == 0 && (len(gnomeTimedWallpapers) > 0 || len(simpleTimedWallpapers) > 0) {
+		fmt.Fprintln(os.Stderr, "Timed wallpapers are not supported by this utility.")
+		os.Exit(1)
+	}
+
+	if len(wallpapers) == 0 {
 		fmt.Fprintln(os.Stderr, "No such collection: "+collectionName)
 		os.Exit(1)
 	}
 
-	// wallpapers and gnomeWallpapers are now filtered to only contain elements with matching collection names
-
-	if len(wallpapers) > 0 && len(gnomeWallpapers) > 0 {
-		fmt.Fprintln(os.Stderr, "Found both a wallpaper collection and a GNOME timed background after filtering by collection name.")
-		os.Exit(1)
-	}
-	if len(wallpapers) > 0 && len(gnomeWallpapers) == 0 {
-		err := setWallpaper(wallpapers)
-		if err != nil {
-			fmt.Fprintln(os.Stderr, err)
-			os.Exit(1)
-		}
-	} else if len(wallpapers) == 0 && len(gnomeWallpapers) == 1 {
-		fmt.Fprintln(os.Stderr, "Timed wallpapers are not supported by this utility")
-		os.Exit(1)
-	} else if len(wallpapers) == 0 && len(gnomeWallpapers) > 1 {
-		fmt.Fprintln(os.Stderr, "Found several GNOME timed backgrounds, with the same collection name!")
+	if err = SelectAndSetWallpaper(wallpapers); err != nil {
+		fmt.Fprintln(os.Stderr, err)
 		os.Exit(1)
 	}
 }
