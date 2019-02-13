@@ -9,6 +9,12 @@
 * The `monitor.Detect` function can return a `[]Monitor` slice in Go, with information about all connected monitors.
 * The `monitor.SetTimedWallpaper` function can be used for launching an event loop that handles GNOME timed wallpapers.
 
+## Timed Wallpapers
+
+The Mojave timed wallpaper can be set with the `settimed` command, and will cross fade from image to image as the day progresses:
+
+[![](https://i.redd.it/z5zx32pe3l311.gif)](https://github.com/japamax/gnome-mojave-timed-wallpaper)
+
 ## Included utilities
 
   * `getdpi`, for retrieving the average DPI, for all monitors.
