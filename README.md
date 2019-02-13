@@ -11,9 +11,9 @@
 
 ## Timed Wallpapers
 
-The Mojave timed wallpaper can be set with the `settimed` command, and will cross fade from image to image as the day progresses:
+The [Mojave timed wallpaper](https://github.com/japamax/gnome-mojave-timed-wallpaper) and other timed wallpapers can be set with the `settimed` command, and will cross fade from image to image as the day progresses:
 
-[![](https://i.redd.it/z5zx32pe3l311.gif)](https://github.com/japamax/gnome-mojave-timed-wallpaper)
+![](https://i.redd.it/z5zx32pe3l311.gif)]
 
 ## Included utilities
 
