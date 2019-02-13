@@ -4,11 +4,6 @@
 * Supports GNOME timed wallpapers, and includes a utility that can run an event loop for changing them (also supports cross fading).
 * Introduces a new file format for timed wallpapers: The **Simple Timed Wallpaper** format: [FORMAT SPEC](cmd/xml2stw/SPEC.md).
 
-## Highlighted functions
-
-* The `monitor.Detect` function can return a `[]Monitor` slice in Go, with information about all connected monitors.
-* The `monitor.SetTimedWallpaper` function can be used for launching an event loop that handles GNOME timed wallpapers.
-
 ## Timed Wallpapers
 
 The [Mojave timed wallpaper](https://github.com/japamax/gnome-mojave-timed-wallpaper) and other timed wallpapers can be set with the `settimed` command, and will cross fade from image to image as the day progresses:
