@@ -130,4 +130,4 @@ if err := monitor.SetWallpaper(imageFilename); err != nil {
 
 * Author: Alexander F. Rødseth &lt;xyproto@archlinux.org&gt;
 * License: MIT
-* Version: 3.3.2
+* Version: 4.0.0
