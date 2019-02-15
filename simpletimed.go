@@ -33,7 +33,14 @@ type Transition struct {
 }
 
 func (t *Transition) Duration() time.Duration {
-	return t.UpTo.Sub(t.From)
+	d := t.UpTo.Sub(t.From)
+	for d < 0 {
+		d += h24
+	}
+	for d > h24 {
+		d -= h24
+	}
+	return d
 }
 
 func (t *Transition) String(format string) string {

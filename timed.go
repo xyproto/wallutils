@@ -27,6 +27,12 @@ func (stw *SimpleTimedWallpaper) SetInitialWallpaper(verbose bool) error {
 		//elapsed := time.Now().Sub(s.At)
 		elapsed := event.ToToday(time.Now()).Sub(event.ToToday(s.At))
 		window := stw.UntilNext(s.At) - elapsed // duration until next event start, minus time elapsed
+		for window < 0 {
+			window += h24
+		}
+		for window > h24 {
+			window -= h24
+		}
 		cooldown := window
 
 		imageFilename := s.Filename
@@ -66,6 +72,12 @@ func (stw *SimpleTimedWallpaper) SetInitialWallpaper(verbose bool) error {
 		now := time.Now()
 		window := t.Duration()
 		progress := window - event.ToToday(t.UpTo).Sub(event.ToToday(now))
+		for progress > h24 {
+			progress -= h24
+		}
+		for progress < 0 {
+			progress += h24
+		}
 		ratio := float64(progress) / float64(window)
 		from := t.From
 		steps := 10
@@ -75,6 +87,8 @@ func (stw *SimpleTimedWallpaper) SetInitialWallpaper(verbose bool) error {
 		tFromFilename := t.FromFilename
 		tToFilename := t.ToFilename
 		loopWait := stw.LoopWait
+		tempDir := ""
+		var err error
 
 		if verbose {
 			fmt.Printf("Initial transition event at %s (%d%% complete)\n", c(from), int(ratio*100))
@@ -88,7 +102,12 @@ func (stw *SimpleTimedWallpaper) SetInitialWallpaper(verbose bool) error {
 			fmt.Println("To filename", tToFilename)
 		}
 
-		tempDir, err := ioutil.TempDir("", "crossfade")
+		if exists(tempDir) {
+			// Clean up
+			os.RemoveAll(tempDir)
+		}
+
+		tempDir, err = ioutil.TempDir("", "crossfade")
 		if err != nil {
 			return fmt.Errorf("Could not create temporary directory: %v\n", err)
 		}
@@ -127,9 +146,6 @@ func (stw *SimpleTimedWallpaper) SetInitialWallpaper(verbose bool) error {
 			return fmt.Errorf("Could not set wallpaper: %v\n", err)
 		}
 
-		// Clean up
-		os.RemoveAll(tempDir)
-
 		// Just sleep for half the cooldown, to have some time to register events too
 		fmt.Println("Sleeping for", cooldown/2)
 		time.Sleep(cooldown / 2)
@@ -158,6 +174,12 @@ func (stw *SimpleTimedWallpaper) EventLoop(verbose bool) error {
 		// Place values into variables, before enclosing it in the function below.
 		from := s.At
 		window := stw.UntilNext(s.At) // duration until next event start
+		for window < 0 {
+			window += h24
+		}
+		for window > h24 {
+			window -= h24
+		}
 		cooldown := window
 		imageFilename := s.Filename
 
@@ -209,11 +231,19 @@ func (stw *SimpleTimedWallpaper) EventLoop(verbose bool) error {
 		tFromFilename := t.FromFilename
 		tToFilename := t.ToFilename
 		loopWait := stw.LoopWait
+		tempDir := ""
+		var err error
 
 		// Register a transition event
 		//eventloop.Add(event.New(from, window, cooldown, event.ProgressWrapperInterval(from, upTo, loopWait, func(ratio float64) {
 		eventloop.Add(event.New(from, window, cooldown, func() {
 			progress := window - event.ToToday(upTo).Sub(event.ToToday(time.Now()))
+			for progress > h24 {
+				progress -= h24
+			}
+			for progress < 0 {
+				progress += h24
+			}
 			ratio := float64(progress) / float64(window)
 
 			if verbose {
@@ -228,7 +258,12 @@ func (stw *SimpleTimedWallpaper) EventLoop(verbose bool) error {
 				fmt.Println("To filename", tToFilename)
 			}
 
-			tempDir, err := ioutil.TempDir("", "crossfade")
+			if exists(tempDir) {
+				// Clean up
+				os.RemoveAll(tempDir)
+			}
+
+			tempDir, err = ioutil.TempDir("", "crossfade")
 			if err != nil {
 				fmt.Fprintf(os.Stderr, "Could not create temporary directory: %v\n", err)
 				return // return from anon func
@@ -260,9 +295,6 @@ func (stw *SimpleTimedWallpaper) EventLoop(verbose bool) error {
 				fmt.Fprintf(os.Stderr, "Could not set wallpaper: %v\n", err)
 				return // return from anon func
 			}
-
-			// The removal of the temporary directory should not be deferred, since this is an endless loop
-			os.RemoveAll(tempDir) // clean up
 		}))
 	}
 
@@ -371,10 +403,18 @@ func (gw *GnomeTimedWallpaper) EventLoop(verbose bool) error {
 			tFromFilename := t.FromFilename
 			tToFilename := t.ToFilename
 			loopWait := gw.LoopWait
+			tempDir := ""
+			var err error
 
 			// Register a transition event
 			eventloop.Add(event.New(from, window, cooldown, func() {
 				progress := window - event.ToToday(upTo).Sub(event.ToToday(time.Now()))
+				for progress > h24 {
+					progress -= h24
+				}
+				for progress < 0 {
+					progress += h24
+				}
 				ratio := float64(progress) / float64(window)
 				if verbose {
 					fmt.Printf("Triggered transition event at %s (%d%% complete)\n", c(from), int(ratio*100))
@@ -388,7 +428,12 @@ func (gw *GnomeTimedWallpaper) EventLoop(verbose bool) error {
 					fmt.Println("To filename", tToFilename)
 				}
 
-				tempDir, err := ioutil.TempDir("", "crossfade")
+				if exists(tempDir) {
+					// Clean up
+					os.RemoveAll(tempDir)
+				}
+
+				tempDir, err = ioutil.TempDir("", "crossfade")
 				if err != nil {
 					fmt.Fprintf(os.Stderr, "Could not create temporary directory: %v\n", err)
 					return // return from anon func
@@ -421,8 +466,6 @@ func (gw *GnomeTimedWallpaper) EventLoop(verbose bool) error {
 					return // return from anon func
 				}
 
-				// The removal of the temporary directory should not be deferred, since this is an endless loop
-				os.RemoveAll(tempDir) // clean up
 			}))
 
 			// Increase the variable that keeps track of the time
@@ -448,14 +491,16 @@ func (stw *SimpleTimedWallpaper) UntilNext(et time.Time) time.Duration {
 	for _, s := range stw.Statics {
 		startTimes = append(startTimes, s.At)
 	}
-	h24 := 24 * time.Hour
 	mindiff := h24
 	// OK, have all start times, now to find the ones that are both positive and smallest
 	for _, st := range startTimes {
 		//diff := st.Sub(et)
 		diff := event.ToToday(et).Sub(event.ToToday(st))
-		if diff < 0 {
+		for diff < 0 {
 			diff += h24
+		}
+		for diff > h24 {
+			diff -= h24
 		}
 		if diff > 0 && diff < mindiff {
 			mindiff = diff
@@ -479,7 +524,6 @@ func (stw *SimpleTimedWallpaper) NextEvent(now time.Time) (interface{}, error) {
 		return nil, errors.New("can not find next event: got no events")
 	}
 	// Go though all the event time stamps, and find the one that has the smallest (now time - event time)
-	h24 := 24 * time.Hour
 	minDiff := h24
 	var minEvent interface{}
 	for t, e := range events {
@@ -487,8 +531,11 @@ func (stw *SimpleTimedWallpaper) NextEvent(now time.Time) (interface{}, error) {
 		//fmt.Printf("t is: %v (%T)\n", t, t)
 		diff := event.ToToday(t).Sub(event.ToToday(now))
 		//diff := t.Sub(now)
-		if diff < 0 {
+		for diff < 0 {
 			diff += h24
+		}
+		for diff > h24 {
+			diff -= h24
 		}
 		//fmt.Println("Diff for", c(t), ":", diff)
 		if diff > 0 && diff < minDiff {
@@ -515,7 +562,6 @@ func (stw *SimpleTimedWallpaper) PrevEvent(now time.Time) (interface{}, error) {
 		return nil, errors.New("can not find previous event: got no events")
 	}
 	// Go though all the event time stamps, and find the one that has the smallest (now time - event time)
-	h24 := 24 * time.Hour
 	minDiff := h24
 	var minEvent interface{}
 	for t, e := range events {
@@ -523,8 +569,11 @@ func (stw *SimpleTimedWallpaper) PrevEvent(now time.Time) (interface{}, error) {
 		//fmt.Printf("t is: %v (%T)\n", t, t)
 		diff := event.ToToday(now).Sub(event.ToToday(t))
 		//diff := now.Sub(t)
-		if diff < 0 {
+		for diff < 0 {
 			diff += h24
+		}
+		for diff > h24 {
+			diff -= h24
 		}
 		//fmt.Println("Diff for", c(t), ":", diff)
 		if diff > 0 && diff < minDiff {
