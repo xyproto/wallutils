@@ -57,10 +57,6 @@ func (stw *SimpleTimedWallpaper) SetInitialWallpaper(verbose bool) error {
 			return fmt.Errorf("Could not set wallpaper: %v\n", err)
 		}
 
-		if verbose {
-			fmt.Println("OK")
-		}
-
 		// Just sleep for half the cooldown, to have some time to register events too
 		fmt.Println("Sleeping for", cooldown/2)
 		time.Sleep(cooldown / 2)
@@ -110,11 +106,7 @@ func (stw *SimpleTimedWallpaper) SetInitialWallpaper(verbose bool) error {
 		}
 
 		if verbose {
-			fmt.Println("OK")
-		}
-
-		if verbose {
-			fmt.Println("Crossfading.")
+			fmt.Println("Crossfading between images.")
 		}
 
 		// Crossfade and write the new image to the temporary directory
@@ -133,10 +125,6 @@ func (stw *SimpleTimedWallpaper) SetInitialWallpaper(verbose bool) error {
 		}
 		if err := SetWallpaperVerbose(tempImageFilename, verbose); err != nil {
 			return fmt.Errorf("Could not set wallpaper: %v\n", err)
-		}
-
-		if verbose {
-			fmt.Println("OK")
 		}
 
 		// Clean up
@@ -249,7 +237,7 @@ func (stw *SimpleTimedWallpaper) EventLoop(verbose bool) error {
 			tempImageFilename := filepath.Join(tempDir, "out.png") // .jpg is also possible
 
 			if verbose {
-				fmt.Println("Crossfading.")
+				fmt.Println("Crossfading between images.")
 			}
 
 			// Crossfade and write the new image to the temporary directory
@@ -409,17 +397,13 @@ func (gw *GnomeTimedWallpaper) EventLoop(verbose bool) error {
 				tempImageFilename := filepath.Join(tempDir, "out.png") // .jpg is also possible
 
 				if verbose {
-					fmt.Println("Crossfading.")
+					fmt.Println("Crossfading between images.")
 				}
 
 				// Crossfade and write the new image to the temporary directory
 				if crossfade.Files(tFromFilename, tToFilename, tempImageFilename, ratio) != nil {
 					fmt.Fprintf(os.Stderr, "Could not crossfade images in transition: %v\n", err)
 					return // return from anon func
-				}
-
-				if verbose {
-					fmt.Println("ok")
 				}
 
 				// Double check that the generated file exists
