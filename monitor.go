@@ -17,7 +17,7 @@ type Monitor struct {
 
 var errNoWaylandNoX = errors.New("could not detect either Wayland or X")
 
-const VersionString = "4.0.0"
+const VersionString = "4.1.0"
 
 // String returns a string with monitor ID and resolution
 func (m Monitor) String() string {
