@@ -1,3 +1,4 @@
+// monitor is a package for dealing with monitors, resolution, dpi, wallpapers, wallpaper collections, timed wallpapers and converting to the Simple Timed Wallpaper format.
 package monitor
 
 import (
@@ -16,10 +17,15 @@ type Monitor struct {
 
 var errNoWaylandNoX = errors.New("could not detect either Wayland or X")
 
+const VersionString = "4.0.0"
+
+// String returns a string with monitor ID and resolution
 func (m Monitor) String() string {
 	return fmt.Sprintf("[%d] %dx%d", m.ID, m.Width, m.Height)
 }
 
+// Info returns a long info string that looks different for Wayland and for X.
+// The string contains all available information about the connected monitors.
 func Info() (string, error) {
 	if WaylandCanConnect() {
 		return WaylandInfo()
@@ -29,7 +35,7 @@ func Info() (string, error) {
 	return "", errNoWaylandNoX
 }
 
-// Monitors returns information about all monitors, regardless of if it's under
+// Detect returns information about all monitors, regardless of if it's under
 // Wayland or X11. Will use additional plugins, if available.
 func Detect() ([]Monitor, error) {
 	IDs, widths, heights, wDPIs, hDPIs := []uint{}, []uint{}, []uint{}, []uint{}, []uint{}

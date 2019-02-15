@@ -189,5 +189,5 @@ func (background *GBackground) String() string {
 	if err != nil {
 		return ""
 	}
-	return string(data)
+	return string(bytes.Trim(data, " \n"))
 }

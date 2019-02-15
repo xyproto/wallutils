@@ -59,5 +59,5 @@ func (gw *GnomeTimedWallpaper) String() string {
 	for _, filename := range gw.Images() {
 		sb.WriteString("\t" + filename + "\n")
 	}
-	return sb.String()
+	return strings.TrimSpace(sb.String())
 }
