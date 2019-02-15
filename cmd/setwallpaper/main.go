@@ -11,8 +11,13 @@ import (
 const versionString = "setwallpaper"
 
 func main() {
+	if len(os.Args) > 1 && os.Args[1] == "--version" {
+		fmt.Println(monitor.VersionString)
+		os.Exit(0)
+	}
+
 	if len(os.Args) < 2 {
-		fmt.Fprintln(os.Stderr, versionString+"\n\nNeeds an image file as the first argument.")
+		fmt.Fprintln(os.Stderr, "Please specify an image filename.")
 		os.Exit(1)
 	}
 	imageFilename := os.Args[1]

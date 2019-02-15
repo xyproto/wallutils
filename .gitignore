@@ -4,7 +4,7 @@ cmd/lsmon/lsmon
 cmd/wayinfo/wayinfo
 cmd/xinfo/xinfo
 cmd/getdpi/getdpi
-cmd/lscollections/lscollections
+cmd/lscollection/lscollection
 cmd/timedinfo/timedinfo
 cmd/lswallpaper/lswallpaper
 cmd/setcollection/setcollection

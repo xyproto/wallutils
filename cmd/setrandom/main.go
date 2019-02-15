@@ -10,15 +10,17 @@ import (
 	"github.com/xyproto/monitor"
 )
 
-const versionString = "Random Wallpaper Changer 1.0.0"
-
 func init() {
 	rand.Seed(time.Now().UTC().UnixNano())
 }
 
 func main() {
+	if len(os.Args) > 1 && os.Args[1] == "--version" {
+		fmt.Println(monitor.VersionString)
+		os.Exit(0)
+	}
+
 	if len(os.Args) == 1 {
-		fmt.Println(versionString)
 		fmt.Println("Please specify a directory to choose wallpapers from.")
 		os.Exit(1)
 	}

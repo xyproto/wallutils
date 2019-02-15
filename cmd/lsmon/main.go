@@ -15,11 +15,14 @@ func main() {
 		os.Exit(1)
 	}
 	// For every monitor, output the ID, width and height
-	for _, monitor := range monitors {
-		if len(os.Args) > 1 && os.Args[1] == "-dpi" {
-			fmt.Printf("%d: %dx%d (DPI: %dx%d)\n", monitor.ID, monitor.Width, monitor.Height, monitor.DPIw, monitor.DPIh)
+	for _, mon := range monitors {
+		if len(os.Args) > 1 && (os.Args[1] == "-dpi" || os.Args[1] == "-l") {
+			fmt.Printf("%d: %dx%d (DPI: %dx%d)\n", mon.ID, mon.Width, mon.Height, mon.DPIw, mon.DPIh)
+		} else if len(os.Args) > 1 && os.Args[1] == "--version" {
+			fmt.Println(monitor.VersionString)
+			os.Exit(0)
 		} else {
-			fmt.Printf("%d: %dx%d\n", monitor.ID, monitor.Width, monitor.Height)
+			fmt.Printf("%d: %dx%d\n", mon.ID, mon.Width, mon.Height)
 		}
 	}
 }

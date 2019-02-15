@@ -11,7 +11,7 @@ all:
 	(cd cmd/setwallpaper; go build)
 	(cd cmd/wayinfo; go build)
 	(cd cmd/xinfo; go build)
-	(cd cmd/lscollections; go build)
+	(cd cmd/lscollection; go build)
 	(cd cmd/timedinfo; go build)
 	(cd cmd/lswallpaper; go build)
 	(cd cmd/setcollection; go build)
@@ -26,7 +26,7 @@ install:
 	install -Dm755 -t "$(DESTDIR)$(PREFIX)/bin" cmd/setwallpaper/setwallpaper
 	install -Dm755 -t "$(DESTDIR)$(PREFIX)/bin" cmd/wayinfo/wayinfo
 	install -Dm755 -t "$(DESTDIR)$(PREFIX)/bin" cmd/xinfo/xinfo
-	install -Dm755 -t "$(DESTDIR)$(PREFIX)/bin" cmd/lscollections/lscollections
+	install -Dm755 -t "$(DESTDIR)$(PREFIX)/bin" cmd/lscollection/lscollection
 	install -Dm755 -t "$(DESTDIR)$(PREFIX)/bin" cmd/timedinfo/timedinfo
 	install -Dm755 -t "$(DESTDIR)$(PREFIX)/bin" cmd/lswallpaper/lswallpaper
 	install -Dm755 -t "$(DESTDIR)$(PREFIX)/bin" cmd/setcollection/setcollection
@@ -41,7 +41,7 @@ clean:
 	(cd cmd/setwallpaper; go clean)
 	(cd cmd/wayinfo; go clean)
 	(cd cmd/xinfo; go clean)
-	(cd cmd/lscollections; go clean)
+	(cd cmd/lscollection; go clean)
 	(cd cmd/timedinfo; go clean)
 	(cd cmd/lswallpaper; go clean)
 	(cd cmd/setcollection; go clean)

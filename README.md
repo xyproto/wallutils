@@ -12,8 +12,8 @@ The [Mojave timed wallpaper](https://github.com/japamax/gnome-mojave-timed-wallp
 
 ## Included utilities
 
-  * `getdpi`, for retrieving the average DPI, for all monitors.
-  * `lscollections`, for listing installed wallpaper collections.
+  * `getdpi`, for retrieving the average DPI, for all monitors (supports `-l` for both X and Y DPI).
+  * `lscollection`, for listing installed wallpaper collections (supports `-l`).
   * `timedinfo`, for showing more information about installed GNOME timed wallpapers.
   * `lsmon` lists the connected monitors and resolutions.
   * `lstimed` for listing installed GNOME timed wallpapers.

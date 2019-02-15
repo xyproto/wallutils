@@ -63,8 +63,8 @@ func main() {
 	}
 
 	if verbose {
-		fmt.Printf("Setting wallpaper collection \"%s\"\n", collectionName)
-		fmt.Print("Searching for wallpapers...")
+		fmt.Printf("Setting wallpaper collection: %s\n", collectionName)
+		fmt.Println("Searching for wallpapers...")
 	}
 	searchResults, err := monitor.FindWallpapers()
 	if err != nil {
@@ -76,14 +76,10 @@ func main() {
 		os.Exit(1)
 	}
 	if verbose {
-		fmt.Println("OK")
-		fmt.Print("Filtering wallpapers by name...")
+		fmt.Println("Filtering wallpapers by name...")
 	}
 	simpleTimedWallpapers := searchResults.SimpleTimedWallpapersByName(collectionName)
 	gnomeTimedWallpapers := searchResults.GnomeTimedWallpapersByName(collectionName)
-	if verbose {
-		fmt.Println("OK")
-	}
 
 	// gnomeTimedWallpapers and simpleTimedWallpapers have now been filtered so that they only contain elements with matching collection names
 

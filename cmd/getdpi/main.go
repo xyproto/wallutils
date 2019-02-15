@@ -7,8 +7,6 @@ import (
 	"github.com/xyproto/monitor"
 )
 
-const versionString = "1.2.0"
-
 func main() {
 	// Retrieve a slice of Monitor structs, or exit with an error
 	monitors, err := monitor.Detect()
@@ -25,13 +23,13 @@ func main() {
 	DPIw /= uint(len(monitors))
 	DPIh /= uint(len(monitors))
 
-	// Check if -b is given (for outputting both numbers)
-	if len(os.Args) > 1 && os.Args[1] == "-b" {
+	// Check if -l or -b is given (for outputting both numbers)
+	if len(os.Args) > 1 && ((os.Args[1] == "-l") || (os.Args[1] == "-b")) {
 		fmt.Printf("%dx%d\n", DPIw, DPIh)
 		return
 	} else if len(os.Args) > 1 && os.Args[1] == "--version" {
-		fmt.Println(versionString)
-		return
+		fmt.Println(monitor.VersionString)
+		os.Exit(0)
 	}
 
 	// Output a single number
