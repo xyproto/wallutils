@@ -4,12 +4,12 @@ import (
 	"fmt"
 	"os"
 
-	"github.com/xyproto/monitor"
+	"github.com/xyproto/wallutils"
 )
 
 func main() {
 	// Retrieve a slice of Monitor structs, or exit with an error
-	monitors, err := monitor.Detect()
+	monitors, err := wallutils.Monitors()
 	if err != nil {
 		fmt.Fprintf(os.Stderr, "%s\n", err)
 		os.Exit(1)
@@ -28,7 +28,7 @@ func main() {
 		fmt.Printf("%dx%d\n", DPIw, DPIh)
 		return
 	} else if len(os.Args) > 1 && os.Args[1] == "--version" {
-		fmt.Println(monitor.VersionString)
+		fmt.Println(wallutils.VersionString)
 		os.Exit(0)
 	}
 

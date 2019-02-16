@@ -1,4 +1,4 @@
-package monitor
+package wallutils
 
 // Gnome2 windowmanager detector
 type Gnome2 struct {

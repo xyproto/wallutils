@@ -1,4 +1,4 @@
-package monitor
+package wallutils
 
 // Gnome3 windowmanager detector
 type Gnome3 struct {

@@ -1,4 +1,4 @@
-package monitor
+package wallutils
 
 // Plasma windowmanager detector
 type Plasma struct {

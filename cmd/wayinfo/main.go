@@ -4,12 +4,12 @@ import (
 	"fmt"
 	"os"
 
-	"github.com/xyproto/monitor"
+	"github.com/xyproto/wallutils"
 )
 
 func main() {
 	// Fetch the info string
-	info, err := monitor.WaylandInfo()
+	info, err := wallutils.WaylandInfo()
 	if err != nil {
 		fmt.Fprintf(os.Stderr, "%s\n", err)
 		os.Exit(1)

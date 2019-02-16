@@ -3,7 +3,7 @@ package main
 import (
 	"fmt"
 	"github.com/fatih/color"
-	"github.com/xyproto/monitor"
+	"github.com/xyproto/wallutils"
 	"strings"
 
 	"os"
@@ -16,7 +16,7 @@ func Indent(s string, prefix string) string {
 }
 
 func main() {
-	searchResults, err := monitor.FindWallpapers()
+	searchResults, err := wallutils.FindWallpapers()
 	if err != nil {
 		fmt.Fprintf(os.Stderr, "error: %v\n", err)
 		os.Exit(1)

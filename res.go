@@ -1,4 +1,4 @@
-package monitor
+package wallutils
 
 import (
 	"errors"
@@ -39,7 +39,7 @@ func Distance(a, b *Res) int {
 
 // AverageResolution returns the average resolution for all connected monitors.
 func AverageResolution() (*Res, error) {
-	monitors, err := Detect()
+	monitors, err := Monitors()
 	if err != nil {
 		return nil, err
 	}

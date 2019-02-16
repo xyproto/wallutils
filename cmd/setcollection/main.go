@@ -5,11 +5,11 @@ import (
 	"os"
 	"path/filepath"
 
-	"github.com/xyproto/monitor"
+	"github.com/xyproto/wallutils"
 )
 
 // Select the wallpaper that is closest to the current monitor resolution and set that as the wallpaper
-func SelectAndSetWallpaper(wallpapers []*monitor.Wallpaper) error {
+func SelectAndSetWallpaper(wallpapers []*wallutils.Wallpaper) error {
 	// Gather a slice of filenames
 	var filenames []string
 	for _, wp := range wallpapers {
@@ -17,7 +17,7 @@ func SelectAndSetWallpaper(wallpapers []*monitor.Wallpaper) error {
 	}
 
 	// Select the image that is closest to the monitor resolution
-	imageFilename, err := monitor.Closest(filenames)
+	imageFilename, err := wallutils.Closest(filenames)
 	if err != nil {
 		return err
 	}
@@ -34,7 +34,7 @@ func SelectAndSetWallpaper(wallpapers []*monitor.Wallpaper) error {
 	}
 
 	// Set the desktop wallpaper
-	if err := monitor.SetWallpaper(imageFilename); err != nil {
+	if err := wallutils.SetWallpaper(imageFilename); err != nil {
 		return fmt.Errorf("Could not set wallpaper: %s\n", err)
 	}
 
@@ -51,7 +51,7 @@ func main() {
 	fmt.Printf("Setting wallpaper collection \"%s\"\n", collectionName)
 
 	fmt.Print("Searching for wallpapers...")
-	searchResults, err := monitor.FindWallpapers()
+	searchResults, err := wallutils.FindWallpapers()
 	if err != nil {
 		fmt.Fprintf(os.Stderr, "error: %v\n", err)
 		os.Exit(1)

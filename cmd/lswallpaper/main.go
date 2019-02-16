@@ -2,16 +2,16 @@ package main
 
 import (
 	"fmt"
-	"github.com/xyproto/monitor"
+	"github.com/xyproto/wallutils"
 	"os"
 )
 
 func main() {
 	if len(os.Args) > 1 && os.Args[1] == "--version" {
-		fmt.Println(monitor.VersionString)
+		fmt.Println(wallutils.VersionString)
 		os.Exit(0)
 	}
-	searchResults, err := monitor.FindWallpapers()
+	searchResults, err := wallutils.FindWallpapers()
 	if err != nil {
 		fmt.Fprintf(os.Stderr, "error: %v\n", err)
 		os.Exit(1)

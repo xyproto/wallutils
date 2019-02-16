@@ -1,5 +1,5 @@
 // monitor is a package for dealing with monitors, resolution, dpi, wallpapers, wallpaper collections, timed wallpapers and converting to the Simple Timed Wallpaper format.
-package monitor
+package wallutils
 
 import (
 	"errors"
@@ -35,9 +35,9 @@ func Info() (string, error) {
 	return "", errNoWaylandNoX
 }
 
-// Detect returns information about all monitors, regardless of if it's under
+// Monitors returns information about all monitors, regardless of if it's under
 // Wayland or X11. Will use additional plugins, if available.
-func Detect() ([]Monitor, error) {
+func Monitors() ([]Monitor, error) {
 	IDs, widths, heights, wDPIs, hDPIs := []uint{}, []uint{}, []uint{}, []uint{}, []uint{}
 	if WaylandCanConnect() {
 		if err := WaylandMonitors(&IDs, &widths, &heights, &wDPIs, &hDPIs); err != nil {

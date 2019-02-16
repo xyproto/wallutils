@@ -7,7 +7,7 @@ import (
 	"path/filepath"
 	"time"
 
-	"github.com/xyproto/monitor"
+	"github.com/xyproto/wallutils"
 )
 
 func init() {
@@ -16,7 +16,7 @@ func init() {
 
 func main() {
 	if len(os.Args) > 1 && os.Args[1] == "--version" {
-		fmt.Println(monitor.VersionString)
+		fmt.Println(wallutils.VersionString)
 		os.Exit(0)
 	}
 
@@ -55,7 +55,7 @@ func main() {
 		os.Exit(1)
 	}
 	fmt.Println("Setting background image to: " + imageFilename)
-	if err := monitor.SetWallpaper(imageFilename); err != nil {
+	if err := wallutils.SetWallpaper(imageFilename); err != nil {
 		fmt.Fprintln(os.Stderr, err)
 		os.Exit(1)
 	}

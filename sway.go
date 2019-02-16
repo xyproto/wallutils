@@ -1,4 +1,4 @@
-package monitor
+package wallutils
 
 // Sway windowmanager detector
 type Sway struct {

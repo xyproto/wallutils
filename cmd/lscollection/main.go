@@ -2,7 +2,7 @@ package main
 
 import (
 	"fmt"
-	"github.com/xyproto/monitor"
+	"github.com/xyproto/wallutils"
 	"os"
 	"path/filepath"
 	"text/tabwriter"
@@ -22,7 +22,7 @@ func main() {
 	alsoPrintPath := len(os.Args) > 1 && os.Args[1] == "-l"
 
 	// Find all wallpapers
-	searchResults, err := monitor.FindWallpapers()
+	searchResults, err := wallutils.FindWallpapers()
 	if err != nil {
 		fmt.Fprintf(os.Stderr, "error: %v\n", err)
 		os.Exit(1)

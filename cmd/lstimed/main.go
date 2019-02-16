@@ -2,7 +2,7 @@ package main
 
 import (
 	"fmt"
-	"github.com/xyproto/monitor"
+	"github.com/xyproto/wallutils"
 	"os"
 	"text/tabwriter"
 )
@@ -13,7 +13,7 @@ func main() {
 	// Prepare to write text in columns
 	w := tabwriter.NewWriter(os.Stdout, 0, 0, 10, ' ', tabwriter.AlignRight)
 
-	searchResults, err := monitor.FindWallpapers()
+	searchResults, err := wallutils.FindWallpapers()
 	if err != nil {
 		fmt.Fprintf(os.Stderr, "error: %v\n", err)
 		os.Exit(1)

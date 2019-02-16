@@ -1,4 +1,4 @@
-package monitor
+package wallutils
 
 // #cgo LDFLAGS: -lwayland-client
 //#include "wayinfo.h"

@@ -1,4 +1,4 @@
-package monitor
+package wallutils
 
 // Mate windowmanager detector
 type Mate struct {

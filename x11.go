@@ -1,4 +1,4 @@
-package monitor
+package wallutils
 
 // #cgo LDFLAGS: -lX11
 // #include "xwallpaper.h"

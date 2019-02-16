@@ -5,14 +5,14 @@ import (
 	"os"
 	"path/filepath"
 
-	"github.com/xyproto/monitor"
+	"github.com/xyproto/wallutils"
 )
 
 const versionString = "setwallpaper"
 
 func main() {
 	if len(os.Args) > 1 && os.Args[1] == "--version" {
-		fmt.Println(monitor.VersionString)
+		fmt.Println(wallutils.VersionString)
 		os.Exit(0)
 	}
 
@@ -36,7 +36,7 @@ func main() {
 	}
 
 	// Set the desktop wallpaper
-	if err := monitor.SetWallpaper(imageFilename); err != nil {
+	if err := wallutils.SetWallpaper(imageFilename); err != nil {
 		fmt.Fprintf(os.Stderr, "Could not set wallpaper: %s\n", err)
 		os.Exit(1)
 	}

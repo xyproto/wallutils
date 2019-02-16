@@ -1,4 +1,4 @@
-package monitor
+package wallutils
 
 // Deepin windowmanager detector
 type Deepin struct {

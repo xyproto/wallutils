@@ -7,8 +7,8 @@ import (
 	"strings"
 
 	"github.com/xyproto/gnometimed"
-	"github.com/xyproto/monitor"
 	"github.com/xyproto/simpletimed"
+	"github.com/xyproto/wallutils"
 )
 
 func exists(path string) bool {
@@ -40,7 +40,7 @@ func main() {
 				fmt.Printf("Using: %s\n", stw.Path)
 			}
 			// Start endless event loop
-			if err := stw.EventLoop(verbose, func(path string) error { return monitor.SetWallpaperVerbose(path, verbose) }); err != nil {
+			if err := stw.EventLoop(verbose, func(path string) error { return wallutils.SetWallpaperVerbose(path, verbose) }); err != nil {
 				fmt.Fprintln(os.Stderr, err)
 				os.Exit(1)
 			}
@@ -54,7 +54,7 @@ func main() {
 				fmt.Printf("Using: %s\n", gtw.Path)
 			}
 			// Start endless event loop
-			if err := gtw.EventLoop(verbose, func(path string) error { return monitor.SetWallpaperVerbose(path, verbose) }); err != nil {
+			if err := gtw.EventLoop(verbose, func(path string) error { return wallutils.SetWallpaperVerbose(path, verbose) }); err != nil {
 				fmt.Fprintln(os.Stderr, err)
 				os.Exit(1)
 			}
@@ -68,7 +68,7 @@ func main() {
 		fmt.Printf("Setting wallpaper collection: %s\n", collectionName)
 		fmt.Println("Searching for wallpapers...")
 	}
-	searchResults, err := monitor.FindWallpapers()
+	searchResults, err := wallutils.FindWallpapers()
 	if err != nil {
 		fmt.Fprintf(os.Stderr, "error: %v\n", err)
 		os.Exit(1)
@@ -101,7 +101,7 @@ func main() {
 			fmt.Printf("Using: %s\n", stw.Path)
 		}
 		// Start endless event loop
-		if err := stw.EventLoop(verbose, func(path string) error { return monitor.SetWallpaperVerbose(path, verbose) }); err != nil {
+		if err := stw.EventLoop(verbose, func(path string) error { return wallutils.SetWallpaperVerbose(path, verbose) }); err != nil {
 			fmt.Fprintln(os.Stderr, err)
 			os.Exit(1)
 		}
@@ -111,7 +111,7 @@ func main() {
 			fmt.Printf("Using: %s\n", gtw.Path)
 		}
 		// Start endless event loop
-		if err := gtw.EventLoop(verbose, func(path string) error { return monitor.SetWallpaperVerbose(path, verbose) }); err != nil {
+		if err := gtw.EventLoop(verbose, func(path string) error { return wallutils.SetWallpaperVerbose(path, verbose) }); err != nil {
 			fmt.Fprintln(os.Stderr, err)
 			os.Exit(1)
 		}

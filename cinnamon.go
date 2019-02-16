@@ -1,4 +1,4 @@
-package monitor
+package wallutils
 
 // Cinnamon windowmanager detector
 type Cinnamon struct {

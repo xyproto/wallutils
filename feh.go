@@ -1,4 +1,4 @@
-package monitor
+package wallutils
 
 // This is the fallback if no specific windowmanager has been detected
 

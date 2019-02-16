@@ -1,4 +1,4 @@
-# Monitor [![Build Status](https://travis-ci.org/xyproto/monitor.svg?branch=master)](https://travis-ci.org/xyproto/monitor) [![GoDoc](https://godoc.org/github.com/xyproto/monitor?status.svg)](http://godoc.org/github.com/xyproto/monitor) [![License](http://img.shields.io/badge/license-MIT-green.svg?style=flat)](https://raw.githubusercontent.com/xyproto/monitor/master/LICENSE) [![Go Report Card](https://goreportcard.com/badge/github.com/xyproto/monitor)](https://goreportcard.com/report/github.com/xyproto/monitor)
+# Wallutils [![Build Status](https://travis-ci.org/xyproto/wallutils.svg?branch=master)](https://travis-ci.org/xyproto/wallutils) [![GoDoc](https://godoc.org/github.com/xyproto/wallutils?status.svg)](http://godoc.org/github.com/xyproto/wallutils) [![License](http://img.shields.io/badge/license-MIT-green.svg?style=flat)](https://raw.githubusercontent.com/xyproto/wallutils/master/LICENSE) [![Go Report Card](https://goreportcard.com/badge/github.com/xyproto/wallutils)](https://goreportcard.com/report/github.com/xyproto/wallutils)
 
 * Detect monitor resolutions and set the desktop wallpaper, for any window manager (please file an issue if your window manager is not supported yet).
 * Supports GNOME timed wallpapers, and includes a utility that can run an event loop for changing them (also supports cross fading).
@@ -21,9 +21,9 @@ The [Mojave timed wallpaper](https://github.com/japamax/gnome-mojave-timed-wallp
   * `setcollection`, for setting a suitable (in terms of resolution) wallpaper from a wallpaper collection.
   * `setrandom`, for setting a random wallpaper.
   * `settimed`, for setting GNOME timed wallpapers (will continue to run, to handle time events).
-  * `setwallpaper` can be used for setting a wallpaper (works both for X11 and Wayland).
+  * `setwallpaper` can be used for setting a wallpaper (works both over X and the Wayland protocol).
   * `wayinfo` shows detailed information about the connected monitors, via Wayland.
-  * `xinfo` shows detailed information about the connected monitors, via X11.
+  * `xinfo` shows detailed information about the connected monitors, via X.
   * `xml2stw` for converting GNOME timed wallpapers to the Simple Timed Wallpaper format.
 
 ## Example use of the `lsmon` utility
@@ -44,15 +44,15 @@ Using make, for building and installing all included utilities:
 
 Using Go 1.11 or later, for a single utility:
 
-    go get -u github.com/xyproto/monitor/cmd/setwallpaper
+    go get -u github.com/xyproto/wallutils/cmd/settimed
 
 On Arch Linux:
 
-Install `monitor` from AUR, or:
+Install `wallutils` from AUR, or:
 
     sudo pacman -Syu git go libxcursor libxmu wayland xbitmaps xorgproto
-    go get -u github.com/xyproto/monitor/cmd/setwallpaper
-    cd ~/go/src/github.com/xyproto/monitor
+    git clone https://github.com/xyproto/wallutils
+    cd wallutils
     make
     sudo make install
 
@@ -60,24 +60,22 @@ On Ubuntu:
 
     sudo apt get update
     sudo apt get install libxcursor-dev libxmu-dev libx11-dev git golang-go
-    go get -u github.com/xyproto/monitor/cmd/setwallpaper
-    cd ~/go/src/github.com/xyproto/monitor
+    git clone https://github.com/xyproto/wallutils
+    cd wallutils
     make
     sudo make install
 
-Manually:
+## Example use of `settimed`
 
-    # clone the repository
-    git clone https://github.com/xyproto/monitor
-
-    # build and install the setwallpaper command
-    cd monitor/cmd/setwallpaper
-    go build
-    install -Dm755 setwallpaper /usr/bin/setwallpaper
+    settimed mojave-timed
 
 ## Example use of `setwallpaper`
 
     setwallpaper /path/to/background/image.png
+
+## Example use of `setrandom`
+
+    setrandom /usr/share/pixmaps
 
 ## Example use of the Go package
 
@@ -90,12 +88,12 @@ import (
 	"fmt"
 	"os"
 
-	"github.com/xyproto/monitor"
+	"github.com/xyproto/wallutils"
 )
 
 func main() {
 	// Retrieve a slice of Monitor structs, or exit with an error
-	monitors, err := monitor.Detect()
+	monitors, err := wallutils.Monitors()
 	if err != nil {
 		fmt.Fprintf(os.Stderr, "%s\n", err)
 		os.Exit(1)
@@ -111,7 +109,7 @@ func main() {
 
 ```go
 fmt.Println("Setting background image to: " + imageFilename)
-if err := monitor.SetWallpaper(imageFilename); err != nil {
+if err := wallutils.SetWallpaper(imageFilename); err != nil {
 	return err
 }
 ```
