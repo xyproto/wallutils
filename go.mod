@@ -7,7 +7,7 @@ require (
 	github.com/mattn/go-isatty v0.0.4 // indirect
 	github.com/stretchr/powerwalk v0.0.0-20151124150408-bceb9d014549
 	github.com/stretchr/testify v1.3.0 // indirect
-	github.com/xyproto/crossfade v0.0.0-20190210121323-d884599bd751
-	github.com/xyproto/event v0.0.0-20190209144958-6bbdc7eb57e4
-	golang.org/x/sys v0.0.0-20190214214411-e77772198cdc // indirect
+	github.com/xyproto/gnometimed v0.0.0-20190216135853-64f6716ff434
+	github.com/xyproto/simpletimed v0.0.0-20190216135645-dc586bdfc16f
+	golang.org/x/sys v0.0.0-20190215142949-d0b11bdaac8a // indirect
 )
