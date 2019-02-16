@@ -12,7 +12,7 @@ import (
 )
 
 // EventLoop will start the event loop for this GNOME Timed Wallpaper
-func (gw *Wallpaper) EventLoop(verbose bool, setWallpaperFunc func(string, bool) error) error {
+func (gw *Wallpaper) EventLoop(verbose bool, setWallpaperFunc func(string) error) error {
 
 	if verbose {
 		fmt.Println("Using the GNOME Timed Wallpaper format")
@@ -86,7 +86,7 @@ func (gw *Wallpaper) EventLoop(verbose bool, setWallpaperFunc func(string, bool)
 				if verbose {
 					fmt.Printf("Setting %s.\n", imageFilename)
 				}
-				if err := setWallpaperFunc(imageFilename, verbose); err != nil {
+				if err := setWallpaperFunc(imageFilename); err != nil {
 					fmt.Fprintf(os.Stderr, "Could not set wallpaper: %v\n", err)
 					return // return from anon func
 				}
@@ -169,7 +169,7 @@ func (gw *Wallpaper) EventLoop(verbose bool, setWallpaperFunc func(string, bool)
 				if verbose {
 					fmt.Printf("Setting %s.\n", tempImageFilename)
 				}
-				if err := setWallpaperFunc(tempImageFilename, verbose); err != nil {
+				if err := setWallpaperFunc(tempImageFilename); err != nil {
 					fmt.Fprintf(os.Stderr, "Could not set wallpaper: %v\n", err)
 					return // return from anon func
 				}

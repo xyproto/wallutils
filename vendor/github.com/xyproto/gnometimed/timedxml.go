@@ -10,8 +10,6 @@ import (
 	"time"
 )
 
-var h24 = time.Hour * 24
-
 // Handle the GNOME timed wallpaper XML format
 
 type GBackground struct {
@@ -53,15 +51,7 @@ type StaticMap map[int]int
 // Duration returns how long a static wallpaper should last
 func (s *GStatic) Duration() time.Duration {
 	d := time.Duration(s.Seconds) * time.Second
-	// TODO: use modulo instead: d % h24
 	return d % h24
-	//for d < 0 {
-	//	d += h24
-	//}
-	//for d > h24 {
-	//	d -= h24
-	//}
-	//return d
 }
 
 // Duration returns how long a transition should last
@@ -160,8 +150,6 @@ func findOrder(XMLData []byte) (StaticMap, TransitionMap, error) {
 
 	//transitionIndex -> totalIndex
 	transitionOrder := make(TransitionMap, transitionCount)
-
-	// TODO: Strip away all comments before processing the XML data
 
 	// Iterate one time per static or transition tag
 	for count := 0; count < (staticCount + transitionCount); count++ {
