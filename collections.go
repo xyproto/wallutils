@@ -2,6 +2,8 @@ package monitor
 
 import (
 	"github.com/stretchr/powerwalk"
+	"github.com/xyproto/gnometimed"
+	"github.com/xyproto/simpletimed"
 	"image/jpeg"
 	"image/png"
 	"os"
@@ -23,12 +25,12 @@ var (
 )
 
 type SearchResults struct {
-	wallpapers                  sync.Map                // stores the full path -> *Wallpaper struct, for png + jpeg files
-	gnomeWallpapers             sync.Map                // stores the full path -> *GnomeTimedWallpaper struct, for xml files
-	simpleTimedWallpapers       sync.Map                // stores the full path -> *SimpleTimedWallpaper struct, for stw files
-	sortedWallpapers            []*Wallpaper            // holds sorted wallpapers
-	sortedGnomeTimedWallpapers  []*GnomeTimedWallpaper  // holds sorted Gnome Timed Wallpapers
-	sortedSimpleTimedWallpapers []*SimpleTimedWallpaper // holds sorted Simple Timed Wallpapers
+	wallpapers                  sync.Map                 // stores the full path -> *Wallpaper struct, for png + jpeg files
+	gnomeWallpapers             sync.Map                 // stores the full path -> *gnometimed.Wallpaper struct, for xml files
+	simpleTimedWallpapers       sync.Map                 // stores the full path -> *simpletimed.Wallpaper struct, for stw files
+	sortedWallpapers            []*Wallpaper             // holds sorted wallpapers
+	sortedGnomeTimedWallpapers  []*gnometimed.Wallpaper  // holds sorted Gnome Timed Wallpapers
+	sortedSimpleTimedWallpapers []*simpletimed.Wallpaper // holds sorted Simple Timed Wallpapers
 }
 
 var (
@@ -47,8 +49,8 @@ func NewSearchResults() *SearchResults {
 		gnomeWallpapers:             sync.Map{},
 		simpleTimedWallpapers:       sync.Map{},
 		sortedWallpapers:            []*Wallpaper{},
-		sortedGnomeTimedWallpapers:  []*GnomeTimedWallpaper{},
-		sortedSimpleTimedWallpapers: []*SimpleTimedWallpaper{},
+		sortedGnomeTimedWallpapers:  []*gnometimed.Wallpaper{},
+		sortedSimpleTimedWallpapers: []*simpletimed.Wallpaper{},
 	}
 }
 
@@ -134,13 +136,13 @@ func (sr *SearchResults) visit(path string, f os.FileInfo, err error) error {
 		// TODO: Consider supporting XPM and/or XBM wallpapers in the future
 		return nil
 	case ".stw": // Simple Timed Wallpaper
-		stw, err := ParseSTW(path)
+		stw, err := simpletimed.ParseSTW(path)
 		if err != nil {
 			return err
 		}
 		sr.simpleTimedWallpapers.Store(path, stw)
 	case ".xml":
-		gw, err := ParseXML(path)
+		gw, err := gnometimed.ParseXML(path)
 		if err != nil {
 			return err
 		}
@@ -173,9 +175,9 @@ func (sr *SearchResults) sortWallpapers() {
 
 // sortGnomeTimedWallpapers sorts the Found gnome Timed Wallpapers
 func (sr *SearchResults) sortGnomeTimedWallpapers() {
-	var collected []*GnomeTimedWallpaper
+	var collected []*gnometimed.Wallpaper
 	sr.gnomeWallpapers.Range(func(_, value interface{}) bool {
-		gw, ok := value.(*GnomeTimedWallpaper)
+		gw, ok := value.(*gnometimed.Wallpaper)
 		if !ok {
 			// internal error
 			panic("a value in the gnomeWallpapers map is not a pointer to a GnomeTimedWallpaper struct")
@@ -192,12 +194,12 @@ func (sr *SearchResults) sortGnomeTimedWallpapers() {
 
 // sortSimpleTimedWallpapers sorts the found Simple Timed Wallpapers
 func (sr *SearchResults) sortSimpleTimedWallpapers() {
-	var collected []*SimpleTimedWallpaper
+	var collected []*simpletimed.Wallpaper
 	sr.simpleTimedWallpapers.Range(func(_, value interface{}) bool {
-		stw, ok := value.(*SimpleTimedWallpaper)
+		stw, ok := value.(*simpletimed.Wallpaper)
 		if !ok {
 			// internal error
-			panic("a value in the simpleTimedWallpapers map is not a pointer to a SimpleTimedWallpaper struct")
+			panic("a value in the simpleTimedWallpapers map is not a pointer to a simpletimed.Wallpaper struct")
 		}
 		collected = append(collected, stw)
 		return true
@@ -247,12 +249,12 @@ func (sr *SearchResults) Wallpapers() []*Wallpaper {
 }
 
 // GnomeTimedWallpapers returns a sorted slice of all found gnome timed wallpapers
-func (sr *SearchResults) GnomeTimedWallpapers() []*GnomeTimedWallpaper {
+func (sr *SearchResults) GnomeTimedWallpapers() []*gnometimed.Wallpaper {
 	return sr.sortedGnomeTimedWallpapers
 }
 
 // SimpleTimedWallpapers returns a sorted slice of all found simple timed wallpapers
-func (sr *SearchResults) SimpleTimedWallpapers() []*SimpleTimedWallpaper {
+func (sr *SearchResults) SimpleTimedWallpapers() []*simpletimed.Wallpaper {
 	return sr.sortedSimpleTimedWallpapers
 }
 
@@ -268,8 +270,8 @@ func (sr *SearchResults) WallpapersByName(name string) []*Wallpaper {
 }
 
 // GnomeTimedWallpapersByName will return gnome timed wallpapers that match with the collection name
-func (sr *SearchResults) GnomeTimedWallpapersByName(name string) []*GnomeTimedWallpaper {
-	var collection []*GnomeTimedWallpaper
+func (sr *SearchResults) GnomeTimedWallpapersByName(name string) []*gnometimed.Wallpaper {
+	var collection []*gnometimed.Wallpaper
 	for _, gw := range sr.sortedGnomeTimedWallpapers {
 		if gw.Name == name {
 			collection = append(collection, gw)
@@ -279,8 +281,8 @@ func (sr *SearchResults) GnomeTimedWallpapersByName(name string) []*GnomeTimedWa
 }
 
 // SimpleTimedWallpapersByName will return simple timed wallpapers that match with the collection name
-func (sr *SearchResults) SimpleTimedWallpapersByName(name string) []*SimpleTimedWallpaper {
-	var collection []*SimpleTimedWallpaper
+func (sr *SearchResults) SimpleTimedWallpapersByName(name string) []*simpletimed.Wallpaper {
+	var collection []*simpletimed.Wallpaper
 	for _, stw := range sr.sortedSimpleTimedWallpapers {
 		if stw.Name == name {
 			collection = append(collection, stw)

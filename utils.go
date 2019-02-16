@@ -50,6 +50,7 @@ func firstname(filename string) string {
 	return filename[:len(filename)-len(ext)]
 }
 
+// exists checks if the given path exists
 func exists(path string) bool {
 	_, err := os.Stat(path)
 	return err == nil

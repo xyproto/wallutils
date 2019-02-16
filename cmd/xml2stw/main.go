@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"os"
 
-	"github.com/xyproto/monitor"
+	"github.com/xyproto/gnometimed"
 )
 
 func main() {
@@ -14,7 +14,7 @@ func main() {
 	}
 	filename := os.Args[1]
 
-	s, err := monitor.GnomeFileToSimpleString(filename)
+	s, err := gnometimed.GnomeFileToSimpleString(filename)
 	if err != nil {
 		fmt.Fprintf(os.Stderr, "error: %s\n", err)
 		os.Exit(1)

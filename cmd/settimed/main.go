@@ -6,7 +6,9 @@ import (
 	"path/filepath"
 	"strings"
 
+	"github.com/xyproto/gnometimed"
 	"github.com/xyproto/monitor"
+	"github.com/xyproto/simpletimed"
 )
 
 func exists(path string) bool {
@@ -29,7 +31,7 @@ func main() {
 		filename := collectionName
 		switch filepath.Ext(filename) {
 		case ".stw":
-			stw, err := monitor.ParseSTW(filename)
+			stw, err := simpletimed.ParseSTW(filename)
 			if err != nil {
 				fmt.Fprintln(os.Stderr, err)
 				os.Exit(1)
@@ -38,12 +40,12 @@ func main() {
 				fmt.Printf("Using: %s\n", stw.Path)
 			}
 			// Start endless event loop
-			if err := stw.EventLoop(verbose); err != nil {
+			if err := stw.EventLoop(verbose, monitor.SetWallpaperVerbose); err != nil {
 				fmt.Fprintln(os.Stderr, err)
 				os.Exit(1)
 			}
 		case ".xml":
-			gtw, err := monitor.ParseXML(filename)
+			gtw, err := gnometimed.ParseXML(filename)
 			if err != nil {
 				fmt.Fprintln(os.Stderr, err)
 				os.Exit(1)
@@ -52,7 +54,7 @@ func main() {
 				fmt.Printf("Using: %s\n", gtw.Path)
 			}
 			// Start endless event loop
-			if err := gtw.EventLoop(verbose); err != nil {
+			if err := gtw.EventLoop(verbose, monitor.SetWallpaperVerbose); err != nil {
 				fmt.Fprintln(os.Stderr, err)
 				os.Exit(1)
 			}
@@ -93,24 +95,26 @@ func main() {
 		os.Exit(1)
 	}
 
-	var eventLoop func(bool) error
 	if len(simpleTimedWallpapers) == 1 {
 		stw := simpleTimedWallpapers[0]
 		if verbose {
 			fmt.Printf("Using: %s\n", stw.Path)
 		}
-		eventLoop = stw.EventLoop
+		// Start endless event loop
+		if err := stw.EventLoop(verbose, monitor.SetWallpaperVerbose); err != nil {
+			fmt.Fprintln(os.Stderr, err)
+			os.Exit(1)
+		}
 	} else if len(gnomeTimedWallpapers) == 1 {
 		gtw := gnomeTimedWallpapers[0]
 		if verbose {
 			fmt.Printf("Using: %s\n", gtw.Path)
 		}
-		eventLoop = gtw.EventLoop
-	}
-	// Start endless event loop
-	if err := eventLoop(verbose); err != nil {
-		fmt.Fprintln(os.Stderr, err)
-		os.Exit(1)
+		// Start endless event loop
+		if err := gtw.EventLoop(verbose, monitor.SetWallpaperVerbose); err != nil {
+			fmt.Fprintln(os.Stderr, err)
+			os.Exit(1)
+		}
 	}
 
 }

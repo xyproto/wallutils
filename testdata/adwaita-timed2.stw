@@ -1,9 +1,0 @@
-stw: 1.0
-name: adwaita-timed
-format: /usr/share/backgrounds/gnome/adwaita-%s.jpg
-@07:00: morning
-@08:00-13:00: morning .. day
-@13:00: day
-@18:00-00:00: day .. night | overlay
-@00:00: night
-@05:00-07:00: night .. morning
