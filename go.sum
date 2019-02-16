@@ -25,7 +25,7 @@ github.com/xyproto/imagelib v0.0.0-20190209194312-bbbf5649f300 h1:Qje6856C+ZLSjB
 github.com/xyproto/imagelib v0.0.0-20190209194312-bbbf5649f300/go.mod h1:28DiltQEyXiqtA/q9l1+cRteOIozAh1J7/oyzbiR4iM=
 github.com/xyproto/simpletimed v0.0.0-20190216141311-8a4975327984 h1:3rubZGu4n9I/S0EwyyIvzwv6a9J5om3zB2ywOXU66Qw=
 github.com/xyproto/simpletimed v0.0.0-20190216141311-8a4975327984/go.mod h1:JsBKunb59W1HSWvAqqpSUfq0A5hZmSpSA8Bz+yVNPg4=
-github.com/xyproto/simpletimed v0.0.0-20190216150406-8938b34b90da h1:rXzPblHf7ZCSV6pGfK/FeFxg2eIwN38tqbjWJqGgZlM=
-github.com/xyproto/simpletimed v0.0.0-20190216150406-8938b34b90da/go.mod h1:JsBKunb59W1HSWvAqqpSUfq0A5hZmSpSA8Bz+yVNPg4=
+github.com/xyproto/simpletimed v0.0.0-20190216195619-d2bf51610429 h1:/t5k1CqGBArHxCVblPEIFfuLAhu2mAgple26C2o+Dj0=
+github.com/xyproto/simpletimed v0.0.0-20190216195619-d2bf51610429/go.mod h1:JsBKunb59W1HSWvAqqpSUfq0A5hZmSpSA8Bz+yVNPg4=
 golang.org/x/sys v0.0.0-20190215142949-d0b11bdaac8a h1:1BGLXjeY4akVXGgbC9HugT3Jv3hCI0z56oJR5vAMgBU=
 golang.org/x/sys v0.0.0-20190215142949-d0b11bdaac8a/go.mod h1:STP8DvDyc/dI5b8T5hshtkjS+E42TnysNCUPdjciGhY=

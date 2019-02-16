@@ -64,7 +64,9 @@ func (stw *Wallpaper) SetInitialWallpaper(verbose bool, setWallpaperFunc func(st
 		}
 
 		// Just sleep for half the cooldown, to have some time to register events too
-		fmt.Println("Sleeping for", cooldown/2)
+		if verbose {
+			fmt.Println("Activating events in", cooldown/2)
+		}
 		time.Sleep(cooldown / 2)
 	case *Transition:
 		t := v
@@ -103,6 +105,9 @@ func (stw *Wallpaper) SetInitialWallpaper(verbose bool, setWallpaperFunc func(st
 		}
 
 		if exists(tempDir) {
+			if verbose {
+				fmt.Println("Removing", tempDir)
+			}
 			// Clean up
 			os.RemoveAll(tempDir)
 		}
@@ -147,7 +152,9 @@ func (stw *Wallpaper) SetInitialWallpaper(verbose bool, setWallpaperFunc func(st
 		}
 
 		// Just sleep for half the cooldown, to have some time to register events too
-		fmt.Println("Sleeping for", cooldown/2)
+		if verbose {
+			fmt.Println("Activating events in", cooldown/2)
+		}
 		time.Sleep(cooldown / 2)
 	default:
 		return errors.New("could not set initial wallpaper: no previous event")
@@ -238,12 +245,7 @@ func (stw *Wallpaper) EventLoop(verbose bool, setWallpaperFunc func(string) erro
 		//eventloop.Add(event.New(from, window, cooldown, event.ProgressWrapperInterval(from, upTo, loopWait, func(ratio float64) {
 		eventloop.Add(event.New(from, window, cooldown, func() {
 			progress := window - event.ToToday(upTo).Sub(event.ToToday(time.Now()))
-			for progress > h24 {
-				progress -= h24
-			}
-			for progress < 0 {
-				progress += h24
-			}
+			progress %= h24
 			ratio := float64(progress) / float64(window)
 
 			if verbose {
@@ -259,6 +261,9 @@ func (stw *Wallpaper) EventLoop(verbose bool, setWallpaperFunc func(string) erro
 			}
 
 			if exists(tempDir) {
+				if verbose {
+					fmt.Println("Removing", tempDir)
+				}
 				// Clean up
 				os.RemoveAll(tempDir)
 			}
