@@ -14,7 +14,7 @@ github.com/xyproto/event
 github.com/xyproto/gnometimed
 # github.com/xyproto/imagelib v0.0.0-20190209194312-bbbf5649f300
 github.com/xyproto/imagelib
-# github.com/xyproto/simpletimed v0.0.0-20190216141311-8a4975327984
+# github.com/xyproto/simpletimed v0.0.0-20190216150406-8938b34b90da
 github.com/xyproto/simpletimed
 # golang.org/x/sys v0.0.0-20190215142949-d0b11bdaac8a
 golang.org/x/sys/unix
