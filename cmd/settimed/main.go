@@ -17,14 +17,27 @@ func exists(path string) bool {
 }
 
 func main() {
-	verbose := true
-
 	if len(os.Args) <= 1 {
 		fmt.Fprintln(os.Stderr, "Please give a timed wallpaper name as the first argument.")
 		os.Exit(1)
 	}
 
+	flag := ""
 	collectionName := os.Args[1]
+	// Support only 2 arguments, a flag and a collection name
+	// TODO: Use a package for argument handling that is not the "flag" package
+	if len(os.Args) == 3 {
+		if strings.HasPrefix(os.Args[1], "-") {
+			flag = os.Args[1]
+			collectionName = os.Args[2]
+		} else if strings.HasPrefix(os.Args[2], "-") {
+			flag = os.Args[2]
+			collectionName = os.Args[1]
+		}
+	}
+
+	// Be verbose unless a silent flag (-s) has been given
+	verbose := flag != "-s"
 
 	// Ok, it was a filename
 	if strings.Contains(collectionName, ".") && exists(collectionName) {
