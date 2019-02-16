@@ -1,10 +1,12 @@
-// monitor is a package for dealing with monitors, resolution, dpi, wallpapers, wallpaper collections, timed wallpapers and converting to the Simple Timed Wallpaper format.
+// wallutils is a package for dealing with monitors, resolution, dpi, wallpapers, wallpaper collections, timed wallpapers and converting to the Simple Timed Wallpaper format.
 package wallutils
 
 import (
 	"errors"
 	"fmt"
 )
+
+const VersionString = "5.1.0"
 
 // Monitor contains an ID, the width in pixels and the height in pixels
 type Monitor struct {
@@ -15,9 +17,7 @@ type Monitor struct {
 	DPIh   uint // DPI, if available (height)
 }
 
-var errNoWaylandNoX = errors.New("could not detect either Wayland or X")
-
-const VersionString = "5.0.0"
+var errNoWaylandNoX = errors.New("could not detect neither Wayland nor X")
 
 // String returns a string with monitor ID and resolution
 func (m Monitor) String() string {
