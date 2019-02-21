@@ -25,8 +25,7 @@ func (stw *Wallpaper) UntilNext(et time.Time) time.Duration {
 	// OK, have all start times, now to find the ones that are both positive and smallest
 	for _, st := range startTimes {
 		//diff := st.Sub(et)
-		diff := event.ToToday(et).Sub(event.ToToday(st))
-		diff %= h24
+		diff := mod24(event.ToToday(et).Sub(event.ToToday(st)))
 		if diff > 0 && diff < mindiff {
 			mindiff = diff
 		}
@@ -54,8 +53,7 @@ func (stw *Wallpaper) NextEvent(now time.Time) (interface{}, error) {
 	for t, e := range events {
 		//fmt.Printf("now is: %v (%T)\n", now, now)
 		//fmt.Printf("t is: %v (%T)\n", t, t)
-		diff := event.ToToday(t).Sub(event.ToToday(now))
-		diff %= h24
+		diff := mod24(event.ToToday(t).Sub(event.ToToday(now)))
 		//fmt.Println("Diff for", c(t), ":", diff)
 		if diff > 0 && diff < minDiff {
 			minDiff = diff
@@ -86,8 +84,7 @@ func (stw *Wallpaper) PrevEvent(now time.Time) (interface{}, error) {
 	for t, e := range events {
 		//fmt.Printf("now is: %v (%T)\n", now, now)
 		//fmt.Printf("t is: %v (%T)\n", t, t)
-		diff := event.ToToday(now).Sub(event.ToToday(t))
-		diff %= h24
+		diff := mod24(event.ToToday(now).Sub(event.ToToday(t)))
 		//fmt.Println("Diff for", c(t), ":", diff)
 		if diff > 0 && diff < minDiff {
 			minDiff = diff
@@ -112,8 +109,7 @@ func (stw *Wallpaper) SetInitialWallpaper(verbose bool, setWallpaperFunc func(st
 		from := s.At
 		//elapsed := time.Now().Sub(s.At)
 		elapsed := event.ToToday(time.Now()).Sub(event.ToToday(s.At))
-		window := stw.UntilNext(s.At) - elapsed // duration until next event start, minus time elapsed
-		window %= h24
+		window := mod24(stw.UntilNext(s.At) - elapsed) // duration until next event start, minus time elapsed
 		cooldown := window
 
 		imageFilename := s.Filename
@@ -154,8 +150,7 @@ func (stw *Wallpaper) SetInitialWallpaper(verbose bool, setWallpaperFunc func(st
 
 		now := time.Now()
 		window := t.Duration()
-		progress := window - event.ToToday(t.UpTo).Sub(event.ToToday(now))
-		progress %= h24
+		progress := mod24(window - event.ToToday(t.UpTo).Sub(event.ToToday(now)))
 		ratio := float64(progress) / float64(window)
 		from := t.From
 		steps := 10
@@ -261,8 +256,7 @@ func (stw *Wallpaper) EventLoop(verbose bool, setWallpaperFunc func(string) erro
 
 		// Place values into variables, before enclosing it in the function below.
 		from := s.At
-		window := stw.UntilNext(s.At) // duration until next event start
-		window %= h24
+		window := mod24(stw.UntilNext(s.At)) // duration until next event start
 		cooldown := window
 		imageFilename := s.Filename
 
@@ -320,8 +314,7 @@ func (stw *Wallpaper) EventLoop(verbose bool, setWallpaperFunc func(string) erro
 		// Register a transition event
 		//eventloop.Add(event.New(from, window, cooldown, event.ProgressWrapperInterval(from, upTo, loopWait, func(ratio float64) {
 		eventloop.Add(event.New(from, window, cooldown, func() {
-			progress := window - event.ToToday(upTo).Sub(event.ToToday(time.Now()))
-			progress %= h24
+			progress := mod24(window - event.ToToday(upTo).Sub(event.ToToday(time.Now())))
 			ratio := float64(progress) / float64(window)
 
 			if verbose {
