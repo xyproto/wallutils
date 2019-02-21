@@ -131,14 +131,6 @@ func (gtw *Wallpaper) EventLoop(verbose bool, setWallpaperFunc func(string) erro
 					fmt.Println("To filename", tToFilename)
 				}
 
-				if exists(tempDir) {
-					if verbose {
-						fmt.Println("Removing", tempDir)
-					}
-					// Clean up
-					os.RemoveAll(tempDir)
-				}
-
 				tempDir, err = ioutil.TempDir("", "crossfade")
 				if err != nil {
 					fmt.Fprintf(os.Stderr, "Could not create temporary directory: %v\n", err)
@@ -146,6 +138,17 @@ func (gtw *Wallpaper) EventLoop(verbose bool, setWallpaperFunc func(string) erro
 				}
 				// Prepare to write an image to the temporary directory
 				tempImageFilename := filepath.Join(tempDir, "out.png") // .jpg is also possible
+
+				// Remove the temporary directory 5 minutes after this has passed
+				eventloop.Once(upTo.Add(5*time.Minute), func() {
+					if exists(tempDir) {
+						if verbose {
+							fmt.Println("Removing", tempDir)
+						}
+						// Clean up
+						os.RemoveAll(tempDir)
+					}
+				})
 
 				if verbose {
 					fmt.Println("Crossfading between images.")
