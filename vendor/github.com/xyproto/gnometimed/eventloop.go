@@ -105,8 +105,8 @@ func (gtw *Wallpaper) EventLoop(verbose bool, setWallpaperFunc func(string) erro
 
 			from := eventTime
 			window := t.Duration()
-			cooldown := window / time.Duration(steps)
 			upTo := eventTime.Add(window)
+			cooldown := window / time.Duration(steps)
 			tType := t.Type
 			tFromFilename := t.FromFilename
 			tToFilename := t.ToFilename
@@ -116,7 +116,10 @@ func (gtw *Wallpaper) EventLoop(verbose bool, setWallpaperFunc func(string) erro
 
 			// Register a transition event
 			eventloop.Add(event.New(from, window, cooldown, func() {
-				progress := mod24(window - event.ToToday(upTo).Sub(event.ToToday(time.Now())))
+				progress := window - event.ToToday(upTo).Sub(event.ToToday(time.Now()))
+				if progress < 0 {
+					progress *= -1
+				}
 				ratio := float64(progress) / float64(window)
 				if verbose {
 					fmt.Printf("Triggered transition event at %s (%d%% complete)\n", c(from), int(ratio*100))

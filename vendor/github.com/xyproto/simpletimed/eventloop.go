@@ -109,6 +109,9 @@ func (stw *Wallpaper) SetInitialWallpaper(verbose bool, setWallpaperFunc func(st
 		from := s.At
 		//elapsed := time.Now().Sub(s.At)
 		elapsed := event.ToToday(time.Now()).Sub(event.ToToday(s.At))
+		if elapsed < 0 {
+			elapsed *= -1
+		}
 		window := mod24(stw.UntilNext(s.At) - elapsed) // duration until next event start, minus time elapsed
 		cooldown := window
 

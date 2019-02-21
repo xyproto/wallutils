@@ -50,8 +50,7 @@ type StaticMap map[int]int
 
 // Duration returns how long a static wallpaper should last
 func (s *GStatic) Duration() time.Duration {
-	d := time.Duration(s.Seconds) * time.Second
-	return d % h24
+	return mod24(time.Duration(s.Seconds) * time.Second)
 }
 
 // Duration returns how long a transition should last
