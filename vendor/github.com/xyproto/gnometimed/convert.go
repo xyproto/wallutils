@@ -9,24 +9,24 @@ import (
 const simpleTimedWallpaperFormatVersion = "1.0"
 
 // GnomeToSimple converts a Gnome Timed Wallpaper to a Simple Timed Wallpaper
-func GnomeToSimple(gw *Wallpaper) (*simpletimed.Wallpaper, error) {
+func GnomeToSimple(gtw *Wallpaper) (*simpletimed.Wallpaper, error) {
 
 	// TODO: Convert from struct to struct, without excercising the serializer and the parser
 
 	// Convert the given struct to the string contents of a simpletimed.Wallpaper file
-	s, err := GnomeToSimpleString(gw)
+	s, err := GnomeToSimpleString(gtw)
 	if err != nil {
 		return nil, err
 	}
-	return simpletimed.DataToSimple(gw.Path, []byte(s))
+	return simpletimed.DataToSimple(gtw.Path, []byte(s))
 }
 
 // GnomeToSimpleString converts a Gnome Timed Wallpaper to a string
 // representing a Simple Timed Wallpaper. The Path field in the given
 // struct is not included in the output string.
-func GnomeToSimpleString(gw *Wallpaper) (string, error) {
-	//filename := gw.Path
-	name := gw.Name
+func GnomeToSimpleString(gtw *Wallpaper) (string, error) {
+	//filename := gtw.Path
+	name := gtw.Name
 
 	var sb strings.Builder
 
@@ -38,9 +38,9 @@ func GnomeToSimpleString(gw *Wallpaper) (string, error) {
 
 	// Get the start time for the wallpaper collection (which is offset by X
 	// seconds per static wallpaper)
-	startTime := gw.StartTime()
+	startTime := gtw.StartTime()
 
-	totalElements := len(gw.Config.Statics) + len(gw.Config.Transitions)
+	totalElements := len(gtw.Config.Statics) + len(gtw.Config.Transitions)
 
 	// Keep track of the total time. It is increased every time a new element duration is encountered.
 	eventTime := startTime
@@ -49,7 +49,7 @@ func GnomeToSimpleString(gw *Wallpaper) (string, error) {
 	var filenames []string
 	for i := 0; i < totalElements; i++ {
 		// Get an element, by index. This is an interface{} and is expected to be a GStatic or a GTransition
-		eInterface, err := gw.Config.Get(i)
+		eInterface, err := gtw.Config.Get(i)
 		if err != nil {
 			return "", fmt.Errorf("element is not a <static> or <transition> tag: error: %s", err)
 		}
@@ -73,7 +73,7 @@ func GnomeToSimpleString(gw *Wallpaper) (string, error) {
 		// The duration of the event is specified in the XML file, but not when it should start
 
 		// Get an element, by index. This is an interface{} and is expected to be a GStatic or a GTransition
-		eInterface, err := gw.Config.Get(i)
+		eInterface, err := gtw.Config.Get(i)
 		if err != nil {
 			return "", fmt.Errorf("element is not a <static> or <transition> tag: error: %s", err)
 		}
@@ -107,9 +107,9 @@ func GnomeToSimpleString(gw *Wallpaper) (string, error) {
 // GnomeFileToSimpleString reads and parses an XML file, then returns a string
 // representing the contents of a Simple Timed Wallpaper file.
 func GnomeFileToSimpleString(filename string) (string, error) {
-	gw, err := ParseXML(filename)
+	gtw, err := ParseXML(filename)
 	if err != nil {
 		return "", fmt.Errorf("Could not parse %s: %s", filename, err)
 	}
-	return GnomeToSimpleString(gw)
+	return GnomeToSimpleString(gtw)
 }

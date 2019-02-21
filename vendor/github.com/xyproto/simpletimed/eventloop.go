@@ -12,7 +12,93 @@ import (
 	"github.com/xyproto/event"
 )
 
-// SetInitialWallpaper will set the first wallpaper, before starting the vent loop
+// UntilNext finds the duration until the next event starts
+func (stw *Wallpaper) UntilNext(et time.Time) time.Duration {
+	var startTimes []time.Time
+	for _, t := range stw.Transitions {
+		startTimes = append(startTimes, t.From)
+	}
+	for _, s := range stw.Statics {
+		startTimes = append(startTimes, s.At)
+	}
+	mindiff := h24
+	// OK, have all start times, now to find the ones that are both positive and smallest
+	for _, st := range startTimes {
+		//diff := st.Sub(et)
+		diff := event.ToToday(et).Sub(event.ToToday(st))
+		diff %= h24
+		if diff > 0 && diff < mindiff {
+			mindiff = diff
+		}
+	}
+	return mindiff
+}
+
+// NextEvent finds the next event, given a timestamp.
+// Returns an interface{} that is either a static or transition event.
+func (stw *Wallpaper) NextEvent(now time.Time) (interface{}, error) {
+	// Create a map, from timestamps to wallpaper events
+	events := make(map[time.Time]interface{})
+	for _, t := range stw.Transitions {
+		events[t.From] = t
+	}
+	for _, s := range stw.Statics {
+		events[s.At] = s
+	}
+	if len(events) == 0 {
+		return nil, errors.New("can not find next event: got no events")
+	}
+	// Go though all the event time stamps, and find the one that has the smallest (now time - event time)
+	minDiff := h24
+	var minEvent interface{}
+	for t, e := range events {
+		//fmt.Printf("now is: %v (%T)\n", now, now)
+		//fmt.Printf("t is: %v (%T)\n", t, t)
+		diff := event.ToToday(t).Sub(event.ToToday(now))
+		diff %= h24
+		//fmt.Println("Diff for", c(t), ":", diff)
+		if diff > 0 && diff < minDiff {
+			minDiff = diff
+			minEvent = e
+			//fmt.Println("NEW SMALLEST DIFF RIGHT AFTER", c(now), c(t), minDiff)
+		}
+	}
+	return minEvent, nil
+}
+
+// PrevEvent finds the previous event, given a timestamp.
+// Returns an interface{} that is either a static or transition event.
+func (stw *Wallpaper) PrevEvent(now time.Time) (interface{}, error) {
+	// Create a map, from timestamps to wallpaper events
+	events := make(map[time.Time]interface{})
+	for _, t := range stw.Transitions {
+		events[t.From] = t
+	}
+	for _, s := range stw.Statics {
+		events[s.At] = s
+	}
+	if len(events) == 0 {
+		return nil, errors.New("can not find previous event: got no events")
+	}
+	// Go though all the event time stamps, and find the one that has the smallest (now time - event time)
+	minDiff := h24
+	var minEvent interface{}
+	for t, e := range events {
+		//fmt.Printf("now is: %v (%T)\n", now, now)
+		//fmt.Printf("t is: %v (%T)\n", t, t)
+		diff := event.ToToday(now).Sub(event.ToToday(t))
+		diff %= h24
+		//fmt.Println("Diff for", c(t), ":", diff)
+		if diff > 0 && diff < minDiff {
+			minDiff = diff
+			minEvent = e
+			//fmt.Println("NEW SMALLEST DIFF RIGHT BEFORE", c(now), c(t), minDiff)
+		}
+	}
+	return minEvent, nil
+}
+
+// SetInitialWallpaper will set the first wallpaper, before starting the event loop
 func (stw *Wallpaper) SetInitialWallpaper(verbose bool, setWallpaperFunc func(string) error) error {
 	e, err := stw.PrevEvent(time.Now())
 	if err != nil {
@@ -27,12 +113,7 @@ func (stw *Wallpaper) SetInitialWallpaper(verbose bool, setWallpaperFunc func(st
 		//elapsed := time.Now().Sub(s.At)
 		elapsed := event.ToToday(time.Now()).Sub(event.ToToday(s.At))
 		window := stw.UntilNext(s.At) - elapsed // duration until next event start, minus time elapsed
-		for window < 0 {
-			window += h24
-		}
-		for window > h24 {
-			window -= h24
-		}
+		window %= h24
 		cooldown := window
 
 		imageFilename := s.Filename
@@ -74,12 +155,7 @@ func (stw *Wallpaper) SetInitialWallpaper(verbose bool, setWallpaperFunc func(st
 		now := time.Now()
 		window := t.Duration()
 		progress := window - event.ToToday(t.UpTo).Sub(event.ToToday(now))
-		for progress > h24 {
-			progress -= h24
-		}
-		for progress < 0 {
-			progress += h24
-		}
+		progress %= h24
 		ratio := float64(progress) / float64(window)
 		from := t.From
 		steps := 10
@@ -181,12 +257,7 @@ func (stw *Wallpaper) EventLoop(verbose bool, setWallpaperFunc func(string) erro
 		// Place values into variables, before enclosing it in the function below.
 		from := s.At
 		window := stw.UntilNext(s.At) // duration until next event start
-		for window < 0 {
-			window += h24
-		}
-		for window > h24 {
-			window -= h24
-		}
+		window %= h24
 		cooldown := window
 		imageFilename := s.Filename
 
@@ -306,107 +377,4 @@ func (stw *Wallpaper) EventLoop(verbose bool, setWallpaperFunc func(string) erro
 	// Endless loop! Will wait LoopWait duration between each event loop cycle.
 	eventloop.Go(stw.LoopWait)
 	return nil
-}
-
-// UntilNext finds the duration until the next event starts
-func (stw *Wallpaper) UntilNext(et time.Time) time.Duration {
-	var startTimes []time.Time
-	for _, t := range stw.Transitions {
-		startTimes = append(startTimes, t.From)
-	}
-	for _, s := range stw.Statics {
-		startTimes = append(startTimes, s.At)
-	}
-	mindiff := h24
-	// OK, have all start times, now to find the ones that are both positive and smallest
-	for _, st := range startTimes {
-		//diff := st.Sub(et)
-		diff := event.ToToday(et).Sub(event.ToToday(st))
-		for diff < 0 {
-			diff += h24
-		}
-		for diff > h24 {
-			diff -= h24
-		}
-		if diff > 0 && diff < mindiff {
-			mindiff = diff
-		}
-	}
-	return mindiff
-}
-
-// NextEvent finds the next event, given a timestamp.
-// Returns an interface{} that is either a static or transition event.
-func (stw *Wallpaper) NextEvent(now time.Time) (interface{}, error) {
-	// Create a map, from timestamps to wallpaper events
-	events := make(map[time.Time]interface{})
-	for _, t := range stw.Transitions {
-		events[t.From] = t
-	}
-	for _, s := range stw.Statics {
-		events[s.At] = s
-	}
-	if len(events) == 0 {
-		return nil, errors.New("can not find next event: got no events")
-	}
-	// Go though all the event time stamps, and find the one that has the smallest (now time - event time)
-	minDiff := h24
-	var minEvent interface{}
-	for t, e := range events {
-		//fmt.Printf("now is: %v (%T)\n", now, now)
-		//fmt.Printf("t is: %v (%T)\n", t, t)
-		diff := event.ToToday(t).Sub(event.ToToday(now))
-		//diff := t.Sub(now)
-		for diff < 0 {
-			diff += h24
-		}
-		for diff > h24 {
-			diff -= h24
-		}
-		//fmt.Println("Diff for", c(t), ":", diff)
-		if diff > 0 && diff < minDiff {
-			minDiff = diff
-			minEvent = e
-			//fmt.Println("NEW SMALLEST DIFF RIGHT AFTER", c(now), c(t), minDiff)
-		}
-	}
-	return minEvent, nil
-}
-
-// PrevEvent finds the previous event, given a timestamp.
-// Returns an interface{} that is either a static or transition event.
-func (stw *Wallpaper) PrevEvent(now time.Time) (interface{}, error) {
-	// Create a map, from timestamps to wallpaper events
-	events := make(map[time.Time]interface{})
-	for _, t := range stw.Transitions {
-		events[t.From] = t
-	}
-	for _, s := range stw.Statics {
-		events[s.At] = s
-	}
-	if len(events) == 0 {
-		return nil, errors.New("can not find previous event: got no events")
-	}
-	// Go though all the event time stamps, and find the one that has the smallest (now time - event time)
-	minDiff := h24
-	var minEvent interface{}
-	for t, e := range events {
-		//fmt.Printf("now is: %v (%T)\n", now, now)
-		//fmt.Printf("t is: %v (%T)\n", t, t)
-		diff := event.ToToday(now).Sub(event.ToToday(t))
-		//diff := now.Sub(t)
-		for diff < 0 {
-			diff += h24
-		}
-		for diff > h24 {
-			diff -= h24
-		}
-		//fmt.Println("Diff for", c(t), ":", diff)
-		if diff > 0 && diff < minDiff {
-			minDiff = diff
-			minEvent = e
-			//fmt.Println("NEW SMALLEST DIFF RIGHT BEFORE", c(now), c(t), minDiff)
-		}
-	}
-	return minEvent, nil
 }
