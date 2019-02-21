@@ -81,8 +81,10 @@ func (stw *Wallpaper) String() string {
 }
 
 func NewWallpaper(version, name, format string) *Wallpaper {
-	statics := make([]*Static, 0)
-	transitions := make([]*Transition, 0)
+	var (
+		statics     []*Static
+		transitions []*Transition
+	)
 	return &Wallpaper{version, name, format, "", statics, transitions, DefaultLoopTime}
 }
 

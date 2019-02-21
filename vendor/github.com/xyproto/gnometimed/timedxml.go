@@ -183,8 +183,8 @@ func findOrder(XMLData []byte) (StaticMap, TransitionMap, error) {
 	return staticOrder, transitionOrder, nil
 }
 
-func (background *GBackground) String() string {
-	data, err := xml.MarshalIndent(background, "", "  ")
+func (gb *GBackground) String() string {
+	data, err := xml.MarshalIndent(gb, "", "  ")
 	if err != nil {
 		return ""
 	}

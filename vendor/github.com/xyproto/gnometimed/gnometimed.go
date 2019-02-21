@@ -27,19 +27,19 @@ func NewWallpaper(name string, path string, config *GBackground) *Wallpaper {
 }
 
 // StartTime returns the timed wallpaper start time, as a time.Time
-func (gw *Wallpaper) StartTime() time.Time {
-	// gw.Config.StartTime is a struct that contains ints,
+func (gtw *Wallpaper) StartTime() time.Time {
+	// gtw.Config.StartTime is a struct that contains ints,
 	// where the values are directly from the parsed XML.
-	st := gw.Config.StartTime
+	st := gtw.Config.StartTime
 	return time.Date(st.Year, time.Month(st.Month), st.Day, st.Hour, st.Minute, 0, 0, time.Local)
 }
 
-func (gw *Wallpaper) Images() []string {
+func (gtw *Wallpaper) Images() []string {
 	var filenames []string
-	for _, static := range gw.Config.Statics {
+	for _, static := range gtw.Config.Statics {
 		filenames = append(filenames, static.Filename)
 	}
-	for _, transition := range gw.Config.Transitions {
+	for _, transition := range gtw.Config.Transitions {
 		filenames = append(filenames, transition.FromFilename)
 		filenames = append(filenames, transition.ToFilename)
 	}
@@ -47,18 +47,18 @@ func (gw *Wallpaper) Images() []string {
 }
 
 // String builds a string with various information about this GNOME timed wallpaper
-func (gw *Wallpaper) String() string {
+func (gtw *Wallpaper) String() string {
 	var sb strings.Builder
 	sb.WriteString("path\t\t\t= ")
-	sb.WriteString(gw.Path)
+	sb.WriteString(gtw.Path)
 	sb.WriteString("\nstart time\t\t= ")
-	sb.WriteString(gw.StartTime().String())
+	sb.WriteString(gtw.StartTime().String())
 	sb.WriteString("\nnumber of static tags\t= ")
-	sb.WriteString(strconv.Itoa(len(gw.Config.Statics)))
+	sb.WriteString(strconv.Itoa(len(gtw.Config.Statics)))
 	sb.WriteString("\nnumber of transitions\t= ")
-	sb.WriteString(strconv.Itoa(len(gw.Config.Transitions)))
+	sb.WriteString(strconv.Itoa(len(gtw.Config.Transitions)))
 	sb.WriteString("\nuses these images:\n")
-	for _, filename := range gw.Images() {
+	for _, filename := range gtw.Images() {
 		sb.WriteString("\t" + filename + "\n")
 	}
 	return strings.TrimSpace(sb.String())
