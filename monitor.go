@@ -6,7 +6,7 @@ import (
 	"fmt"
 )
 
-const VersionString = "5.2.0"
+const VersionString = "5.2.1"
 
 // Monitor contains an ID, the width in pixels and the height in pixels
 type Monitor struct {
