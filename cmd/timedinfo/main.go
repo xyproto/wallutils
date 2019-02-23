@@ -25,27 +25,35 @@ func main() {
 	blue := color.New(color.FgBlue, color.Bold)
 	gray := color.New(color.Reset)
 	const prefix = "\t"
+	nameFilter := ""
+	if len(os.Args) > 1 {
+		nameFilter = os.Args[1]
+	}
 	first := true
 	for _, stw := range searchResults.SimpleTimedWallpapers() {
-		if first {
-			first = false
-		} else {
+		if nameFilter == "" || stw.Name == nameFilter {
+			if first {
+				first = false
+			} else {
+				fmt.Println()
+			}
+			white.Print("Simple Timed Wallpaper: ")
+			blue.Print(stw.Name)
 			fmt.Println()
+			gray.Println("\n" + Indent("path: "+stw.Path+"\n"+stw.String(), prefix))
 		}
-		white.Print("Simple Timed Wallpaper: ")
-		blue.Print(stw.Name)
-		fmt.Println()
-		gray.Println("\n" + Indent("path: "+stw.Path+"\n"+stw.String(), prefix))
 	}
 	for _, gtw := range searchResults.GnomeTimedWallpapers() {
-		if first {
-			first = false
-		} else {
+		if nameFilter == "" || gtw.Name == nameFilter {
+			if first {
+				first = false
+			} else {
+				fmt.Println()
+			}
+			white.Print("GNOME Timed Wallpaper: ")
+			blue.Print(gtw.Name)
 			fmt.Println()
+			gray.Println("\n" + Indent(gtw.String(), prefix))
 		}
-		white.Print("GNOME Timed Wallpaper: ")
-		blue.Print(gtw.Name)
-		fmt.Println()
-		gray.Println("\n" + Indent(gtw.String(), prefix))
 	}
 }
