@@ -25,7 +25,7 @@ func (stw *Wallpaper) UntilNext(et time.Time) time.Duration {
 	// OK, have all start times, now to find the ones that are both positive and smallest
 	for _, st := range startTimes {
 		//diff := st.Sub(et)
-		diff := mod24(event.ToToday(et).Sub(event.ToToday(st)))
+		diff := event.ToToday(et).Sub(event.ToToday(st))
 		if diff > 0 && diff < mindiff {
 			mindiff = diff
 		}
@@ -53,7 +53,7 @@ func (stw *Wallpaper) NextEvent(now time.Time) (interface{}, error) {
 	for t, e := range events {
 		//fmt.Printf("now is: %v (%T)\n", now, now)
 		//fmt.Printf("t is: %v (%T)\n", t, t)
-		diff := mod24(event.ToToday(t).Sub(event.ToToday(now)))
+		diff := event.ToToday(t).Sub(event.ToToday(now))
 		//fmt.Println("Diff for", c(t), ":", diff)
 		if diff > 0 && diff < minDiff {
 			minDiff = diff
@@ -84,7 +84,7 @@ func (stw *Wallpaper) PrevEvent(now time.Time) (interface{}, error) {
 	for t, e := range events {
 		//fmt.Printf("now is: %v (%T)\n", now, now)
 		//fmt.Printf("t is: %v (%T)\n", t, t)
-		diff := mod24(event.ToToday(now).Sub(event.ToToday(t)))
+		diff := event.ToToday(now).Sub(event.ToToday(t))
 		//fmt.Println("Diff for", c(t), ":", diff)
 		if diff > 0 && diff < minDiff {
 			minDiff = diff
