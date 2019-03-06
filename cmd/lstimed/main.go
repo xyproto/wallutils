@@ -11,7 +11,7 @@ func main() {
 	alsoPrintPath := len(os.Args) > 1 && os.Args[1] == "-l"
 
 	// Prepare to write text in columns
-	w := tabwriter.NewWriter(os.Stdout, 0, 0, 10, ' ', tabwriter.AlignRight)
+	w := tabwriter.NewWriter(os.Stdout, 0, 0, 4, ' ', 0)
 
 	searchResults, err := wallutils.FindWallpapers()
 	if err != nil {
