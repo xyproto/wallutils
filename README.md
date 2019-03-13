@@ -2,7 +2,7 @@
 
 * Detect monitor resolutions and set the desktop wallpaper, for any window manager (please file an issue if your window manager is not supported yet).
 * Supports GNOME timed wallpapers, and includes a utility that can run an event loop for changing them (also supports cross fading).
-* Introduces a new file format for timed wallpapers: The **Simple Timed Wallpaper** format: [FORMAT SPEC](cmd/xml2stw/SPEC.md).
+* Introduces a new file format for timed wallpapers: The **Simple Timed Wallpaper** format: [Web](https://github.com/xyproto/simpletimed/#specification) | [Markdown](https://github.com/xyproto/simpletimed/blob/master/stw-1.0.0.md) | [PDF](https://github.com/xyproto/simpletimed/raw/master/stw-1.0.0.pdf)
 
 ## Timed Wallpapers
 
