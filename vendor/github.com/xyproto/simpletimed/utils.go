@@ -19,7 +19,7 @@ func dFmt(d time.Duration) string {
 	s := fmt.Sprintf("%6s", d)
 	if strings.Contains(s, ".") {
 		pos := strings.Index(s, ".")
-		if strings.Contains(s[:pos], "s") {
+		if strings.Contains(s[pos:], "s") {
 			s = s[:pos] + "s"
 		}
 	}

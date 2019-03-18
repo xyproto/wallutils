@@ -19,8 +19,9 @@ func(string) error
 
 Where the given string is the image filename to be set.
 
-## General Info
+* Go module version: 1.0.4
 
-* Version: 1.0.3
+# General info
+
 * License: MIT
 * Author: Alexander F. Rødseth &lt;xyproto@archlinux.org&gt;
