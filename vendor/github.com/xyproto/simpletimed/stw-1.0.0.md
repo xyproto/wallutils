@@ -1,8 +1,10 @@
 # Simple Timed Wallpaper Format Spec
 
+2019-03-12
+
 A text format for specifying images and image transitions that make up timed wallpapers.
 
-## Version 1.0
+## Version 1.0.0
 
 Simple timed wallpapers are UTF-8 encoded text files.
 
@@ -12,9 +14,9 @@ Every line may either start with `@`, for timing information, or with a field na
 
 The recognized fields are:
 
-    * `stw` (required), for specifying the version of the Simple Timed Wallpaper Format, for example `1.0`.
-    * `name` (optional), for giving the timed wallpaper a name.
-    * `format` (optional), for specifying a format string that may contain a `%s` marker. The format string will be used in the timing information.
+* `stw` (required), for specifying the version of the Simple Timed Wallpaper Format, for example `1.0`.
+* `name` (optional), for giving the timed wallpaper a name.
+* `format` (optional), for specifying a format string that may contain a `%s` marker. The format string will be used in the timing information.
 
 After the fields, timing information may be specified. There are two types of timing information: static images or image transitions.
 
@@ -274,4 +276,8 @@ format: /usr/share/backgrounds/gnome/adwaita-%s.jpg
 
 The `xml2stw` utility can be used for converting GNOME timed XML files to the Simple Timed Wallpaper format. It was used for converting the examples above.
 
-This is a draft. Pull requests are welcome: https://github.com/xyproto/monitor/pulls
+This is a draft. Pull requests are welcome: https://github.com/xyproto/simpletimed/pulls
+
+### Author
+
+Alexander F. Rødseth &lt;xyproto@archlinux.org&gt;

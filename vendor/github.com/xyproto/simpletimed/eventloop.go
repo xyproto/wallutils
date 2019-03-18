@@ -54,11 +54,11 @@ func (stw *Wallpaper) NextEvent(now time.Time) (interface{}, error) {
 		//fmt.Printf("now is: %v (%T)\n", now, now)
 		//fmt.Printf("t is: %v (%T)\n", t, t)
 		diff := event.ToToday(t).Sub(event.ToToday(now))
-		//fmt.Println("Diff for", c(t), ":", diff)
+		//fmt.Println("Diff for", cFmt(t), ":", diff)
 		if diff > 0 && diff < minDiff {
 			minDiff = diff
 			minEvent = e
-			//fmt.Println("NEW SMALLEST DIFF RIGHT AFTER", c(now), c(t), minDiff)
+			//fmt.Println("NEW SMALLEST DIFF RIGHT AFTER", cFmt(now), cFmt(t), minDiff)
 		}
 	}
 	return minEvent, nil
@@ -85,11 +85,11 @@ func (stw *Wallpaper) PrevEvent(now time.Time) (interface{}, error) {
 		//fmt.Printf("now is: %v (%T)\n", now, now)
 		//fmt.Printf("t is: %v (%T)\n", t, t)
 		diff := event.ToToday(now).Sub(event.ToToday(t))
-		//fmt.Println("Diff for", c(t), ":", diff)
+		//fmt.Println("Diff for", cFmt(t), ":", diff)
 		if diff > 0 && diff < minDiff {
 			minDiff = diff
 			minEvent = e
-			//fmt.Println("NEW SMALLEST DIFF RIGHT BEFORE", c(now), c(t), minDiff)
+			//fmt.Println("NEW SMALLEST DIFF RIGHT BEFORE", cFmt(now), cFmt(t), minDiff)
 		}
 	}
 	return minEvent, nil
@@ -118,9 +118,9 @@ func (stw *Wallpaper) SetInitialWallpaper(verbose bool, setWallpaperFunc func(st
 		imageFilename := s.Filename
 
 		if verbose {
-			fmt.Printf("Initial static wallpaper event at %s\n", c(from))
-			fmt.Println("Window:", window)
-			fmt.Println("Cooldown:", cooldown)
+			fmt.Printf("Initial static wallpaper event at %s\n", cFmt(from))
+			fmt.Println("Window:", dFmt(window))
+			fmt.Println("Cooldown:", dFmt(cooldown))
 			fmt.Println("Filename:", imageFilename)
 		}
 
@@ -145,7 +145,7 @@ func (stw *Wallpaper) SetInitialWallpaper(verbose bool, setWallpaperFunc func(st
 
 		// Just sleep for half the cooldown, to have some time to register events too
 		if verbose {
-			fmt.Println("Activating events in", cooldown/2)
+			fmt.Println("Activating events in", dFmt(cooldown/2))
 		}
 		time.Sleep(cooldown / 2)
 	case *Transition:
@@ -167,12 +167,12 @@ func (stw *Wallpaper) SetInitialWallpaper(verbose bool, setWallpaperFunc func(st
 		var err error
 
 		if verbose {
-			fmt.Printf("Initial transition event at %s (%d%% complete)\n", c(from), int(ratio*100))
+			fmt.Printf("Initial transition event at %s (%d%% complete)\n", cFmt(from), int(ratio*100))
 			fmt.Println("Progress:", progress)
-			fmt.Println("Up to:", c(upTo))
-			fmt.Println("Window:", window)
-			fmt.Println("Cooldown:", cooldown)
-			fmt.Println("Loop wait:", loopWait)
+			fmt.Println("Up to:", cFmt(upTo))
+			fmt.Println("Window:", dFmt(window))
+			fmt.Println("Cooldown:", dFmt(cooldown))
+			fmt.Println("Loop wait:", dFmt(loopWait))
 			fmt.Println("Transition type:", tType)
 			fmt.Println("From filename", tFromFilename)
 			fmt.Println("To filename", tToFilename)
@@ -219,7 +219,7 @@ func (stw *Wallpaper) SetInitialWallpaper(verbose bool, setWallpaperFunc func(st
 
 		// Just sleep for half the cooldown, to have some time to register events too
 		if verbose {
-			fmt.Println("Activating events in", cooldown/2)
+			fmt.Println("Activating events in", dFmt(cooldown/2))
 		}
 		time.Sleep(cooldown / 2)
 
@@ -254,7 +254,7 @@ func (stw *Wallpaper) EventLoop(verbose bool, setWallpaperFunc func(string) erro
 
 	for _, s := range stw.Statics {
 		if verbose {
-			fmt.Printf("Registering static event at %s for setting %s\n", c(s.At), s.Filename)
+			fmt.Printf("Registering static event at %s for setting %s\n", cFmt(s.At), s.Filename)
 		}
 
 		// Place values into variables, before enclosing it in the function below.
@@ -266,9 +266,9 @@ func (stw *Wallpaper) EventLoop(verbose bool, setWallpaperFunc func(string) erro
 		// Register a static event
 		eventloop.Add(event.New(from, window, cooldown, func() {
 			if verbose {
-				fmt.Printf("Triggered static wallpaper event at %s\n", c(from))
-				fmt.Println("Window:", window)
-				fmt.Println("Cooldown:", cooldown)
+				fmt.Printf("Triggered static wallpaper event at %s\n", cFmt(from))
+				fmt.Println("Window:", dFmt(window))
+				fmt.Println("Cooldown:", dFmt(cooldown))
 				fmt.Println("Filename:", imageFilename)
 			}
 
@@ -296,7 +296,7 @@ func (stw *Wallpaper) EventLoop(verbose bool, setWallpaperFunc func(string) erro
 	}
 	for _, t := range stw.Transitions {
 		if verbose {
-			fmt.Printf("Registering transition at %s for transitioning from %s to %s.\n", c(t.From), t.FromFilename, t.ToFilename)
+			fmt.Printf("Registering transition at %s for transitioning from %s to %s.\n", cFmt(t.From), t.FromFilename, t.ToFilename)
 		}
 
 		// cross fade steps
@@ -321,12 +321,12 @@ func (stw *Wallpaper) EventLoop(verbose bool, setWallpaperFunc func(string) erro
 			ratio := float64(progress) / float64(window)
 
 			if verbose {
-				fmt.Printf("Triggered transition event at %s (%d%% complete)\n", c(from), int(ratio*100))
+				fmt.Printf("Triggered transition event at %s (%d%% complete)\n", cFmt(from), int(ratio*100))
 				fmt.Println("Progress:", progress)
-				fmt.Println("Up to:", c(upTo))
-				fmt.Println("Window:", window)
-				fmt.Println("Cooldown:", cooldown)
-				fmt.Println("Loop wait:", loopWait)
+				fmt.Println("Up to:", cFmt(upTo))
+				fmt.Println("Window:", dFmt(window))
+				fmt.Println("Cooldown:", dFmt(cooldown))
+				fmt.Println("Loop wait:", dFmt(loopWait))
 				fmt.Println("Transition type:", tType)
 				fmt.Println("From filename", tFromFilename)
 				fmt.Println("To filename", tToFilename)

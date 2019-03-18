@@ -80,7 +80,7 @@ func GnomeToSimpleString(gtw *Wallpaper) (string, error) {
 		if s, ok := eInterface.(GStatic); ok {
 			window := s.Duration()
 
-			sb.WriteString(fmt.Sprintf("@%s: %s\n", c(eventTime), Meat(s.Filename, commonPrefix, commonSuffix)))
+			sb.WriteString(fmt.Sprintf("@%s: %s\n", cFmt(eventTime), Meat(s.Filename, commonPrefix, commonSuffix)))
 
 			// Increase the variable that keeps track of the time
 			eventTime = eventTime.Add(window)
@@ -91,9 +91,9 @@ func GnomeToSimpleString(gtw *Wallpaper) (string, error) {
 			upTo := eventTime.Add(window)
 
 			if t.Type == "overlay" {
-				sb.WriteString(fmt.Sprintf("@%s-%s: %s .. %s\n", c(from), c(upTo), Meat(t.FromFilename, commonPrefix, commonSuffix), Meat(t.ToFilename, commonPrefix, commonSuffix)))
+				sb.WriteString(fmt.Sprintf("@%s-%s: %s .. %s\n", cFmt(from), cFmt(upTo), Meat(t.FromFilename, commonPrefix, commonSuffix), Meat(t.ToFilename, commonPrefix, commonSuffix)))
 			} else {
-				sb.WriteString(fmt.Sprintf("@%s-%s: %s .. %s | %s\n", c(from), c(upTo), Meat(t.FromFilename, commonPrefix, commonSuffix), Meat(t.ToFilename, commonPrefix, commonSuffix), t.Type))
+				sb.WriteString(fmt.Sprintf("@%s-%s: %s .. %s | %s\n", cFmt(from), cFmt(upTo), Meat(t.FromFilename, commonPrefix, commonSuffix), Meat(t.ToFilename, commonPrefix, commonSuffix), t.Type))
 			}
 
 			// Increase the variable that keeps track of the time

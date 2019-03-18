@@ -34,7 +34,7 @@ func (gtw *Wallpaper) EventLoop(verbose bool, setWallpaperFunc func(string) erro
 
 	// The start time of the timed wallpaper as a whole
 	if verbose {
-		fmt.Println("Timed wallpaper start time:", c(startTime))
+		fmt.Println("Timed wallpaper start time:", cFmt(startTime))
 	}
 
 	totalElements := len(gtw.Config.Statics) + len(gtw.Config.Transitions)
@@ -52,7 +52,7 @@ func (gtw *Wallpaper) EventLoop(verbose bool, setWallpaperFunc func(string) erro
 		}
 		if s, ok := eInterface.(GStatic); ok {
 			if verbose {
-				fmt.Printf("Registering static event at %s for setting %s\n", c(eventTime), s.Filename)
+				fmt.Printf("Registering static event at %s for setting %s\n", cFmt(eventTime), s.Filename)
 			}
 
 			// Place values into variables, before enclosing it in the function below.
@@ -64,9 +64,9 @@ func (gtw *Wallpaper) EventLoop(verbose bool, setWallpaperFunc func(string) erro
 			// Register a static event
 			eventloop.Add(event.New(from, window, cooldown, func() {
 				if verbose {
-					fmt.Printf("Triggered static wallpaper event at %s\n", c(from))
-					fmt.Println("Window:", window)
-					fmt.Println("Cooldown:", cooldown)
+					fmt.Printf("Triggered static wallpaper event at %s\n", cFmt(from))
+					fmt.Println("Window:", dFmt(window))
+					fmt.Println("Cooldown:", dFmt(cooldown))
 					fmt.Println("Filename:", imageFilename)
 				}
 
@@ -97,7 +97,7 @@ func (gtw *Wallpaper) EventLoop(verbose bool, setWallpaperFunc func(string) erro
 
 		} else if t, ok := eInterface.(GTransition); ok {
 			if verbose {
-				fmt.Printf("Registering transition at %s for transitioning from %s to %s.\n", c(eventTime), t.FromFilename, t.ToFilename)
+				fmt.Printf("Registering transition at %s for transitioning from %s to %s.\n", cFmt(eventTime), t.FromFilename, t.ToFilename)
 			}
 
 			// cross fade steps
@@ -122,12 +122,12 @@ func (gtw *Wallpaper) EventLoop(verbose bool, setWallpaperFunc func(string) erro
 				}
 				ratio := float64(progress) / float64(window)
 				if verbose {
-					fmt.Printf("Triggered transition event at %s (%d%% complete)\n", c(from), int(ratio*100))
+					fmt.Printf("Triggered transition event at %s (%d%% complete)\n", cFmt(from), int(ratio*100))
 					fmt.Println("Progress:", progress)
-					fmt.Println("Up to:", c(upTo))
-					fmt.Println("Window:", window)
-					fmt.Println("Cooldown:", cooldown)
-					fmt.Println("Loop wait:", loopWait)
+					fmt.Println("Up to:", cFmt(upTo))
+					fmt.Println("Window:", dFmt(window))
+					fmt.Println("Cooldown:", dFmt(cooldown))
+					fmt.Println("Loop wait:", dFmt(loopWait))
 					fmt.Println("Transition type:", tType)
 					fmt.Println("From filename", tFromFilename)
 					fmt.Println("To filename", tToFilename)

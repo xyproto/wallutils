@@ -2,7 +2,7 @@
 github.com/fatih/color
 # github.com/mattn/go-colorable v0.1.1
 github.com/mattn/go-colorable
-# github.com/mattn/go-isatty v0.0.5
+# github.com/mattn/go-isatty v0.0.7
 github.com/mattn/go-isatty
 # github.com/stretchr/powerwalk v0.0.0-20151124150408-bceb9d014549
 github.com/stretchr/powerwalk
@@ -10,11 +10,11 @@ github.com/stretchr/powerwalk
 github.com/xyproto/crossfade
 # github.com/xyproto/event v0.0.0-20190209144958-6bbdc7eb57e4
 github.com/xyproto/event
-# github.com/xyproto/gnometimed v0.0.0-20190221192757-e84d069980e9
+# github.com/xyproto/gnometimed v0.0.0-20190318174424-9131008cc344
 github.com/xyproto/gnometimed
 # github.com/xyproto/imagelib v0.0.0-20190209194312-bbbf5649f300
 github.com/xyproto/imagelib
-# github.com/xyproto/simpletimed v0.0.0-20190223104416-42368d3b6a0f
+# github.com/xyproto/simpletimed v0.0.0-20190318174710-a90c0fa99b2b
 github.com/xyproto/simpletimed
-# golang.org/x/sys v0.0.0-20190222171317-cd391775e71e
+# golang.org/x/sys v0.0.0-20190316082340-a2f829d7f35f
 golang.org/x/sys/unix

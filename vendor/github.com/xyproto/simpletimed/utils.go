@@ -3,14 +3,33 @@ package simpletimed
 import (
 	"fmt"
 	"os"
+	"strings"
 	"time"
 )
 
 var h24 = time.Hour * 24
 
-// c formats a timestamp as HH:MM
-func c(t time.Time) string {
+// cFmt formats a timestamp as HH:MM
+func cFmt(t time.Time) string {
 	return fmt.Sprintf("%.2d:%.2d", t.Hour(), t.Minute())
+}
+
+// dFmt formats a duration nicely
+func dFmt(d time.Duration) string {
+	s := fmt.Sprintf("%6s", d)
+	if strings.Contains(s, ".") {
+		pos := strings.Index(s, ".")
+		if strings.Contains(s[:pos], "s") {
+			s = s[:pos] + "s"
+		}
+	}
+	if strings.HasSuffix(s, "m0s") {
+		s = s[:len(s)-2]
+	}
+	if strings.HasSuffix(s, "h0m") {
+		s = s[:len(s)-2]
+	}
+	return s
 }
 
 // exists checks if the given path exists

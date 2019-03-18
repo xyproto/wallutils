@@ -42,28 +42,28 @@ func (t *Transition) String(format string) string {
 	if !strings.Contains(format, "%s") {
 		// Return the verbose version, where type is always included and the filename is not reduced with a common string format
 		if t.Type == "overlay" {
-			return fmt.Sprintf("@%s-%s: %s .. %s", c(t.From), c(t.UpTo), t.FromFilename, t.ToFilename)
+			return fmt.Sprintf("@%s-%s: %s .. %s", cFmt(t.From), cFmt(t.UpTo), t.FromFilename, t.ToFilename)
 		}
-		return fmt.Sprintf("@%s-%s: %s .. %s | %s", c(t.From), c(t.UpTo), t.FromFilename, t.ToFilename, t.Type)
+		return fmt.Sprintf("@%s-%s: %s .. %s | %s", cFmt(t.From), cFmt(t.UpTo), t.FromFilename, t.ToFilename, t.Type)
 	}
 	fields := strings.SplitN(format, "%s", 2)
 	prefix := fields[0]
 	suffix := fields[1]
 	if t.Type == "overlay" {
-		return fmt.Sprintf("@%s-%s: %s .. %s", c(t.From), c(t.UpTo), t.FromFilename[len(prefix):len(t.FromFilename)-len(suffix)], t.ToFilename[len(prefix):len(t.ToFilename)-len(suffix)])
+		return fmt.Sprintf("@%s-%s: %s .. %s", cFmt(t.From), cFmt(t.UpTo), t.FromFilename[len(prefix):len(t.FromFilename)-len(suffix)], t.ToFilename[len(prefix):len(t.ToFilename)-len(suffix)])
 	}
-	return fmt.Sprintf("@%s-%s: %s .. %s | %s", c(t.From), c(t.UpTo), t.FromFilename[len(prefix):len(t.FromFilename)-len(suffix)], t.ToFilename[len(prefix):len(t.ToFilename)-len(suffix)], t.Type)
+	return fmt.Sprintf("@%s-%s: %s .. %s | %s", cFmt(t.From), cFmt(t.UpTo), t.FromFilename[len(prefix):len(t.FromFilename)-len(suffix)], t.ToFilename[len(prefix):len(t.ToFilename)-len(suffix)], t.Type)
 }
 
 func (s *Static) String(format string) string {
 	if !strings.Contains(format, "%s") {
 		// Return the verbose version, where type is always included and the filename is not reduced with a common string format
-		return fmt.Sprintf("@%s: %s", c(s.At), s.Filename)
+		return fmt.Sprintf("@%s: %s", cFmt(s.At), s.Filename)
 	}
 	fields := strings.SplitN(format, "%s", 2)
 	prefix := fields[0]
 	suffix := fields[1]
-	return fmt.Sprintf("@%s: %s", c(s.At), s.Filename[len(prefix):len(s.Filename)-len(suffix)])
+	return fmt.Sprintf("@%s: %s", cFmt(s.At), s.Filename[len(prefix):len(s.Filename)-len(suffix)])
 }
 
 // String outputs a valid STW file, where the timestamps are in a sorted order
@@ -116,6 +116,7 @@ func (stw *Wallpaper) AddTransition(from, upto time.Time, fromFilename, toFilena
 	}
 	stw.Transitions = append(stw.Transitions, &t)
 }
+
 func ParseSTW(filename string) (*Wallpaper, error) {
 	data, err := ioutil.ReadFile(filename)
 	if err != nil {

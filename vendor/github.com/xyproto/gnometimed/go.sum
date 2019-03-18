@@ -4,5 +4,5 @@ github.com/xyproto/event v0.0.0-20190209144958-6bbdc7eb57e4 h1:PONowSXG5DlIoLEsX
 github.com/xyproto/event v0.0.0-20190209144958-6bbdc7eb57e4/go.mod h1:IAzZJ4LWfM+NVUT/NK5u0Xzvlyo0kFrsRlyrKoHiPp4=
 github.com/xyproto/imagelib v0.0.0-20190209194312-bbbf5649f300 h1:Qje6856C+ZLSjBbX9cW3bTycIT2RD4xYebbE2b+la80=
 github.com/xyproto/imagelib v0.0.0-20190209194312-bbbf5649f300/go.mod h1:28DiltQEyXiqtA/q9l1+cRteOIozAh1J7/oyzbiR4iM=
-github.com/xyproto/simpletimed v0.0.0-20190221192200-894daae48ba2 h1:GAG5F40xNQBSfjsmLN2eDvB1iWBRd0ken+WetKIZEYw=
-github.com/xyproto/simpletimed v0.0.0-20190221192200-894daae48ba2/go.mod h1:JsBKunb59W1HSWvAqqpSUfq0A5hZmSpSA8Bz+yVNPg4=
+github.com/xyproto/simpletimed v0.0.0-20190318173649-dd506d814cdc h1:qJIeToLpyCPowsejcbBM0tar48RC12icqXzF+o+iucQ=
+github.com/xyproto/simpletimed v0.0.0-20190318173649-dd506d814cdc/go.mod h1:JsBKunb59W1HSWvAqqpSUfq0A5hZmSpSA8Bz+yVNPg4=
