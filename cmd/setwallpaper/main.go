@@ -22,6 +22,16 @@ func main() {
 	}
 	imageFilename := os.Args[1]
 
+	verbose := false
+	if len(os.Args) > 1 && os.Args[1] == "-v" {
+		verbose = true
+		if len(os.Args) < 3 {
+			fmt.Fprintln(os.Stderr, "Please specify an image filename.")
+			os.Exit(1)
+		}
+		imageFilename = os.Args[2]
+	}
+
 	// Find the absolute path
 	absImageFilename, err := filepath.Abs(imageFilename)
 	if err == nil {
@@ -36,7 +46,7 @@ func main() {
 	}
 
 	// Set the desktop wallpaper
-	if err := wallutils.SetWallpaper(imageFilename); err != nil {
+	if err := wallutils.SetWallpaperVerbose(imageFilename, verbose); err != nil {
 		fmt.Fprintf(os.Stderr, "Could not set wallpaper: %s\n", err)
 		os.Exit(1)
 	}
