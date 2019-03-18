@@ -11,11 +11,6 @@ import (
 
 var h24 = time.Hour * 24
 
-// c formats a timestamp as HH:MM
-func c(t time.Time) string {
-	return fmt.Sprintf("%.2d:%.2d", t.Hour(), t.Minute())
-}
-
 // has checks if a string slice has the given element
 func has(sl []string, e string) bool {
 	for _, s := range sl {
