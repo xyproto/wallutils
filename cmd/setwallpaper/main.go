@@ -5,32 +5,16 @@ import (
 	"os"
 	"path/filepath"
 
+	"github.com/urfave/cli"
 	"github.com/xyproto/wallutils"
 )
 
-const versionString = "setwallpaper"
-
-func main() {
-	if len(os.Args) > 1 && os.Args[1] == "--version" {
-		fmt.Println(wallutils.VersionString)
-		os.Exit(0)
-	}
-
-	if len(os.Args) < 2 {
+func setWallpaperAction(c *cli.Context) error {
+	if c.NArg() == 0 {
 		fmt.Fprintln(os.Stderr, "Please specify an image filename.")
 		os.Exit(1)
 	}
-	imageFilename := os.Args[1]
-
-	verbose := false
-	if len(os.Args) > 1 && os.Args[1] == "-v" {
-		verbose = true
-		if len(os.Args) < 3 {
-			fmt.Fprintln(os.Stderr, "Please specify an image filename.")
-			os.Exit(1)
-		}
-		imageFilename = os.Args[2]
-	}
+	imageFilename := c.Args().Get(0)
 
 	// Find the absolute path
 	absImageFilename, err := filepath.Abs(imageFilename)
@@ -38,9 +22,30 @@ func main() {
 		imageFilename = absImageFilename
 	}
 
+	// Check if the verbose flag is set
+	verbose := c.IsSet("verbose")
+
 	// Set the desktop wallpaper
 	if err := wallutils.SetWallpaperVerbose(imageFilename, verbose); err != nil {
-		fmt.Fprintf(os.Stderr, "Could not set wallpaper: %s\n", err)
+		return fmt.Errorf("could not set wallpaper: %s", err)
+	}
+	return nil
+}
+
+func main() {
+	app := cli.NewApp()
+	app.Name = "setwallpaper"
+	app.Usage = "change the desktop wallpaper"
+	app.Version = wallutils.VersionString
+	app.Flags = []cli.Flag{
+		cli.BoolFlag{
+			Name:  "verbose, V",
+			Usage: "verbose output",
+		},
+	}
+	app.Action = setWallpaperAction
+	if err := app.Run(os.Args); err != nil {
+		fmt.Fprintln(os.Stderr, err.Error())
 		os.Exit(1)
 	}
 }
