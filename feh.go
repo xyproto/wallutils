@@ -30,9 +30,12 @@ func (f *Feh) SetVerbose(verbose bool) {
 // The image must exist and be readable.
 // `feh` is used for setting the desktop background, and must be in the PATH.
 func (f *Feh) SetWallpaper(imageFilename string) error {
+	if !exists(imageFilename) {
+		return errors.New(imageFilename + " does not exist")
+	}
 	// bg-fill | bg-center | bg-max | bg-scale | bg-tile
 	command := "feh --bg-fill " + imageFilename
-	if err := run(command, f.verbose); err != nil {
+	if err := runShell(command, f.verbose); err != nil {
 		return errors.New(command + " failed to run")
 	}
 	return nil

@@ -59,7 +59,21 @@ func which(executable string) string {
 	return p
 }
 
-func run(shellCommand string, verbose bool) error {
+// run executes the given executable and returns an error if the exit code is
+// non-zero. If verbose is true, the command will be printed before running.
+func run(executable string, arguments []string, verbose bool) error {
+	if verbose {
+		fmt.Println(executable + " " + strings.Join(arguments, " "))
+	}
+	cmd := exec.Command(executable, arguments...)
+	if _, err := cmd.CombinedOutput(); err != nil {
+		return err
+	}
+	return nil
+}
+
+// runShell is the same as the "run" function, but runs the commands in a shell.
+func runShell(shellCommand string, verbose bool) error {
 	if verbose {
 		fmt.Println(shellCommand)
 	}
@@ -70,7 +84,23 @@ func run(shellCommand string, verbose bool) error {
 	return nil
 }
 
-func output(shellCommand string, verbose bool) string {
+// output returns the output after running a given executable
+// if verbose is true, the command will be printed before running
+func output(executable string, arguments []string, verbose bool) string {
+	if verbose {
+		fmt.Println(executable + " " + strings.Join(arguments, " "))
+	}
+	cmd := exec.Command(executable, arguments...)
+	stdoutStderr, err := cmd.CombinedOutput()
+	if err != nil {
+		return ""
+	}
+	return string(stdoutStderr)
+}
+
+// outputShell is the same as the "output" function,
+// but runs the command in a shell
+func outputShell(shellCommand string, verbose bool) string {
 	if verbose {
 		fmt.Println(shellCommand)
 	}

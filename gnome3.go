@@ -1,5 +1,9 @@
 package wallutils
 
+import (
+	"errors"
+)
+
 // Gnome3 windowmanager detector
 type Gnome3 struct {
 	verbose bool
@@ -24,5 +28,8 @@ func (g3 *Gnome3) SetVerbose(verbose bool) {
 // SetWallpaper sets the desktop wallpaper, given an image filename.
 // The image must exist and be readable.
 func (g3 *Gnome3) SetWallpaper(imageFilename string) error {
-	return run("gsettings set org.gnome.desktop.background picture-uri \"file://"+imageFilename+"\"", g3.verbose)
+	if !exists(imageFilename) {
+		return errors.New(imageFilename + " does not exist")
+	}
+	return runShell("gsettings set org.gnome.desktop.background picture-uri \"file://"+imageFilename+"\"", g3.verbose)
 }

@@ -1,5 +1,9 @@
 package wallutils
 
+import (
+	"errors"
+)
+
 // Sway windowmanager detector
 type Sway struct {
 	verbose bool
@@ -24,5 +28,8 @@ func (s *Sway) SetVerbose(verbose bool) {
 // SetWallpaper sets the desktop wallpaper, given an image filename.
 // The image must exist and be readable.
 func (s *Sway) SetWallpaper(imageFilename string) error {
-	return run("swaymsg 'output \"*\" background "+imageFilename+" fill'", s.verbose)
+	if !exists(imageFilename) {
+		return errors.New(imageFilename + " does not exist")
+	}
+	return runShell("swaymsg 'output \"*\" background "+imageFilename+" fill'", s.verbose)
 }

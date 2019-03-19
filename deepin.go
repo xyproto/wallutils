@@ -1,5 +1,9 @@
 package wallutils
 
+import (
+	"errors"
+)
+
 // Deepin windowmanager detector
 type Deepin struct {
 	verbose bool
@@ -24,5 +28,8 @@ func (d *Deepin) SetVerbose(verbose bool) {
 // SetWallpaper sets the desktop wallpaper, given an image filename.
 // The image must exist and be readable.
 func (d *Deepin) SetWallpaper(imageFilename string) error {
-	return run("dconf write /com/deepin/wrap/gnome/desktop/background/picture-uri \"'"+imageFilename+"'\"", d.verbose)
+	if !exists(imageFilename) {
+		return errors.New(imageFilename + " does not exist")
+	}
+	return runShell("dconf write /com/deepin/wrap/gnome/desktop/background/picture-uri \"'"+imageFilename+"'\"", d.verbose)
 }

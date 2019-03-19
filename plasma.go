@@ -1,5 +1,9 @@
 package wallutils
 
+import (
+	"errors"
+)
+
 // Plasma windowmanager detector
 type Plasma struct {
 	verbose bool
@@ -24,7 +28,10 @@ func (p *Plasma) SetVerbose(verbose bool) {
 // SetWallpaper sets the desktop wallpaper, given an image filename.
 // The image must exist and be readable.
 func (p *Plasma) SetWallpaper(imageFilename string) error {
-	return run(`dbus-send --session --dest=org.kde.plasmashell --type=method_call /PlasmaShell org.kde.PlasmaShell.evaluateScript 'string:
+	if !exists(imageFilename) {
+		return errors.New(imageFilename + " does not exist")
+	}
+	return runShell(`dbus-send --session --dest=org.kde.plasmashell --type=method_call /PlasmaShell org.kde.PlasmaShell.evaluateScript 'string:
     var Desktops = desktops();
     for (i=0;i<Desktops.length;i++) {
             d = Desktops[i];

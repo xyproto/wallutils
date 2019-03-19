@@ -1,5 +1,9 @@
 package wallutils
 
+import (
+	"errors"
+)
+
 // Gnome2 windowmanager detector
 type Gnome2 struct {
 	verbose bool
@@ -26,5 +30,8 @@ func (g2 *Gnome2) SetVerbose(verbose bool) {
 // SetWallpaper sets the desktop wallpaper, given an image filename.
 // The image must exist and be readable.
 func (g2 *Gnome2) SetWallpaper(imageFilename string) error {
-	return run("gconftool-2 –type string –set /desktop/gnome/background/picture_filename \""+imageFilename+"\"", g2.verbose)
+	if !exists(imageFilename) {
+		return errors.New(imageFilename + " does not exist")
+	}
+	return runShell("gconftool-2 –type string –set /desktop/gnome/background/picture_filename \""+imageFilename+"\"", g2.verbose)
 }

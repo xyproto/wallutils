@@ -1,5 +1,9 @@
 package wallutils
 
+import (
+	"errors"
+)
+
 // Mate windowmanager detector
 type Mate struct {
 	mode         string // none | wallpaper | centered | scaled | stretched | zoom | spanned, scaled is the default
@@ -35,6 +39,9 @@ func (m *Mate) SetVerbose(verbose bool) {
 // SetWallpaper sets the desktop wallpaper, given an image filename.
 // The image must exist and be readable.
 func (m *Mate) SetWallpaper(imageFilename string) error {
+	if !exists(imageFilename) {
+		return errors.New(imageFilename + " does not exist")
+	}
 	// Check if dconf or gsettings are there, if we haven't already checked
 	if !m.hasChecked {
 		m.ExecutablesExists()
@@ -47,15 +54,15 @@ func (m *Mate) SetWallpaper(imageFilename string) error {
 	// Change the background with either dconf or gsettings
 	if m.hasDconf {
 		// use dconf
-		if err := run("dconf write /org/mate/desktop/background/picture-filename \"'"+imageFilename+"'\"", m.verbose); err != nil {
+		if err := runShell("dconf write /org/mate/desktop/background/picture-filename \"'"+imageFilename+"'\"", m.verbose); err != nil {
 			return err
 		}
-		return run("dconf write /org/mate/desktop/background/picture-options \"'"+mode+"'\"", m.verbose)
+		return runShell("dconf write /org/mate/desktop/background/picture-options \"'"+mode+"'\"", m.verbose)
 	}
 	// use gsettings
-	if err := run("gsettings set org.mate.background picture-filename '"+imageFilename+"'", m.verbose); err != nil {
+	if err := runShell("gsettings set org.mate.background picture-filename '"+imageFilename+"'", m.verbose); err != nil {
 		return err
 	}
-	return run("gsettings set org.mate.background picture-options '"+mode+"'", m.verbose)
+	return runShell("gsettings set org.mate.background picture-options '"+mode+"'", m.verbose)
 
 }
