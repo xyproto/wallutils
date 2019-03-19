@@ -31,5 +31,5 @@ func (s *Sway) SetWallpaper(imageFilename string) error {
 	if !exists(imageFilename) {
 		return errors.New(imageFilename + " does not exist")
 	}
-	return runShell("swaymsg 'output \"*\" background "+imageFilename+" fill'", s.verbose)
+	return run("swaymsg", []string{"output * bg " + imageFilename + " fill"}, s.verbose)
 }
