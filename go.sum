@@ -17,6 +17,8 @@ github.com/stretchr/powerwalk v0.0.0-20151124150408-bceb9d014549 h1:zjTKDjwZy1IV
 github.com/stretchr/powerwalk v0.0.0-20151124150408-bceb9d014549/go.mod h1:RhJzAYfVBD/ULOCeUUaTn0CHDRQBYHjDY7yYpSt6+4M=
 github.com/stretchr/testify v1.3.0 h1:TivCn/peBQ7UY8ooIcPgZFpTNSz0Q2U6UrFlUfqbe0Q=
 github.com/stretchr/testify v1.3.0/go.mod h1:M5WIy9Dh21IEIfnGCwXGc5bZfKNJtfHm1UVUgZn+9EI=
+github.com/urfave/cli v1.20.0 h1:fDqGv3UG/4jbVl/QkFwEdddtEDjh/5Ov6X+0B/3bPaw=
+github.com/urfave/cli v1.20.0/go.mod h1:70zkFmudgCuE/ngEzBv17Jvp/497gISqfk5gWijbERA=
 github.com/xyproto/crossfade v0.0.0-20190210121323-d884599bd751 h1:9Gj2LYEpPqSE24gIXTak9Ej6HJtZOgFuDlr4xZ2SI3M=
 github.com/xyproto/crossfade v0.0.0-20190210121323-d884599bd751/go.mod h1:EW9b0FpDSnr36patXgO6i09AJJpZ6z+kFxerNwrIoCU=
 github.com/xyproto/event v0.0.0-20190209144958-6bbdc7eb57e4 h1:PONowSXG5DlIoLEsXKQt58GzREAjH0P5Rr5bflIOTi8=
@@ -28,5 +30,5 @@ github.com/xyproto/imagelib v0.0.0-20190209194312-bbbf5649f300/go.mod h1:28DiltQ
 github.com/xyproto/simpletimed v0.0.0-20190318175234-e8750d2a28f8 h1:7CpJyGWFo0E+oNSm5GiFUG8T760sefbcpAB8X6W3NOs=
 github.com/xyproto/simpletimed v0.0.0-20190318175234-e8750d2a28f8/go.mod h1:JsBKunb59W1HSWvAqqpSUfq0A5hZmSpSA8Bz+yVNPg4=
 golang.org/x/sys v0.0.0-20190222072716-a9d3bda3a223/go.mod h1:STP8DvDyc/dI5b8T5hshtkjS+E42TnysNCUPdjciGhY=
-golang.org/x/sys v0.0.0-20190316082340-a2f829d7f35f h1:yCrMx/EeIue0+Qca57bWZS7VX6ymEoypmhWyPhz0NHM=
-golang.org/x/sys v0.0.0-20190316082340-a2f829d7f35f/go.mod h1:h1NjWce9XRLGQEsW7wpKNCjG9DtNlClVuFLEZdDNbEs=
+golang.org/x/sys v0.0.0-20190318195719-6c81ef8f67ca h1:o2TLx1bGN3W+Ei0EMU5fShLupLmTOU95KvJJmfYhAzM=
+golang.org/x/sys v0.0.0-20190318195719-6c81ef8f67ca/go.mod h1:h1NjWce9XRLGQEsW7wpKNCjG9DtNlClVuFLEZdDNbEs=
