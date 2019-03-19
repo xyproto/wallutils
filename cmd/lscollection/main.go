@@ -2,6 +2,7 @@ package main
 
 import (
 	"fmt"
+	"github.com/urfave/cli"
 	"github.com/xyproto/wallutils"
 	"os"
 	"path/filepath"
@@ -18,21 +19,20 @@ func has(sl []string, s string) bool {
 	return false
 }
 
-func main() {
-	alsoPrintPath := len(os.Args) > 1 && os.Args[1] == "-l"
+func listWallpaperCollectionAction(c *cli.Context) error {
+	alsoPrintPath := c.IsSet("long")
 
 	// Find all wallpapers
 	searchResults, err := wallutils.FindWallpapers()
 	if err != nil {
-		fmt.Fprintf(os.Stderr, "error: %v\n", err)
-		os.Exit(1)
+		return err
 	}
 
 	if !alsoPrintPath {
 		for _, name := range searchResults.CollectionNames() {
 			fmt.Println(name)
 		}
-		return
+		return nil
 	}
 
 	// Prepare to write text in columns
@@ -79,4 +79,34 @@ func main() {
 
 	// Write the output to stdout
 	w.Flush()
+
+	return nil
+}
+
+func main() {
+	app := cli.NewApp()
+
+	app.Name = "lscolletion"
+	app.Usage = "list all wallpaper collections on the system"
+	app.UsageText = "lscollection [options]"
+
+	app.Version = wallutils.VersionString
+	app.HideHelp = true
+
+	cli.VersionFlag = cli.BoolFlag{
+		Name:  "version, V",
+		Usage: "output version information",
+	}
+
+	app.Flags = []cli.Flag{
+		cli.BoolFlag{
+			Name:  "long, l",
+			Usage: "also list collection type and full path",
+		},
+	}
+
+	app.Action = listWallpaperCollectionAction
+	if err := app.Run(os.Args); err != nil {
+		wallutils.Quit(err)
+	}
 }
