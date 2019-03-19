@@ -28,11 +28,6 @@ func SelectAndSetWallpaper(wallpapers []*wallutils.Wallpaper) error {
 		imageFilename = absImageFilename
 	}
 
-	// Check that the file exists
-	if _, err := os.Stat(imageFilename); os.IsNotExist(err) {
-		return fmt.Errorf("File does not exist: %s\n", imageFilename)
-	}
-
 	// Set the desktop wallpaper
 	if err := wallutils.SetWallpaper(imageFilename); err != nil {
 		return fmt.Errorf("Could not set wallpaper: %s\n", err)
