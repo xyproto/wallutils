@@ -54,15 +54,15 @@ func (m *Mate) SetWallpaper(imageFilename string) error {
 	// Change the background with either dconf or gsettings
 	if m.hasDconf {
 		// use dconf
-		if err := runShell("dconf write /org/mate/desktop/background/picture-filename \"'"+imageFilename+"'\"", m.verbose); err != nil {
+		if err := run("dconf", []string{"write", "/org/mate/desktop/background/picture-filename", imageFilename}, m.verbose); err != nil {
 			return err
 		}
-		return runShell("dconf write /org/mate/desktop/background/picture-options \"'"+mode+"'\"", m.verbose)
+		return run("dconf", []string{"write", "/org/mate/desktop/background/picture-options", mode}, m.verbose)
 	}
 	// use gsettings
-	if err := runShell("gsettings set org.mate.background picture-filename '"+imageFilename+"'", m.verbose); err != nil {
+	if err := run("gsettings", []string{"set", "org.mate.background", "picture-filename", imageFilename}, m.verbose); err != nil {
 		return err
 	}
-	return runShell("gsettings set org.mate.background picture-options '"+mode+"'", m.verbose)
+	return run("gsettings", []string{"set", "org.mate.background", "picture-options", mode}, m.verbose)
 
 }

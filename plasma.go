@@ -31,7 +31,7 @@ func (p *Plasma) SetWallpaper(imageFilename string) error {
 	if !exists(imageFilename) {
 		return errors.New(imageFilename + " does not exist")
 	}
-	return runShell(`dbus-send --session --dest=org.kde.plasmashell --type=method_call /PlasmaShell org.kde.PlasmaShell.evaluateScript 'string:
+	dbusScript := `string:
     var Desktops = desktops();
     for (i=0;i<Desktops.length;i++) {
             d = Desktops[i];
@@ -39,6 +39,13 @@ func (p *Plasma) SetWallpaper(imageFilename string) error {
             d.currentConfigGroup = Array("Wallpaper",
                                          "org.kde.image",
                                          "General");
-            d.writeConfig("Image", "file://`+imageFilename+`");
-    }'`, p.verbose)
+            d.writeConfig("Image", "file://` + imageFilename + `");
+    }`
+	return run("dbus-send", []string{
+		"--session",
+		"--dest=org.kde.plasmashell",
+		"--type=method_call",
+		"/PlasmaShell",
+		"org.kde.PlasmaShell.evaluateScript",
+		dbusScript}, p.verbose)
 }

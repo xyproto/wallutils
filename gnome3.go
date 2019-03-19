@@ -31,5 +31,5 @@ func (g3 *Gnome3) SetWallpaper(imageFilename string) error {
 	if !exists(imageFilename) {
 		return errors.New(imageFilename + " does not exist")
 	}
-	return runShell("gsettings set org.gnome.desktop.background picture-uri \"file://"+imageFilename+"\"", g3.verbose)
+	return run("gsettings", []string{"set", "org.gnome.desktop.background", "picture-uri", "file://" + imageFilename}, g3.verbose)
 }

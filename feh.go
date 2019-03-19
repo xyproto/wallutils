@@ -34,9 +34,9 @@ func (f *Feh) SetWallpaper(imageFilename string) error {
 		return errors.New(imageFilename + " does not exist")
 	}
 	// bg-fill | bg-center | bg-max | bg-scale | bg-tile
-	command := "feh --bg-fill " + imageFilename
-	if err := runShell(command, f.verbose); err != nil {
-		return errors.New(command + " failed to run")
+	mode := "bg-fill"
+	if err := run("feh", []string{"--" + mode, imageFilename}, f.verbose); err != nil {
+		return errors.New("feh --" + mode + " " + imageFilename + " failed to run")
 	}
 	return nil
 }

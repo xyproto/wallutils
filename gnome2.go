@@ -4,6 +4,8 @@ import (
 	"errors"
 )
 
+// TODO: Confirm that this is working under GNOME 2
+
 // Gnome2 windowmanager detector
 type Gnome2 struct {
 	verbose bool
@@ -18,9 +20,7 @@ func (g2 *Gnome2) ExecutablesExists() bool {
 }
 
 func (g2 *Gnome2) Running() bool {
-	// TODO: To implement
-	//return (containsE("GDMSESSION", "gnome2") || containsE("XDG_SESSION_DESKTOP", "gnome2") || containsE("XDG_CURRENT_DESKTOP", "gnome2"))
-	return false
+	return (containsE("GDMSESSION", "gnome2") || containsE("XDG_SESSION_DESKTOP", "gnome2") || containsE("XDG_CURRENT_DESKTOP", "gnome2"))
 }
 
 func (g2 *Gnome2) SetVerbose(verbose bool) {
@@ -33,5 +33,5 @@ func (g2 *Gnome2) SetWallpaper(imageFilename string) error {
 	if !exists(imageFilename) {
 		return errors.New(imageFilename + " does not exist")
 	}
-	return runShell("gconftool-2 –type string –set /desktop/gnome/background/picture_filename \""+imageFilename+"\"", g2.verbose)
+	return run("gconftool-2", []string{"–type", "string", "–set", "/desktop/gnome/background/picture_filename", imageFilename}, g2.verbose)
 }

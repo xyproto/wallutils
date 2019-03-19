@@ -31,5 +31,5 @@ func (d *Deepin) SetWallpaper(imageFilename string) error {
 	if !exists(imageFilename) {
 		return errors.New(imageFilename + " does not exist")
 	}
-	return runShell("dconf write /com/deepin/wrap/gnome/desktop/background/picture-uri \"'"+imageFilename+"'\"", d.verbose)
+	return run("dconf", []string{"write", "/com/deepin/wrap/gnome/desktop/background/picture-uri", imageFilename}, d.verbose)
 }

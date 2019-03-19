@@ -54,14 +54,14 @@ func (c *Cinnamon) SetWallpaper(imageFilename string) error {
 	// Change the background with either dconf or gsettings
 	if c.hasDconf {
 		// use dconf
-		if err := runShell("dconf write /org/cinnamon/desktop/background/picture-filename \"'"+imageFilename+"'\"", c.verbose); err != nil {
+		if err := run("dconf", []string{"write", "/org/cinnamon/desktop/background/picture-filename", imageFilename}, c.verbose); err != nil {
 			return err
 		}
-		return runShell("dconf write /org/cinnamon/desktop/background/picture-options \"'"+mode+"'\"", c.verbose)
+		return run("dconf", []string{"write", "/org/cinnamon/desktop/background/picture-options", mode}, c.verbose)
 	}
 	// use gsettings
-	if err := runShell("gsettings set org.cinnamon.background picture-filename '"+imageFilename+"'", c.verbose); err != nil {
+	if err := run("gsettings", []string{"set", "org.cinnamon.background", "picture-filename", imageFilename}, c.verbose); err != nil {
 		return err
 	}
-	return runShell("gsettings set org.cinnamon.background picture-options '"+mode+"'", c.verbose)
+	return run("gsettings", []string{"set", "org.cinnamon.background", "picture-options", mode}, c.verbose)
 }
