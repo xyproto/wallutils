@@ -4,15 +4,15 @@ import (
 	"fmt"
 	"os"
 
+	"github.com/urfave/cli"
 	"github.com/xyproto/wallutils"
 )
 
-func main() {
+func getDPIAction(c *cli.Context) error {
 	// Retrieve a slice of Monitor structs, or exit with an error
 	monitors, err := wallutils.Monitors()
 	if err != nil {
-		fmt.Fprintf(os.Stderr, "%s\n", err)
-		os.Exit(1)
+		return err
 	}
 	// Output the average DPI
 	DPIw, DPIh := uint(0), uint(0)
@@ -23,15 +23,41 @@ func main() {
 	DPIw /= uint(len(monitors))
 	DPIh /= uint(len(monitors))
 
-	// Check if -l or -b is given (for outputting both numbers)
-	if len(os.Args) > 1 && ((os.Args[1] == "-l") || (os.Args[1] == "-b")) {
+	// Check if both numbers should be outputted
+	if c.IsSet("both") {
 		fmt.Printf("%dx%d\n", DPIw, DPIh)
-		return
-	} else if len(os.Args) > 1 && os.Args[1] == "--version" {
-		fmt.Println(wallutils.VersionString)
-		os.Exit(0)
+		return nil
 	}
 
-	// Output a single number
+	// Only the horizontal number
 	fmt.Println(DPIw)
+	return nil
+}
+
+func main() {
+	app := cli.NewApp()
+
+	app.Name = "getdpi"
+	app.Usage = "get the average horizontal DPI"
+	app.UsageText = "getdpi [options]"
+
+	app.Version = wallutils.VersionString
+	app.HideHelp = true
+
+	cli.VersionFlag = cli.BoolFlag{
+		Name:  "version, V",
+		Usage: "output version information",
+	}
+
+	app.Flags = []cli.Flag{
+		cli.BoolFlag{
+			Name:  "both, b",
+			Usage: "output both the horizontal and vertical average DPI",
+		},
+	}
+
+	app.Action = getDPIAction
+	if err := app.Run(os.Args); err != nil {
+		wallutils.Quit(err)
+	}
 }
