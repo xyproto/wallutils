@@ -1,4 +1,3 @@
-// Package wallpaper provides a way to set the desktop wallpaper, for any windowmanager
 package wallutils
 
 import (
@@ -48,6 +47,9 @@ func SetWallpaper(imageFilename string) error {
 // Set the desktop wallpaper (filled/stretched), for any supported windowmanager.
 // The fallback is to use `feh`.
 func SetWallpaperVerbose(imageFilename string, verbose bool) error {
+	if !exists(imageFilename) {
+		return fmt.Errorf("no such file: %s", imageFilename)
+	}
 	var lastErr error
 	// Loop through all available WM structs
 	for _, wm := range WMs {

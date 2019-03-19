@@ -1,7 +1,7 @@
 package wallutils
 
 import (
-	"errors"
+	"fmt"
 )
 
 // Deepin windowmanager detector
@@ -29,7 +29,7 @@ func (d *Deepin) SetVerbose(verbose bool) {
 // The image must exist and be readable.
 func (d *Deepin) SetWallpaper(imageFilename string) error {
 	if !exists(imageFilename) {
-		return errors.New(imageFilename + " does not exist")
+		return fmt.Errorf("no such file: %s", imageFilename)
 	}
 	return run("dconf", []string{"write", "/com/deepin/wrap/gnome/desktop/background/picture-uri", imageFilename}, d.verbose)
 }

@@ -1,7 +1,7 @@
 package wallutils
 
 import (
-	"errors"
+	"fmt"
 )
 
 // Mate windowmanager detector
@@ -40,7 +40,7 @@ func (m *Mate) SetVerbose(verbose bool) {
 // The image must exist and be readable.
 func (m *Mate) SetWallpaper(imageFilename string) error {
 	if !exists(imageFilename) {
-		return errors.New(imageFilename + " does not exist")
+		return fmt.Errorf("no such file: %s", imageFilename)
 	}
 	// Check if dconf or gsettings are there, if we haven't already checked
 	if !m.hasChecked {

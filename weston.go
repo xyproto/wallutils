@@ -29,7 +29,10 @@ func (w *Weston) SetVerbose(verbose bool) {
 
 // SetWallpaper sets the desktop wallpaper, given an image filename.
 // The image must exist and be readable.
-func (s *Weston) SetWallpaper(imageFilename string) error {
+func (*Weston) SetWallpaper(imageFilename string) error {
+	if !exists(imageFilename) {
+		return fmt.Errorf("no such file: %s", imageFilename)
+	}
 
 	// TODO: Add the following to ~/.config/weston.ini (or whichever configuration file Weston uses)
 	fmt.Println("WESTON CONFIG FILE: ", os.Getenv("WESTON_CONFIG_FILE"))

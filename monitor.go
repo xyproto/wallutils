@@ -1,4 +1,4 @@
-// wallutils is a package for dealing with monitors, resolution, dpi, wallpapers, wallpaper collections, timed wallpapers and converting to the Simple Timed Wallpaper format.
+// Package wallutils can deal with monitors, resolution, dpi, wallpapers, wallpaper collections, timed wallpapers and converting GNOME timed wallpapers to the Simple Timed Wallpaper format.
 package wallutils
 
 import (
@@ -6,7 +6,8 @@ import (
 	"fmt"
 )
 
-const VersionString = "5.2.2"
+// VersionString is the current version of wallutils and all included utilities
+const VersionString = "5.2.3"
 
 // Monitor contains an ID, the width in pixels and the height in pixels
 type Monitor struct {

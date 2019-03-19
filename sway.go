@@ -1,7 +1,7 @@
 package wallutils
 
 import (
-	"errors"
+	"fmt"
 )
 
 // Sway windowmanager detector
@@ -29,7 +29,7 @@ func (s *Sway) SetVerbose(verbose bool) {
 // The image must exist and be readable.
 func (s *Sway) SetWallpaper(imageFilename string) error {
 	if !exists(imageFilename) {
-		return errors.New(imageFilename + " does not exist")
+		return fmt.Errorf("no such file: %s", imageFilename)
 	}
 	return run("swaymsg", []string{"output * bg " + imageFilename + " fill"}, s.verbose)
 }

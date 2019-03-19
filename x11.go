@@ -5,6 +5,7 @@ package wallutils
 import "C"
 import (
 	"errors"
+	"fmt"
 	"unsafe"
 )
 
@@ -33,7 +34,10 @@ func (x *X11) SetVerbose(verbose bool) {
 
 // SetWallpaper sets the desktop wallpaper, given an image filename.
 // The image must exist and be readable.
-func (s *X11) SetWallpaper(imageFilename string) error {
+func (*X11) SetWallpaper(imageFilename string) error {
+	if !exists(imageFilename) {
+		return fmt.Errorf("no such file: %s", imageFilename)
+	}
 	// NOTE: The C counterpart to this function may exit(1) if it's out of memory
 	imageFilenameC := C.CString(imageFilename)
 	retval := C.SetBackground(imageFilenameC)

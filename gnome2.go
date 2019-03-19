@@ -1,7 +1,7 @@
 package wallutils
 
 import (
-	"errors"
+	"fmt"
 )
 
 // TODO: Confirm that this is working under GNOME 2
@@ -31,7 +31,7 @@ func (g2 *Gnome2) SetVerbose(verbose bool) {
 // The image must exist and be readable.
 func (g2 *Gnome2) SetWallpaper(imageFilename string) error {
 	if !exists(imageFilename) {
-		return errors.New(imageFilename + " does not exist")
+		return fmt.Errorf("no such file: %s", imageFilename)
 	}
 	return run("gconftool-2", []string{"–type", "string", "–set", "/desktop/gnome/background/picture_filename", imageFilename}, g2.verbose)
 }

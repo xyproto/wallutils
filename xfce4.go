@@ -2,6 +2,7 @@ package wallutils
 
 import (
 	"errors"
+	"fmt"
 	"strings"
 )
 
@@ -30,11 +31,11 @@ func (x *Xfce4) SetVerbose(verbose bool) {
 // The image must exist and be readable.
 func (x *Xfce4) SetWallpaper(imageFilename string) error {
 	if !exists(imageFilename) {
-		return errors.New(imageFilename + " does not exist")
+		return fmt.Errorf("no such file: %s", imageFilename)
 	}
 	properties := strings.Split(output("xfconf-query", []string{"--channel", "xfce4-desktop", "--list"}, x.verbose), "\n")
 	if len(properties) == 0 {
-		return errors.New("Could not list any properties for Xfce4")
+		return errors.New("could not list any properties for Xfce4")
 	}
 	for _, prop := range properties {
 		if strings.HasSuffix(prop, "/last-image") {

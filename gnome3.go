@@ -1,7 +1,7 @@
 package wallutils
 
 import (
-	"errors"
+	"fmt"
 )
 
 // Gnome3 windowmanager detector
@@ -29,7 +29,7 @@ func (g3 *Gnome3) SetVerbose(verbose bool) {
 // The image must exist and be readable.
 func (g3 *Gnome3) SetWallpaper(imageFilename string) error {
 	if !exists(imageFilename) {
-		return errors.New(imageFilename + " does not exist")
+		return fmt.Errorf("no such file: %s", imageFilename)
 	}
 	return run("gsettings", []string{"set", "org.gnome.desktop.background", "picture-uri", "file://" + imageFilename}, g3.verbose)
 }

@@ -4,6 +4,7 @@ package wallutils
 
 import (
 	"errors"
+	"fmt"
 )
 
 type Feh struct {
@@ -31,7 +32,7 @@ func (f *Feh) SetVerbose(verbose bool) {
 // `feh` is used for setting the desktop background, and must be in the PATH.
 func (f *Feh) SetWallpaper(imageFilename string) error {
 	if !exists(imageFilename) {
-		return errors.New(imageFilename + " does not exist")
+		return fmt.Errorf("no such file: %s", imageFilename)
 	}
 	// bg-fill | bg-center | bg-max | bg-scale | bg-tile
 	mode := "bg-fill"

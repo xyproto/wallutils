@@ -1,7 +1,7 @@
 package wallutils
 
 import (
-	"errors"
+	"fmt"
 )
 
 // Plasma windowmanager detector
@@ -29,7 +29,7 @@ func (p *Plasma) SetVerbose(verbose bool) {
 // The image must exist and be readable.
 func (p *Plasma) SetWallpaper(imageFilename string) error {
 	if !exists(imageFilename) {
-		return errors.New(imageFilename + " does not exist")
+		return fmt.Errorf("no such file: %s", imageFilename)
 	}
 	dbusScript := `string:
     var Desktops = desktops();
