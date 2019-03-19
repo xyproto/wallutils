@@ -22,10 +22,4 @@ Version information:
 
 ## Listing DPI per monitor
 
-The `lsmon` utility in the [monitor](https://github.com/xyproto/monitor) package supports listing monitor resolutions and DPI with the `-dpi` flag.
-
-## General Info
-
-* Version: 1.2.0
-* License: MIT
-* Author: Alexander F. Rødseth &lt;xyproto@archlinux.org&gt;
+The `lsmon` utility supports listing monitor resolutions and DPI with the `-dpi` flag.
