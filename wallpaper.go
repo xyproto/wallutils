@@ -90,6 +90,17 @@ func SetWallpaperVerbose(imageFilename string, verbose bool) error {
 	return errors.New("Found no working method for setting the desktop wallpaper")
 }
 
+// Res returns the wallpaper resolution as a Res struct
+func (wp *Wallpaper) Res() *Res {
+	return NewRes(wp.Width, wp.Height)
+}
+
+// String returns a string with information about the wallpaper:
+// - if it's part of a wallpaper collection or not
+// - width
+// - height
+// - collection name
+// - path
 func (wp *Wallpaper) String() string {
 	star := " "
 	if wp.PartOfCollection {

@@ -41,3 +41,28 @@ func Closest(filenames []string) (string, error) {
 	// ok, have a map, now find the filename of the smallest distance
 	return d[minDist], nil
 }
+
+// GoodFit returns the image file with a resolution that is closest to the
+// current everage monitor resolution.
+func GoodFit(wallpapers []*Wallpaper) (*Wallpaper, error) {
+	avgRes, err := AverageResolution()
+	if err != nil {
+		return nil, err
+	}
+	// map: "distance to average resolution" => wallpaper
+	d := make(map[int](*Wallpaper))
+	var dist int
+	var minDist int
+	var minDistSet bool
+	for _, wp := range wallpapers {
+		res := wp.Res()
+		dist = Distance(avgRes, res)
+		if dist < minDist || !minDistSet {
+			minDist = dist
+			minDistSet = true
+		}
+		d[dist] = wp
+	}
+	// ok, have a map, now find the filename of the smallest distance
+	return d[minDist], nil
+}
