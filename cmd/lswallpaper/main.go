@@ -14,7 +14,20 @@ func listWallpapersAction(c *cli.Context) error {
 	}
 	withDetails := c.IsSet("long")
 	collectionMarker := c.IsSet("star")
-	for _, wp := range searchResults.Wallpapers() {
+	onlyGoodFit := c.IsSet("goodfit")
+
+	wallpapers := searchResults.Wallpapers()
+
+	if onlyGoodFit {
+		goodFitWallpaper, err := wallutils.GoodFit(wallpapers)
+		if err != nil {
+			return err
+		}
+		wallpapers = []*wallutils.Wallpaper{goodFitWallpaper}
+	}
+
+	// Output information about all the found wallpapers
+	for _, wp := range wallpapers {
 		if withDetails && collectionMarker {
 			fmt.Println(wp)
 		} else if withDetails {
@@ -57,6 +70,10 @@ func main() {
 			Name:  "star, s",
 			Usage: "prefix wallpapers with a star if they are part of a collection",
 		},
+		//cli.BoolFlag{
+		//	Name:  "goodfit, g",
+		//	Usage: "list the wallpaper that is the best fit for the current resolution",
+		//},
 	}
 
 	app.Action = listWallpapersAction
