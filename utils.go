@@ -181,3 +181,13 @@ func Meat(s, prefix, suffix string) string {
 	}
 	return s[len(prefix) : len(s)-len(suffix)]
 }
+
+// Quit with a nicely formatted error message to stderr
+func Quit(err error) {
+	msg := err.Error()
+	if !strings.HasSuffix(msg, ".") && !strings.HasSuffix(msg, "!") && !strings.Contains(msg, ":") {
+		msg += "."
+	}
+	fmt.Fprintf(os.Stderr, "%s%s\n", strings.ToUpper(string(msg[0])), msg[1:])
+	os.Exit(1)
+}

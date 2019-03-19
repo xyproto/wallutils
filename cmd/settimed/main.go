@@ -1,11 +1,13 @@
 package main
 
 import (
+	"errors"
 	"fmt"
 	"os"
 	"path/filepath"
 	"strings"
 
+	"github.com/urfave/cli"
 	"github.com/xyproto/gnometimed"
 	"github.com/xyproto/simpletimed"
 	"github.com/xyproto/wallutils"
@@ -16,28 +18,14 @@ func exists(path string) bool {
 	return err == nil
 }
 
-func main() {
-	if len(os.Args) <= 1 {
-		fmt.Fprintln(os.Stderr, "Please give a timed wallpaper name as the first argument.")
-		os.Exit(1)
+func setTimedWallpaperAction(c *cli.Context) error {
+	if c.NArg() == 0 {
+		return errors.New("please provide a timed wallpaper filename as the first argument")
 	}
-
-	flag := ""
-	collectionName := os.Args[1]
-	// Support only 2 arguments, a flag and a collection name
-	// TODO: Use a package for argument handling that is not the "flag" package
-	if len(os.Args) == 3 {
-		if strings.HasPrefix(os.Args[1], "-") {
-			flag = os.Args[1]
-			collectionName = os.Args[2]
-		} else if strings.HasPrefix(os.Args[2], "-") {
-			flag = os.Args[2]
-			collectionName = os.Args[1]
-		}
-	}
+	collectionName := c.Args().Get(0)
 
 	// Be verbose unless a silent flag (-s) has been given
-	verbose := flag != "-s"
+	verbose := !c.IsSet("silent")
 
 	// Ok, it was a filename
 	if strings.Contains(collectionName, ".") && exists(collectionName) {
@@ -46,34 +34,35 @@ func main() {
 		case ".stw":
 			stw, err := simpletimed.ParseSTW(filename)
 			if err != nil {
-				fmt.Fprintln(os.Stderr, err)
-				os.Exit(1)
+				return err
 			}
 			if verbose {
 				fmt.Printf("Using: %s\n", stw.Path)
 			}
 			// Start endless event loop
-			if err := stw.EventLoop(verbose, func(path string) error { return wallutils.SetWallpaperVerbose(path, verbose) }); err != nil {
-				fmt.Fprintln(os.Stderr, err)
-				os.Exit(1)
+			if err := stw.EventLoop(verbose,
+				func(path string) error {
+					return wallutils.SetWallpaperVerbose(path, verbose)
+				}); err != nil {
+				return err
 			}
 		case ".xml":
 			gtw, err := gnometimed.ParseXML(filename)
 			if err != nil {
-				fmt.Fprintln(os.Stderr, err)
-				os.Exit(1)
+				return err
 			}
 			if verbose {
 				fmt.Printf("Using: %s\n", gtw.Path)
 			}
 			// Start endless event loop
-			if err := gtw.EventLoop(verbose, func(path string) error { return wallutils.SetWallpaperVerbose(path, verbose) }); err != nil {
-				fmt.Fprintln(os.Stderr, err)
-				os.Exit(1)
+			if err := gtw.EventLoop(verbose,
+				func(path string) error {
+					return wallutils.SetWallpaperVerbose(path, verbose)
+				}); err != nil {
+				return err
 			}
 		default:
-			fmt.Fprintln(os.Stderr, "Unrecognized file extension:", filepath.Ext(filename))
-			os.Exit(1)
+			return fmt.Errorf("unrecognized file extension: %s", filepath.Ext(filename))
 		}
 	}
 
@@ -83,12 +72,10 @@ func main() {
 	}
 	searchResults, err := wallutils.FindWallpapers()
 	if err != nil {
-		fmt.Fprintf(os.Stderr, "error: %v\n", err)
-		os.Exit(1)
+		return err
 	}
 	if searchResults.NoTimedWallpapers() {
-		fmt.Fprintln(os.Stderr, "Could not find any timed wallpapers on the system.")
-		os.Exit(1)
+		return errors.New("could not find any timed wallpapers on the system")
 	}
 	if verbose {
 		fmt.Println("Filtering wallpapers by name...")
@@ -99,13 +86,11 @@ func main() {
 	// gnomeTimedWallpapers and simpleTimedWallpapers have now been filtered so that they only contain elements with matching collection names
 
 	if (len(gnomeTimedWallpapers) == 0) && (len(simpleTimedWallpapers) == 0) {
-		fmt.Fprintln(os.Stderr, "No such timed wallpaper: "+collectionName)
-		os.Exit(1)
+		return fmt.Errorf("no such timed wallpaper: %s", collectionName)
 	}
 
 	if (len(gnomeTimedWallpapers) > 1) || (len(simpleTimedWallpapers) > 1) {
-		fmt.Fprintln(os.Stderr, "Found several timed backgrounds, with the same name.")
-		os.Exit(1)
+		return errors.New("found several timed backgrounds with the same name")
 	}
 
 	if len(simpleTimedWallpapers) == 1 {
@@ -115,8 +100,7 @@ func main() {
 		}
 		// Start endless event loop
 		if err := stw.EventLoop(verbose, func(path string) error { return wallutils.SetWallpaperVerbose(path, verbose) }); err != nil {
-			fmt.Fprintln(os.Stderr, err)
-			os.Exit(1)
+			return err
 		}
 	} else if len(gnomeTimedWallpapers) == 1 {
 		gtw := gnomeTimedWallpapers[0]
@@ -125,9 +109,38 @@ func main() {
 		}
 		// Start endless event loop
 		if err := gtw.EventLoop(verbose, func(path string) error { return wallutils.SetWallpaperVerbose(path, verbose) }); err != nil {
-			fmt.Fprintln(os.Stderr, err)
-			os.Exit(1)
+			return err
 		}
 	}
 
+	// this location should never be reached
+	return nil
+}
+
+func main() {
+	app := cli.NewApp()
+
+	app.Name = "settimed"
+	app.Usage = "start an event loop for a timed wallpaper"
+	app.UsageText = "settimed [options] [path to a GNOME timed wallpaper or Simple Timed Wallpaper file]"
+
+	app.Version = wallutils.VersionString
+	app.HideHelp = true
+
+	cli.VersionFlag = cli.BoolFlag{
+		Name:  "version, V",
+		Usage: "output version information",
+	}
+
+	app.Flags = []cli.Flag{
+		cli.BoolFlag{
+			Name:  "silent, s",
+			Usage: "silence output",
+		},
+	}
+
+	app.Action = setTimedWallpaperAction
+	if err := app.Run(os.Args); err != nil {
+		wallutils.Quit(err)
+	}
 }

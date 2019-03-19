@@ -1,6 +1,7 @@
 package main
 
 import (
+	"errors"
 	"fmt"
 	"os"
 	"path/filepath"
@@ -11,8 +12,7 @@ import (
 
 func setWallpaperAction(c *cli.Context) error {
 	if c.NArg() == 0 {
-		fmt.Fprintln(os.Stderr, "Please specify an image filename.")
-		os.Exit(1)
+		return errors.New("please specify an image filename")
 	}
 	imageFilename := c.Args().Get(0)
 
@@ -34,18 +34,28 @@ func setWallpaperAction(c *cli.Context) error {
 
 func main() {
 	app := cli.NewApp()
+
 	app.Name = "setwallpaper"
 	app.Usage = "change the desktop wallpaper"
+	app.UsageText = "setwallpaper [options] [path to JPEG or PNG image]"
+
 	app.Version = wallutils.VersionString
+	app.HideHelp = true
+
+	cli.VersionFlag = cli.BoolFlag{
+		Name:  "version, V",
+		Usage: "output version information",
+	}
+
 	app.Flags = []cli.Flag{
 		cli.BoolFlag{
-			Name:  "verbose, V",
+			Name:  "verbose, v",
 			Usage: "verbose output",
 		},
 	}
+
 	app.Action = setWallpaperAction
 	if err := app.Run(os.Args); err != nil {
-		fmt.Fprintln(os.Stderr, err.Error())
-		os.Exit(1)
+		wallutils.Quit(err)
 	}
 }
