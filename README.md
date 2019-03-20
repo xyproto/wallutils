@@ -65,6 +65,10 @@ On Ubuntu:
     make
     sudo make install
 
+## Wayland or X only
+
+The packages related to X can be removed after building if only wish to keep the Wayland-related functionality. And likewise for X.
+
 ## Example use of `settimed`
 
     settimed mojave-timed
