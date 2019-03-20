@@ -36,11 +36,6 @@ func (c *Cinnamon) SetVerbose(verbose bool) {
 	c.verbose = verbose
 }
 
-// sq single-quotes a string
-func sq(s string) string {
-	return "'" + s + "'"
-}
-
 // SetWallpaper sets the desktop wallpaper, given an image filename.
 // The image must exist and be readable.
 func (c *Cinnamon) SetWallpaper(imageFilename string) error {
@@ -63,16 +58,25 @@ func (c *Cinnamon) SetWallpaper(imageFilename string) error {
 	switch mode {
 	case "none", "wallpaper", "centered", "scaled", "stretched", "zoom", "spanned":
 		break
-	default:
-		// Invalid desktop background mode, use "stretched"
+	case "fill":
+		// Invalid desktop wallpaper picture mode, use "stretched" instead
 		mode = "stretched"
+	default:
+		// Invalid and unrecognized desktop wallpaper picture mode
+		return fmt.Errorf("invalid desktop wallpaper picture mode for Cinnamon: %s", mode)
 	}
 
-	// Set the desktop wallpaper picture mode
-	if err := run("gsettings", []string{"set", "org.cinnamon.desktop.background", "picture-options", sq(mode)}, c.verbose); err != nil {
-		return err
+	// Create a new GSettings struct, for dealing with GNOME settings
+	g := NewGSettings("org.cinnamon.desktop.background", c.verbose)
+
+	// Set picture-options, if it is not already set to the desired value
+	if g.Get("picture-options") != mode {
+		if err := g.Set("picture-options", mode); err != nil {
+			return err
+		}
 	}
 
-	// Set the desktop wallpaper
-	return run("gsettings", []string{"set", "org.cinnamon.desktop.background", "picture-uri", sq("file://" + imageFilename)}, c.verbose)
+	// Set the desktop wallpaper (also set it if it is already set, in case
+	// the contents have changed)
+	return g.Set("picture-uri", "file://"+imageFilename)
 }

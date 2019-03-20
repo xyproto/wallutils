@@ -25,7 +25,7 @@ func (m *Mate) ExecutablesExists() bool {
 }
 
 func (m *Mate) Running() bool {
-	return (containsE("GDMSESSION", "mate") || containsE("XDG_SESSION_DESKTOP", "mate") || containsE("XDG_CURRENT_DESKTOP", "mate"))
+	return containsE("GDMSESSION", "mate") || containsE("XDG_SESSION_DESKTOP", "MATE") || containsE("XDG_CURRENT_DESKTOP", "MATE") || containsE("DESKTOP_SESSION", "/usr/share/xsessions/mate")
 }
 
 func (m *Mate) SetMode(mode string) {
@@ -46,23 +46,37 @@ func (m *Mate) SetWallpaper(imageFilename string) error {
 	if !m.hasChecked {
 		m.ExecutablesExists()
 	}
-	// Set the desktop wallpaper picture mode
+
 	mode := defaultMode
+
+	// If c.mode is specified, do not use the default value
 	if m.mode != "" {
 		mode = m.mode
 	}
-	// Change the background with either dconf or gsettings
-	if m.hasDconf {
-		// use dconf
-		if err := run("dconf", []string{"write", "/org/mate/desktop/background/picture-filename", imageFilename}, m.verbose); err != nil {
+
+	// possible values for gsettings / picture-options: "none", "wallpaper", "centered", "scaled", "stretched", "zoom", "spanned".
+	switch mode {
+	case "none", "wallpaper", "centered", "scaled", "stretched", "zoom", "spanned":
+		break
+	case "fill":
+		// Invalid desktop wallpaper picture mode, use "stretched" instead
+		mode = "stretched"
+	default:
+		// Invalid and unrecognized desktop wallpaper picture mode
+		return fmt.Errorf("invalid desktop wallpaper picture mode for MATE: %s", mode)
+	}
+
+	// Create a new GSettings struct, for dealing with GNOME settings
+	g := NewGSettings("org.mate.background", m.verbose)
+
+	// Set picture-options, if it is not already set to the desired value
+	if g.Get("picture-options") != mode {
+		if err := g.Set("picture-options", mode); err != nil {
 			return err
 		}
-		return run("dconf", []string{"write", "/org/mate/desktop/background/picture-options", mode}, m.verbose)
 	}
-	// use gsettings
-	if err := run("gsettings", []string{"set", "org.mate.background", "picture-filename", imageFilename}, m.verbose); err != nil {
-		return err
-	}
-	return run("gsettings", []string{"set", "org.mate.background", "picture-options", mode}, m.verbose)
 
+	// Set the desktop wallpaper (also set it if it is already set, in case
+	// the contents have changed)
+	return g.Set("picture-filename", imageFilename)
 }
