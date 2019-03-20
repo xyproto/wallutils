@@ -56,6 +56,15 @@ Install `wallutils` from AUR, or:
     make
     sudo make install
 
+On Fedora:
+
+    sudo dnf update
+    sudo dnf install xorg-x11-xbitmaps libXcursor-devel libXmu-devel
+    git clone https://github.com/xyproto/wallutils
+    cd wallutils
+    make
+    sudo make install
+
 On Ubuntu:
 
     sudo apt get update
