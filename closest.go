@@ -74,5 +74,3 @@ func ClosestByResolutionInFilename(filenames []string) (string, error) {
 func Closest(filenames []string) (string, error) {
 	return ClosestByResolutionInFilename(filenames)
 }
-
-
