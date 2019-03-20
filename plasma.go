@@ -18,7 +18,7 @@ func (p *Plasma) ExecutablesExists() bool {
 }
 
 func (p *Plasma) Running() bool {
-	return containsE("GDMSESSION", "plasma") || containsE("XDG_SESSION_DESKTOP", "plasma") || containsE("XDG_CURRENT_DESKTOP", "plasma")
+	return containsE("GDMSESSION", "plasma") || containsE("XDG_SESSION_DESKTOP", "KDE") || containsE("XDG_CURRENT_DESKTOP", "KDE") || containsE("XDG_SESSION_DESKTOP", "plasma") || containsE("XDG_CURRENT_DESKTOP", "plasma")
 }
 
 func (p *Plasma) SetVerbose(verbose bool) {
