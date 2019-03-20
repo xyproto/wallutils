@@ -25,7 +25,7 @@ func (c *Cinnamon) ExecutablesExists() bool {
 }
 
 func (c *Cinnamon) Running() bool {
-	return (containsE("GDMSESSION", "cinnamon") || containsE("XDG_SESSION_DESKTOP", "cinnamon") || containsE("XDG_CURRENT_DESKTOP", "cinnamon"))
+	return (containsE("XDG_CURRENT_DESKTOP", "X-Cinnamon") || containsE("GDMSESSION", "cinnamon") || containsE("DESKTOP_SESSION", "xsessions/cinnamon"))
 }
 
 func (c *Cinnamon) SetMode(mode string) {
@@ -34,6 +34,11 @@ func (c *Cinnamon) SetMode(mode string) {
 
 func (c *Cinnamon) SetVerbose(verbose bool) {
 	c.verbose = verbose
+}
+
+// sq single-quotes a string
+func sq(s string) string {
+	return "'" + s + "'"
 }
 
 // SetWallpaper sets the desktop wallpaper, given an image filename.
@@ -46,22 +51,28 @@ func (c *Cinnamon) SetWallpaper(imageFilename string) error {
 	if !c.hasChecked {
 		c.ExecutablesExists()
 	}
-	// Set the desktop wallpaper picture mode
+
 	mode := defaultMode
+
+	// If c.mode is specified, do not use the default value
 	if c.mode != "" {
 		mode = c.mode
 	}
-	// Change the background with either dconf or gsettings
-	if c.hasDconf {
-		// use dconf
-		if err := run("dconf", []string{"write", "/org/cinnamon/desktop/background/picture-filename", imageFilename}, c.verbose); err != nil {
-			return err
-		}
-		return run("dconf", []string{"write", "/org/cinnamon/desktop/background/picture-options", mode}, c.verbose)
+
+	// possible values for gsettings / picture-options: "none", "wallpaper", "centered", "scaled", "stretched", "zoom", "spanned".
+	switch mode {
+	case "none", "wallpaper", "centered", "scaled", "stretched", "zoom", "spanned":
+		break
+	default:
+		// Invalid desktop background mode, use "stretched"
+		mode = "stretched"
 	}
-	// use gsettings
-	if err := run("gsettings", []string{"set", "org.cinnamon.background", "picture-filename", imageFilename}, c.verbose); err != nil {
+
+	// Set the desktop wallpaper picture mode
+	if err := run("gsettings", []string{"set", "org.cinnamon.desktop.background", "picture-options", sq(mode)}, c.verbose); err != nil {
 		return err
 	}
-	return run("gsettings", []string{"set", "org.cinnamon.background", "picture-options", mode}, c.verbose)
+
+	// Set the desktop wallpaper
+	return run("gsettings", []string{"set", "org.cinnamon.desktop.background", "picture-uri", sq("file://" + imageFilename)}, c.verbose)
 }
