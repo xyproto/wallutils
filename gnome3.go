@@ -1,12 +1,17 @@
 package wallutils
 
 import (
+	"errors"
 	"fmt"
 )
 
 // Gnome3 windowmanager detector
 type Gnome3 struct {
-	verbose bool
+	mode         string // none | wallpaper | centered | scaled | stretched | zoom | spanned, scaled is the default
+	hasGnome3    bool
+	hasGsettings bool
+	hasChecked   bool
+	verbose      bool
 }
 
 func (g3 *Gnome3) Name() string {
@@ -14,7 +19,13 @@ func (g3 *Gnome3) Name() string {
 }
 
 func (g3 *Gnome3) ExecutablesExists() bool {
-	return which("gsettings") != ""
+	// Cache the results
+	g3.hasGsettings = which("gsettings") != ""
+	g3.hasGnome3 = which("gnome-session") != ""
+	g3.hasChecked = true
+
+	// The result may be used both outside of this file, and in SetWallpaper
+	return g3.hasGnome3 && g3.hasGsettings
 }
 
 func (g3 *Gnome3) Running() bool {
@@ -28,8 +39,51 @@ func (g3 *Gnome3) SetVerbose(verbose bool) {
 // SetWallpaper sets the desktop wallpaper, given an image filename.
 // The image must exist and be readable.
 func (g3 *Gnome3) SetWallpaper(imageFilename string) error {
+	// Check if the image exists
 	if !exists(imageFilename) {
 		return fmt.Errorf("no such file: %s", imageFilename)
 	}
-	return run("gsettings", []string{"set", "org.gnome.desktop.background", "picture-uri", "file://" + imageFilename}, g3.verbose)
+
+	// Check if dconf or gsettings are there, if we haven't already checked
+	if !g3.hasChecked {
+		// This alters the state of g3
+		g3.ExecutablesExists()
+	}
+
+	mode := defaultMode
+
+	// If g3.mode is specified, do not use the default value
+	if g3.mode != "" {
+		mode = g3.mode
+	}
+
+	// possible values for gsettings / picture-options: "none", "wallpaper", "centered", "scaled", "stretched", "zoom", "spanned".
+	switch mode {
+	case "none", "wallpaper", "centered", "scaled", "stretched", "zoom", "spanned":
+		break
+	case "fill":
+		// Invalid desktop wallpaper picture mode, use "stretched" instead
+		mode = "stretched"
+	default:
+		// Invalid and unrecognized desktop wallpaper picture mode
+		return fmt.Errorf("invalid desktop wallpaper picture mode for GNOME3: %s", mode)
+	}
+
+	if !g3.hasGsettings {
+		return errors.New("could not find gsettings")
+	}
+
+	// Create a new GSettings struct, for dealing with GNOME settings
+	g := NewGSettings("org.gnome.desktop.background", g3.verbose)
+
+	// Set picture-options, if it is not already set to the desired value
+	if g.Get("picture-options") != mode {
+		if err := g.Set("picture-options", mode); err != nil {
+			return err
+		}
+	}
+
+	// Set the desktop wallpaper (also set it if it is already set, in case
+	// the contents have changed)
+	return g.Set("picture-uri", "file://"+imageFilename)
 }

@@ -1,13 +1,14 @@
 package wallutils
 
 import (
+	"errors"
 	"fmt"
 )
 
 // Cinnamon windowmanager detector
 type Cinnamon struct {
 	mode         string // none | wallpaper | centered | scaled | stretched | zoom | spanned, scaled is the default
-	hasDconf     bool
+	hasCinnamon  bool
 	hasGsettings bool
 	hasChecked   bool
 	verbose      bool
@@ -18,10 +19,13 @@ func (c *Cinnamon) Name() string {
 }
 
 func (c *Cinnamon) ExecutablesExists() bool {
-	c.hasDconf = which("dconf") != ""
+	// Cache the results
 	c.hasGsettings = which("gsettings") != ""
+	c.hasCinnamon = which("cinnamon") != ""
 	c.hasChecked = true
-	return c.hasDconf || c.hasGsettings
+
+	// The result may be used both outside of this file, and in SetWallpaper
+	return c.hasCinnamon && c.hasGsettings
 }
 
 func (c *Cinnamon) Running() bool {
@@ -44,6 +48,7 @@ func (c *Cinnamon) SetWallpaper(imageFilename string) error {
 	}
 	// Check if dconf or gsettings are there, if we haven't already checked
 	if !c.hasChecked {
+		// This alters the state of c
 		c.ExecutablesExists()
 	}
 
@@ -64,6 +69,10 @@ func (c *Cinnamon) SetWallpaper(imageFilename string) error {
 	default:
 		// Invalid and unrecognized desktop wallpaper picture mode
 		return fmt.Errorf("invalid desktop wallpaper picture mode for Cinnamon: %s", mode)
+	}
+
+	if !c.hasGsettings {
+		return errors.New("could not find gsettings")
 	}
 
 	// Create a new GSettings struct, for dealing with GNOME settings

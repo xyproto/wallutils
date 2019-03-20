@@ -1,13 +1,14 @@
 package wallutils
 
 import (
+	"errors"
 	"fmt"
 )
 
 // Mate windowmanager detector
 type Mate struct {
 	mode         string // none | wallpaper | centered | scaled | stretched | zoom | spanned, scaled is the default
-	hasDconf     bool
+	hasMate      bool
 	hasGsettings bool
 	hasChecked   bool
 	verbose      bool
@@ -18,14 +19,17 @@ func (m *Mate) Name() string {
 }
 
 func (m *Mate) ExecutablesExists() bool {
-	m.hasDconf = which("dconf") != ""
+	// Cache the results
 	m.hasGsettings = which("gsettings") != ""
+	m.hasMate = which("mate-session") != ""
 	m.hasChecked = true
-	return m.hasDconf || m.hasGsettings
+
+	// The result may be used both outside of this file, and in SetWallpaper
+	return m.hasMate && m.hasGsettings
 }
 
 func (m *Mate) Running() bool {
-	return containsE("GDMSESSION", "mate") || containsE("XDG_SESSION_DESKTOP", "MATE") || containsE("XDG_CURRENT_DESKTOP", "MATE") || containsE("DESKTOP_SESSION", "/usr/share/xsessions/mate")
+	return containsE("GDMSESSION", "mate") || containsE("XDG_SESSION_DESKTOP", "MATE") || containsE("XDG_CURRENT_DESKTOP", "MATE") || containsE("DESKTOP_SESSION", "xsessions/mate")
 }
 
 func (m *Mate) SetMode(mode string) {
@@ -44,12 +48,13 @@ func (m *Mate) SetWallpaper(imageFilename string) error {
 	}
 	// Check if dconf or gsettings are there, if we haven't already checked
 	if !m.hasChecked {
+		// This alters the state of m
 		m.ExecutablesExists()
 	}
 
 	mode := defaultMode
 
-	// If c.mode is specified, do not use the default value
+	// If m.mode is specified, do not use the default value
 	if m.mode != "" {
 		mode = m.mode
 	}
@@ -64,6 +69,10 @@ func (m *Mate) SetWallpaper(imageFilename string) error {
 	default:
 		// Invalid and unrecognized desktop wallpaper picture mode
 		return fmt.Errorf("invalid desktop wallpaper picture mode for MATE: %s", mode)
+	}
+
+	if !m.hasGsettings {
+		return errors.New("could not find gsettings")
 	}
 
 	// Create a new GSettings struct, for dealing with GNOME settings
