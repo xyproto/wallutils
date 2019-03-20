@@ -43,7 +43,7 @@ func main() {
 
 	app.Flags = []cli.Flag{
 		cli.BoolFlag{
-			Name:  "l, d, dpi",
+			Name:  "d, dpi",
 			Usage: "also output the monitor DPI",
 		},
 	}
