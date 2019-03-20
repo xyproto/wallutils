@@ -8,7 +8,7 @@ import (
 )
 
 // VersionString is the current version of wallutils and all included utilities
-const VersionString = "5.3.1"
+const VersionString = "5.3.2"
 
 // Quit with a nicely formatted error message to stderr
 func Quit(err error) {
