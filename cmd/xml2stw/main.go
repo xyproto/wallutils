@@ -1,23 +1,61 @@
 package main
 
 import (
+	"errors"
 	"fmt"
 	"os"
 
+	"github.com/urfave/cli"
 	"github.com/xyproto/gnometimed"
+	"github.com/xyproto/wallutils"
 )
 
-func main() {
-	if len(os.Args) <= 1 {
-		fmt.Fprintln(os.Stderr, "Please give the path to a GNOME timed wallpaper XML file as the first argument.")
-		os.Exit(1)
+func conversionAction(c *cli.Context) error {
+	if c.NArg() == 0 {
+		return errors.New("please give the path to a GNOME timed wallpaper XML file as the first argument")
 	}
-	filename := os.Args[1]
+	filename := c.Args().Get(0)
 
-	s, err := gnometimed.GnomeFileToSimpleString(filename)
+	simpleTimedWallpaperString, err := gnometimed.GnomeFileToSimpleString(filename)
 	if err != nil {
-		fmt.Fprintf(os.Stderr, "error: %s\n", err)
-		os.Exit(1)
+		return err
 	}
-	fmt.Println(s)
+
+	// Output the result of the conversion
+	fmt.Println(simpleTimedWallpaperString)
+
+	return nil
+}
+
+func main() {
+	app := cli.NewApp()
+
+	app.Name = "xml2stw"
+	app.Usage = "convert from GNOME Timed Wallpaper to the Simple Timed Wallpaper format"
+	app.UsageText = "xml2stw [options] [XML file]"
+
+	app.Version = wallutils.VersionString
+	app.HideHelp = true
+
+	cli.VersionFlag = cli.BoolFlag{
+		Name:  "version, V",
+		Usage: "output version information",
+	}
+
+	app.Flags = []cli.Flag{
+		cli.BoolFlag{
+			Name:  "verbose, v",
+			Usage: "verbose output",
+		},
+		//cli.StringFlag{
+		//	Name:  "output, o",
+		//	Value: "output.stw",
+		//	Usage: "verbose output",
+		//},
+	}
+
+	app.Action = conversionAction
+	if err := app.Run(os.Args); err != nil {
+		wallutils.Quit(err)
+	}
 }

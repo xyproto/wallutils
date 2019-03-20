@@ -3,6 +3,7 @@ package main
 import (
 	"fmt"
 	"github.com/fatih/color"
+	"github.com/urfave/cli"
 	"github.com/xyproto/wallutils"
 	"strings"
 
@@ -15,20 +16,21 @@ func Indent(s string, prefix string) string {
 	return prefix + strings.Replace(strings.TrimRight(s, "\n"), "\n", "\n"+prefix, -1)
 }
 
-func main() {
+func timedInfoAction(c *cli.Context) error {
 	searchResults, err := wallutils.FindWallpapers()
 	if err != nil {
-		fmt.Fprintf(os.Stderr, "error: %v\n", err)
-		os.Exit(1)
+		return err
 	}
 	white := color.New(color.FgWhite, color.Bold)
 	blue := color.New(color.FgBlue, color.Bold)
 	gray := color.New(color.Reset)
 	const prefix = "\t"
+
 	nameFilter := ""
-	if len(os.Args) > 1 {
-		nameFilter = os.Args[1]
+	if c.NArg() > 0 {
+		nameFilter = c.Args().Get(0)
 	}
+
 	first := true
 	for _, stw := range searchResults.SimpleTimedWallpapers() {
 		if nameFilter == "" || stw.Name == nameFilter {
@@ -55,5 +57,27 @@ func main() {
 			fmt.Println()
 			gray.Println("\n" + Indent(gtw.String(), prefix))
 		}
+	}
+	return nil
+}
+
+func main() {
+	app := cli.NewApp()
+
+	app.Name = "timedinfo"
+	app.Usage = "show information about timed wallpapers on the system"
+	app.UsageText = "timedinfo [options] [name]"
+
+	app.Version = wallutils.VersionString
+	app.HideHelp = true
+
+	cli.VersionFlag = cli.BoolFlag{
+		Name:  "version, V",
+		Usage: "output version information",
+	}
+
+	app.Action = timedInfoAction
+	if err := app.Run(os.Args); err != nil {
+		wallutils.Quit(err)
 	}
 }
