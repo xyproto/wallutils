@@ -40,7 +40,7 @@ func SelectAndSetWallpaper(wallpapers []*wallutils.Wallpaper) error {
 
 func setWallpaperCollectionAction(c *cli.Context) error {
 	if c.NArg() == 0 {
-		return errors.New("please specify a wallpaper collection name or filename")
+		return errors.New("please specify a wallpaper collection name")
 	}
 	collectionName := c.Args().Get(0)
 
