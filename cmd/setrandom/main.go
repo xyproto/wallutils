@@ -1,12 +1,14 @@
 package main
 
 import (
+	"errors"
 	"fmt"
 	"math/rand"
 	"os"
 	"path/filepath"
 	"time"
 
+	"github.com/urfave/cli"
 	"github.com/xyproto/wallutils"
 )
 
@@ -14,45 +16,36 @@ func init() {
 	rand.Seed(time.Now().UTC().UnixNano())
 }
 
-func main() {
-	if len(os.Args) > 1 && os.Args[1] == "--version" {
-		fmt.Println(wallutils.VersionString)
-		os.Exit(0)
+func setRandomWallpaperAction(c *cli.Context) error {
+	if c.NArg() == 0 {
+		return errors.New("please specify a directory to choose wallpapers from")
 	}
+	dir := c.Args().Get(0)
 
-	if len(os.Args) < 2 {
-		fmt.Fprintln(os.Stderr, "Please specify a directory to choose wallpapers from.")
-		os.Exit(1)
-	}
-	dir := os.Args[1]
-
-	verbose := false
-	if len(os.Args) > 1 && os.Args[1] == "-v" {
-		verbose = true
-		if len(os.Args) < 3 {
-			fmt.Fprintln(os.Stderr, "Please specify a directory to choose wallpapers from.")
-			os.Exit(1)
-		}
-		dir = os.Args[2]
-	}
+	// Check if the verbose flag is set
+	verbose := c.IsSet("verbose")
 
 	pngMatches, err := filepath.Glob(filepath.Join(dir, "/*.png"))
 	if err != nil {
-		fmt.Fprintln(os.Stderr, err)
-		os.Exit(1)
+		return err
 	}
 
 	jpgMatches, err := filepath.Glob(filepath.Join(dir, "/*.jpg"))
 	if err != nil {
-		fmt.Fprintln(os.Stderr, err)
-		os.Exit(1)
+		return err
 	}
 
-	matches := append(pngMatches, jpgMatches...)
+	jpegMatches, err := filepath.Glob(filepath.Join(dir, "/*.jpeg"))
+	if err != nil {
+		return err
+	}
+
+	matches := pngMatches
+	matches = append(matches, jpgMatches...)
+	matches = append(matches, jpegMatches...)
 
 	if len(matches) == 0 {
-		fmt.Fprintln(os.Stderr, "Found no png or jpg files in "+dir)
-		os.Exit(1)
+		return fmt.Errorf("found no .png, .jpg or .jpeg files in %s", dir)
 	}
 
 	imageFilename := matches[rand.Int()%len(matches)]
@@ -60,9 +53,36 @@ func main() {
 		imageFilename = absImageFilename
 	}
 
-	fmt.Println("Setting background image to: " + imageFilename)
-	if err := wallutils.SetWallpaperVerbose(imageFilename, verbose); err != nil {
-		fmt.Fprintln(os.Stderr, err)
-		os.Exit(1)
+	if verbose {
+		fmt.Printf("Setting background image to: %s\n", imageFilename)
+	}
+	return wallutils.SetWallpaperVerbose(imageFilename, verbose)
+}
+
+func main() {
+	app := cli.NewApp()
+
+	app.Name = "setrandom"
+	app.Usage = "choose a wallpaper and set it"
+	app.UsageText = "setrandom [options] [directory with images]"
+
+	app.Version = wallutils.VersionString
+	app.HideHelp = true
+
+	cli.VersionFlag = cli.BoolFlag{
+		Name:  "version, V",
+		Usage: "output version information",
+	}
+
+	app.Flags = []cli.Flag{
+		cli.BoolFlag{
+			Name:  "verbose, v",
+			Usage: "verbose output",
+		},
+	}
+
+	app.Action = setRandomWallpaperAction
+	if err := app.Run(os.Args); err != nil {
+		wallutils.Quit(err)
 	}
 }

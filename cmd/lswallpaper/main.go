@@ -19,7 +19,7 @@ func listWallpapersAction(c *cli.Context) error {
 	wallpapers := searchResults.Wallpapers()
 
 	if onlyGoodFit {
-		goodFitWallpaper, err := wallutils.GoodFit(wallpapers)
+		goodFitWallpaper, err := wallutils.ClosestByResolution(wallpapers)
 		if err != nil {
 			return err
 		}

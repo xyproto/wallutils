@@ -1,10 +1,12 @@
 package main
 
 import (
+	"errors"
 	"fmt"
 	"os"
 	"path/filepath"
 
+	"github.com/urfave/cli"
 	"github.com/xyproto/wallutils"
 )
 
@@ -16,7 +18,7 @@ func SelectAndSetWallpaper(wallpapers []*wallutils.Wallpaper) error {
 		filenames = append(filenames, wp.Path)
 	}
 
-	// Select the image that is closest to the monitor resolution
+	// Select the image filename that is closest to the current monitor resolution
 	imageFilename, err := wallutils.Closest(filenames)
 	if err != nil {
 		return err
@@ -30,26 +32,28 @@ func SelectAndSetWallpaper(wallpapers []*wallutils.Wallpaper) error {
 
 	// Set the desktop wallpaper
 	if err := wallutils.SetWallpaper(imageFilename); err != nil {
-		return fmt.Errorf("Could not set wallpaper: %s\n", err)
+		return fmt.Errorf("could not set wallpaper: %s", err)
 	}
 
 	return nil
 }
 
-func main() {
-	if len(os.Args) <= 1 {
-		fmt.Fprintln(os.Stderr, "Please give a wallpaper collection name as the first argument.")
-		os.Exit(1)
+func setWallpaperCollectionAction(c *cli.Context) error {
+	if c.NArg() == 0 {
+		return errors.New("please specify a wallpaper collection name or filename")
+	}
+	collectionName := c.Args().Get(0)
+
+	verbose := c.IsSet("verbose")
+
+	if verbose {
+		fmt.Printf("Setting wallpaper collection \"%s\"\n", collectionName)
+		fmt.Print("Searching for wallpapers...")
 	}
 
-	collectionName := os.Args[1]
-	fmt.Printf("Setting wallpaper collection \"%s\"\n", collectionName)
-
-	fmt.Print("Searching for wallpapers...")
 	searchResults, err := wallutils.FindWallpapers()
 	if err != nil {
-		fmt.Fprintf(os.Stderr, "error: %v\n", err)
-		os.Exit(1)
+		return err
 	}
 
 	wallpapers := searchResults.Wallpapers()
@@ -57,30 +61,57 @@ func main() {
 	simpleTimedWallpapers := searchResults.SimpleTimedWallpapers()
 
 	if searchResults.Empty() {
-		fmt.Fprintln(os.Stderr, "Could not find any wallpapers on the system.")
-		os.Exit(1)
-	} else {
-		fmt.Println("ok")
+		return errors.New("could not find any wallpapers on the system")
 	}
 
-	fmt.Print("Filtering wallpapers by collection name...")
+	if verbose {
+		fmt.Println("ok")
+		fmt.Print("Filtering wallpapers by collection name...")
+	}
+
 	wallpapers = searchResults.WallpapersByName(collectionName)
 	gnomeTimedWallpapers = searchResults.GnomeTimedWallpapersByName(collectionName)
 	simpleTimedWallpapers = searchResults.SimpleTimedWallpapersByName(collectionName)
-	fmt.Println("ok")
+
+	if verbose {
+		fmt.Println("ok")
+	}
 
 	if len(wallpapers) == 0 && (len(gnomeTimedWallpapers) > 0 || len(simpleTimedWallpapers) > 0) {
-		fmt.Fprintln(os.Stderr, "Timed wallpapers are not supported by this utility.")
-		os.Exit(1)
+		return errors.New("timed wallpapers are not supported by this utility, please try \"settimed\" instead")
 	}
 
 	if len(wallpapers) == 0 {
-		fmt.Fprintln(os.Stderr, "No such collection: "+collectionName)
-		os.Exit(1)
+		return fmt.Errorf("no such collection: %s", collectionName)
 	}
 
-	if err = SelectAndSetWallpaper(wallpapers); err != nil {
-		fmt.Fprintln(os.Stderr, err)
-		os.Exit(1)
+	return SelectAndSetWallpaper(wallpapers)
+}
+
+func main() {
+	app := cli.NewApp()
+
+	app.Name = "setcollection"
+	app.Usage = "change the desktop wallpaper"
+	app.UsageText = "setcollection [options] [name of wallpaper collection]"
+
+	app.Version = wallutils.VersionString
+	app.HideHelp = true
+
+	cli.VersionFlag = cli.BoolFlag{
+		Name:  "version, V",
+		Usage: "output version information",
+	}
+
+	app.Flags = []cli.Flag{
+		cli.BoolFlag{
+			Name:  "verbose, v",
+			Usage: "verbose output",
+		},
+	}
+
+	app.Action = setWallpaperCollectionAction
+	if err := app.Run(os.Args); err != nil {
+		wallutils.Quit(err)
 	}
 }
