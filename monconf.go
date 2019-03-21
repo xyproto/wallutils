@@ -12,6 +12,7 @@ import (
 	"os"
 	"path/filepath"
 	"strconv"
+	"strings"
 )
 
 type MonitorConfiguration struct {
@@ -82,6 +83,7 @@ func NewMonitorConfiguration() (*MonitorConfiguration, error) {
 }
 
 // gdc2 implements the Euclid algorithm for greatest common divisor
+// on two given numbers.
 func gcd2(x, y uint) uint {
 	for y != 0 {
 		x, y = y, x%y
@@ -109,7 +111,7 @@ func gdc(nums []uint) (uint, error) {
 
 // overlaps checks if a slice of rectangles overlaps.
 // will modify (reduce the size of) the rectangles in the process.
-func overlaps(rects []*Rect, verbose bool) bool {
+func overlaps(rects []*Rect) bool {
 	// Shrink all rectangles down to minimum size by dividing on the
 	// common greatest denominator, then draw "pixels" in a grid and check if
 	// a "pixel" is drawn twice. Can probably be done currently too.
@@ -154,15 +156,23 @@ func overlaps(rects []*Rect, verbose bool) bool {
 		}
 	}
 
+	// Scale the rectangles back up when done
+	//defer func() {
+	//	for _, r := range rects {
+	//		r.x *= d
+	//		r.y *= d
+	//		r.w *= d
+	//		r.h *= d
+	//	}
+	//}
+
+	// Find the width and height of the boundaries
 	width := maxx - minx
 	height := maxy - miny
 
 	//fmt.Println("minx, maxx, miny, maxy", minx, maxx, miny, maxy)
 	//fmt.Println("width, height", width, height)
-
-	if verbose {
-		fmt.Printf("Using rectangle overlap buffer of size %d\n", width*height)
-	}
+	//fmt.Printf("Using rectangle overlap buffer of size %d\n", width*height)
 
 	// For the case of monitor resolutions, this slice of "pixels"
 	// should be significantly smaller than the original sizes.
@@ -193,7 +203,7 @@ func overlaps(rects []*Rect, verbose bool) bool {
 // Overlapping can check if two monitors in monitors.xml have overlapping
 // areas. This is useful to know, because it may cause artifacts when setting
 // the desktop wallpapers in Gnome3, Cinnamon and MATE.
-func (mc *MonitorConfiguration) Overlapping(verbose bool) bool {
+func (mc *MonitorConfiguration) Overlapping() bool {
 	mc, err := NewMonitorConfiguration()
 	if err != nil {
 		return false
@@ -223,9 +233,27 @@ func (mc *MonitorConfiguration) Overlapping(verbose bool) bool {
 				rects = append(rects, r)
 			}
 		}
-		if overlaps(rects, verbose) {
+		if overlaps(rects) {
 			return true
 		}
+	}
+	return false
+}
+
+// MonConfOverlap is a convenience function for checking if the
+// x,y,w,h monitor configurations in ie. ~/.config/monitors.xml are
+// overlapping or not. If monitors.xml can not be parsed or read,
+// false is returned.
+func MonConfOverlap(filename string) bool {
+	// Replace ~ with the home directory
+	if strings.HasPrefix(filename, "~") {
+		homedir, err := os.UserHomeDir()
+		if err == nil {
+			filename = filepath.Join(homedir, filename[1:])
+		}
+	}
+	if mc, err := ParseMonitorFile(filename); err != nil {
+		return mc.Overlapping()
 	}
 	return false
 }
