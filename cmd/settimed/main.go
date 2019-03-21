@@ -67,7 +67,7 @@ func setTimedWallpaperAction(c *cli.Context) error {
 	}
 
 	if verbose {
-		fmt.Printf("Setting wallpaper collection: %s\n", collectionName)
+		fmt.Printf("Setting timed wallpaper: %s\n", collectionName)
 		fmt.Println("Searching for wallpapers...")
 	}
 	searchResults, err := wallutils.FindWallpapers()
