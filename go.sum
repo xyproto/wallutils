@@ -23,8 +23,8 @@ github.com/xyproto/crossfade v0.0.0-20190210121323-d884599bd751 h1:9Gj2LYEpPqSE2
 github.com/xyproto/crossfade v0.0.0-20190210121323-d884599bd751/go.mod h1:EW9b0FpDSnr36patXgO6i09AJJpZ6z+kFxerNwrIoCU=
 github.com/xyproto/event v0.0.0-20190209144958-6bbdc7eb57e4 h1:PONowSXG5DlIoLEsXKQt58GzREAjH0P5Rr5bflIOTi8=
 github.com/xyproto/event v0.0.0-20190209144958-6bbdc7eb57e4/go.mod h1:IAzZJ4LWfM+NVUT/NK5u0Xzvlyo0kFrsRlyrKoHiPp4=
-github.com/xyproto/gnometimed v0.0.0-20190318175354-8228bac73341 h1:By6o7/RcIYTnVrHFAxnJVaFvu/Lvg4ia7X+QDOUcWvA=
-github.com/xyproto/gnometimed v0.0.0-20190318175354-8228bac73341/go.mod h1:BK/K/WZ7Ou1MGAj+dykal1jKQd0ZjPJGf2DZHUcRFt8=
+github.com/xyproto/gnometimed v0.0.0-20190321000450-f52ece0e6bd7 h1:WpHC6JLi4VnIOMsGfs+s66V6b2rt2ZNoVgIYIczfD8k=
+github.com/xyproto/gnometimed v0.0.0-20190321000450-f52ece0e6bd7/go.mod h1:BK/K/WZ7Ou1MGAj+dykal1jKQd0ZjPJGf2DZHUcRFt8=
 github.com/xyproto/imagelib v0.0.0-20190209194312-bbbf5649f300 h1:Qje6856C+ZLSjBbX9cW3bTycIT2RD4xYebbE2b+la80=
 github.com/xyproto/imagelib v0.0.0-20190209194312-bbbf5649f300/go.mod h1:28DiltQEyXiqtA/q9l1+cRteOIozAh1J7/oyzbiR4iM=
 github.com/xyproto/simpletimed v0.0.0-20190318175234-e8750d2a28f8 h1:7CpJyGWFo0E+oNSm5GiFUG8T760sefbcpAB8X6W3NOs=

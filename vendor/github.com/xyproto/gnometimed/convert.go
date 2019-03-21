@@ -90,7 +90,7 @@ func GnomeToSimpleString(gtw *Wallpaper) (string, error) {
 			from := eventTime
 			upTo := eventTime.Add(window)
 
-			if t.Type == "overlay" {
+			if t.Type == "overlay" || t.Type == "" {
 				sb.WriteString(fmt.Sprintf("@%s-%s: %s .. %s\n", cFmt(from), cFmt(upTo), Meat(t.FromFilename, commonPrefix, commonSuffix), Meat(t.ToFilename, commonPrefix, commonSuffix)))
 			} else {
 				sb.WriteString(fmt.Sprintf("@%s-%s: %s .. %s | %s\n", cFmt(from), cFmt(upTo), Meat(t.FromFilename, commonPrefix, commonSuffix), Meat(t.ToFilename, commonPrefix, commonSuffix), t.Type))

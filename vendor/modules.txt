@@ -12,7 +12,7 @@ github.com/urfave/cli
 github.com/xyproto/crossfade
 # github.com/xyproto/event v0.0.0-20190209144958-6bbdc7eb57e4
 github.com/xyproto/event
-# github.com/xyproto/gnometimed v0.0.0-20190318175354-8228bac73341
+# github.com/xyproto/gnometimed v0.0.0-20190321000450-f52ece0e6bd7
 github.com/xyproto/gnometimed
 # github.com/xyproto/imagelib v0.0.0-20190209194312-bbbf5649f300
 github.com/xyproto/imagelib
