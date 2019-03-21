@@ -42,7 +42,7 @@ func dFmt(d time.Duration) string {
 	if strings.HasSuffix(s, "h0m") {
 		s = s[:len(s)-2]
 	}
-	return s
+	return strings.TrimSpace(s)
 }
 
 // has checks if a string slice has the given element
