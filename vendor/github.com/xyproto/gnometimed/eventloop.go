@@ -123,7 +123,7 @@ func (gtw *Wallpaper) EventLoop(verbose bool, setWallpaperFunc func(string) erro
 				ratio := float64(progress) / float64(window)
 				if verbose {
 					fmt.Printf("Triggered transition event at %s (%d%% complete)\n", cFmt(from), int(ratio*100))
-					fmt.Println("Progress:", progress)
+					fmt.Println("Progress:", dFmt(progress))
 					fmt.Println("Up to:", cFmt(upTo))
 					fmt.Println("Window:", dFmt(window))
 					fmt.Println("Cooldown:", dFmt(cooldown))

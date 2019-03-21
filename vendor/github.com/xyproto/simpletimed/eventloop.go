@@ -168,7 +168,7 @@ func (stw *Wallpaper) SetInitialWallpaper(verbose bool, setWallpaperFunc func(st
 
 		if verbose {
 			fmt.Printf("Initial transition event at %s (%d%% complete)\n", cFmt(from), int(ratio*100))
-			fmt.Println("Progress:", progress)
+			fmt.Println("Progress:", dFmt(progress))
 			fmt.Println("Up to:", cFmt(upTo))
 			fmt.Println("Window:", dFmt(window))
 			fmt.Println("Cooldown:", dFmt(cooldown))
@@ -322,7 +322,7 @@ func (stw *Wallpaper) EventLoop(verbose bool, setWallpaperFunc func(string) erro
 
 			if verbose {
 				fmt.Printf("Triggered transition event at %s (%d%% complete)\n", cFmt(from), int(ratio*100))
-				fmt.Println("Progress:", progress)
+				fmt.Println("Progress:", dFmt(progress))
 				fmt.Println("Up to:", cFmt(upTo))
 				fmt.Println("Window:", dFmt(window))
 				fmt.Println("Cooldown:", dFmt(cooldown))

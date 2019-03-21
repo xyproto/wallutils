@@ -8,7 +8,7 @@ require (
 	github.com/stretchr/powerwalk v0.0.0-20151124150408-bceb9d014549
 	github.com/stretchr/testify v1.3.0 // indirect
 	github.com/urfave/cli v1.20.0
-	github.com/xyproto/gnometimed v0.0.0-20190321000450-f52ece0e6bd7
-	github.com/xyproto/simpletimed v0.0.0-20190318175234-e8750d2a28f8
+	github.com/xyproto/gnometimed v0.0.0-20190321011352-1bda5e549448
+	github.com/xyproto/simpletimed v0.0.0-20190321011438-79e3721608b5
 	golang.org/x/sys v0.0.0-20190318195719-6c81ef8f67ca // indirect
 )
