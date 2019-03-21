@@ -109,18 +109,17 @@ func gdc(nums []uint) (uint, error) {
 
 // overlaps checks if a slice of rectangles overlaps.
 // will modify (reduce the size of) the rectangles in the process.
-func overlaps(rects []*Rect) bool {
+func overlaps(rects []*Rect, verbose bool) bool {
 	// Shrink all rectangles down to minimum size by dividing on the
 	// common greatest denominator, then draw "pixels" in a grid and check if
 	// a "pixel" is drawn twice. Can probably be done currently too.
 
-	var nums []uint
+	var coordinates []uint
 	for _, r := range rects {
-		nums = append(nums, r.x, r.y, r.w, r.h)
+		coordinates = append(coordinates, r.x, r.y, r.w, r.h)
 	}
 
-	//fmt.Println("NUMS", nums)
-	d, err := gdc(nums)
+	d, err := gdc(coordinates)
 	if err != nil {
 		// Too few rectangles for any overlap
 		return false
@@ -161,6 +160,10 @@ func overlaps(rects []*Rect) bool {
 	//fmt.Println("minx, maxx, miny, maxy", minx, maxx, miny, maxy)
 	//fmt.Println("width, height", width, height)
 
+	if verbose {
+		fmt.Printf("Using rectangle overlap buffer of size %d\n", width*height)
+	}
+
 	// For the case of monitor resolutions, this slice of "pixels"
 	// should be significantly smaller than the original sizes.
 	pixels := make([]int, width*height)
@@ -190,7 +193,7 @@ func overlaps(rects []*Rect) bool {
 // Overlapping can check if two monitors in monitors.xml have overlapping
 // areas. This is useful to know, because it may cause artifacts when setting
 // the desktop wallpapers in Gnome3, Cinnamon and MATE.
-func (mc *MonitorConfiguration) Overlapping() bool {
+func (mc *MonitorConfiguration) Overlapping(verbose bool) bool {
 	mc, err := NewMonitorConfiguration()
 	if err != nil {
 		return false
@@ -220,7 +223,7 @@ func (mc *MonitorConfiguration) Overlapping() bool {
 				rects = append(rects, r)
 			}
 		}
-		if overlaps(rects) {
+		if overlaps(rects, verbose) {
 			return true
 		}
 	}

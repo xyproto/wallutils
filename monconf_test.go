@@ -11,7 +11,7 @@ func TestParseMonitorConfiguration(t *testing.T) {
 		// Ignore this test if ~/.config/monitor.xml does not exist
 		return
 	}
-	if !mc.Overlapping() {
+	if !mc.Overlapping(true) {
 		fmt.Println("No overlapping monitor configurations in ~/.config/monitors.xml")
 	} else {
 		fmt.Println("There are overlapping monitor configurations in ~/.config/monitors.xml")
