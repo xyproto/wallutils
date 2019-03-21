@@ -75,11 +75,15 @@ func (c *Cinnamon) SetWallpaper(imageFilename string) error {
 		return errors.New("could not find gsettings")
 	}
 
-	if MonConfOverlap("~/.config/monitors.xml") {
-		return errors.New("there are overlapping monitor configurations in ~/.config/monitors.xml")
-	} else if c.verbose {
-		fmt.Println("No monitor overlap in ~/.config/monitors.xml")
-	}
+	//if MonConfOverlap("~/.config/monitors.xml") {
+	//	return errors.New("there are overlapping monitor configurations in ~/.config/monitors.xml")
+	//} else if c.verbose {
+	//	fmt.Println("No monitor overlap in ~/.config/monitors.xml")
+	//}
+
+	// Exit if the monitor configuration will cause artifacts when setting
+	// the desktop wallpaper.
+	NoXrandrOverlapOrExit(c.verbose)
 
 	// Create a new GSettings struct, for dealing with GNOME settings
 	g := NewGSettings("org.cinnamon.desktop.background", c.verbose)
