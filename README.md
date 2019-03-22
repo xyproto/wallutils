@@ -14,13 +14,13 @@ The [Mojave timed wallpaper](https://github.com/japamax/gnome-mojave-timed-wallp
 
   * `getdpi`, for retrieving the average DPI, for all monitors (use `-b` to see the DPI both horizontally and vertically).
   * `lscollection`, for listing installed wallpaper collections (use `-l` for also listing paths and collection names).
-  * `timedinfo`, for showing more information about installed GNOME timed wallpapers.
+  * `timedinfo`, for showing more information about installed timed wallpapers.
   * `lsmon` lists the connected monitors and resolutions (use `-d` for also listing DPI).
-  * `lstimed` for listing installed GNOME timed wallpapers (use `-l` for also listing paths).
+  * `lstimed` for listing installed timed wallpapers (use `-l` for also listing paths).
   * `lswallpaper`, for listing all installed wallpapers (use `-l` and `-s` to list more information).
   * `setcollection`, for setting a suitable (in terms of resolution) wallpaper from a wallpaper collection.
   * `setrandom`, for setting a random wallpaper.
-  * `settimed`, for setting GNOME timed wallpapers (will continue to run, to handle time events).
+  * `settimed`, for setting timed wallpapers (will continue to run, to handle time events).
   * `setwallpaper` can be used for setting a wallpaper (works both over X and the Wayland protocol).
   * `wayinfo` shows detailed information about the connected monitors, via Wayland.
   * `xinfo` shows detailed information about the current X setup.
