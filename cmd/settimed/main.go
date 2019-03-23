@@ -18,18 +18,10 @@ func exists(path string) bool {
 	return err == nil
 }
 
-func setTimedWallpaperAction(c *cli.Context) error {
-	if c.NArg() == 0 {
-		return errors.New("please provide a timed wallpaper filename as the first argument")
-	}
-	collectionName := c.Args().Get(0)
-
-	// Be verbose unless a silent flag (-s) has been given
-	verbose := !c.IsSet("silent")
-
-	// Ok, it was a filename
-	if strings.Contains(collectionName, ".") && exists(collectionName) {
-		filename := collectionName
+func SetTimedWallpaper(collectionOrFilename string, verbose bool) error {
+	// Check if it is a timed wallpaper filename
+	if strings.Contains(collectionOrFilename, ".") && exists(collectionOrFilename) {
+		filename := collectionOrFilename
 		switch filepath.Ext(filename) {
 		case ".stw":
 			stw, err := simpletimed.ParseSTW(filename)
@@ -67,7 +59,7 @@ func setTimedWallpaperAction(c *cli.Context) error {
 	}
 
 	if verbose {
-		fmt.Printf("Setting timed wallpaper: %s\n", collectionName)
+		fmt.Printf("Setting timed wallpaper: %s\n", collectionOrFilename)
 		fmt.Println("Searching for wallpapers...")
 	}
 	searchResults, err := wallutils.FindWallpapers()
@@ -80,13 +72,13 @@ func setTimedWallpaperAction(c *cli.Context) error {
 	if verbose {
 		fmt.Println("Filtering wallpapers by name...")
 	}
-	simpleTimedWallpapers := searchResults.SimpleTimedWallpapersByName(collectionName)
-	gnomeTimedWallpapers := searchResults.GnomeTimedWallpapersByName(collectionName)
+	simpleTimedWallpapers := searchResults.SimpleTimedWallpapersByName(collectionOrFilename)
+	gnomeTimedWallpapers := searchResults.GnomeTimedWallpapersByName(collectionOrFilename)
 
 	// gnomeTimedWallpapers and simpleTimedWallpapers have now been filtered so that they only contain elements with matching collection names
 
 	if (len(gnomeTimedWallpapers) == 0) && (len(simpleTimedWallpapers) == 0) {
-		return fmt.Errorf("no such timed wallpaper: %s", collectionName)
+		return fmt.Errorf("no such timed wallpaper: %s", collectionOrFilename)
 	}
 
 	if (len(gnomeTimedWallpapers) > 1) || (len(simpleTimedWallpapers) > 1) {
@@ -113,8 +105,28 @@ func setTimedWallpaperAction(c *cli.Context) error {
 		}
 	}
 
-	// this location should never be reached
+	// this should never be reached
 	return nil
+}
+
+func setTimedWallpaperAction(c *cli.Context) error {
+	if c.NArg() == 0 {
+		return errors.New("please provide a timed wallpaper filename as the first argument")
+	}
+	collectionOrFilename := c.Args().Get(0)
+
+	// Be verbose unless a silent flag (-s) has been given
+	verbose := !c.IsSet("silent")
+
+	err := SetTimedWallpaper(collectionOrFilename, verbose)
+	if err != nil {
+		// Output the capitalized error message
+		msg := err.Error()
+		fmt.Printf("%s%s\n", strings.ToUpper(string(msg[0])), msg[1:])
+		// Try again, but with the "-timed" suffix
+		err = SetTimedWallpaper(collectionOrFilename+"-timed", verbose)
+	}
+	return err
 }
 
 func main() {
