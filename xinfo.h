@@ -1,3 +1,5 @@
+#pragma once
+
 #ifdef WIN32
 #include <X11/Xwindows.h>
 #endif
@@ -10,13 +12,14 @@
 /* This file uses a buffer that is estimated to be large enough to collect all
  * required information.
  *
- * Also, thanks to the author of this answer: https://stackoverflow.com/a/48843306/131264
+ * Also, thanks to the author of this answer:
+ * https://stackoverflow.com/a/48843306/131264
  */
 
 #define BUF buf + strlen(buf)
-#define RETBUF                                                                                    \
-    char* str = calloc(strlen(buf) + 1, sizeof(char));                                            \
-    strcpy(str, buf);                                                                             \
+#define RETBUF                                                                 \
+    char* str = calloc(strlen(buf) + 1, sizeof(char));                         \
+    strcpy(str, buf);                                                          \
     return str
 
 static char buf[10240];
@@ -68,12 +71,11 @@ char* X11InfoString()
         RETBUF;
     }
 
-    sprintf(BUF, "name of display:    %s\n", DisplayString(dpy));
-    sprintf(BUF, "default screen number:    %d\n", DefaultScreen(dpy));
-    sprintf(BUF, "number of screens:    %d\n", ScreenCount(dpy));
+    sprintf(BUF, "name of display:\t%s\n", DisplayString(dpy));
+    sprintf(BUF, "default screen number:\t%d\n", DefaultScreen(dpy));
+    sprintf(BUF, "number of screens:\t%d\n", ScreenCount(dpy));
 
     for (i = 0; i < ScreenCount(dpy); i++) {
-        sprintf(BUF, "SCREEN %d\n", i);
         sprint_screen_info(dpy, i);
     }
 
