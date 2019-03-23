@@ -83,7 +83,7 @@ func (c *Cinnamon) SetWallpaper(imageFilename string) error {
 
 	// Exit if the monitor configuration will cause artifacts when setting
 	// the desktop wallpaper.
-	NoXrandrOverlapOrExit(c.verbose)
+	NoXRandrOverlapOrExit(c.verbose)
 
 	// Create a new GSettings struct, for dealing with GNOME settings
 	g := NewGSettings("org.cinnamon.desktop.background", c.verbose)

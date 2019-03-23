@@ -81,7 +81,7 @@ func (d *Deepin) SetWallpaper(imageFilename string) error {
 
 	// Exit if the monitor configuration will cause artifacts when setting
 	// the desktop wallpaper.
-	NoXrandrOverlapOrExit(d.verbose)
+	NoXRandrOverlapOrExit(d.verbose)
 
 	// Create a new GSettings struct, for dealing with GNOME settings
 	g := NewGSettings("com.deepin.wrap.gnome.desktop.background", d.verbose)

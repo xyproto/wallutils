@@ -1,6 +1,7 @@
 package wallutils
 
 import (
+	"errors"
 	"fmt"
 	"github.com/fatih/color"
 	"os"
@@ -8,14 +9,38 @@ import (
 	"strings"
 )
 
-// XrandrOverlap checks if the displays listed by "xrandr" overlaps, or not
-// A slice of relevant lines from the xrandr output is also returned.
-func XRandrOverlap() (bool, []string) {
-	resolution_lines := []string{}
+type XRandr struct {
+	hasOverlap      bool
+	resolutionLines []string
+	verbose         bool
+	hasChecked      bool
+}
+
+func NewXRandr(verbose bool) (*XRandr, error) {
 	if which("xrandr") == "" {
-		return false, resolution_lines
+		return nil, errors.New("could not find the xrandr executable")
 	}
-	xrandrOutput := output("xrandr", []string{}, false)
+	x := &XRandr{verbose: verbose}
+	x.CheckOverlap()
+	return x, nil
+}
+
+// Reset the XRander check, for preparing to run xrandr again
+func (x *XRandr) Reset() {
+	x.hasChecked = false
+	x.resolutionLines = []string{}
+}
+
+// CheckOverlap checks if the displays listed by "xrandr" overlaps, or not
+// A slice of relevant lines from the xrandr output is stored in the struct.
+func (x *XRandr) CheckOverlap() {
+	if x.hasChecked {
+		return
+	}
+	if x.verbose {
+		fmt.Print("Running ")
+	}
+	xrandrOutput := output("xrandr", []string{}, x.verbose)
 	rects := make([]*Rect, 0)
 	for _, line := range strings.Split(xrandrOutput, "\n") {
 		words := strings.Fields(line)
@@ -39,10 +64,7 @@ func XRandrOverlap() (bool, []string) {
 			fields = strings.SplitN(tail, "+", 2)
 			xs, ys := fields[0], fields[1]
 
-			resolution_lines = append(resolution_lines, line)
-			//if verbose {
-			//	fmt.Println("XRANDR: " + line)
-			//}
+			x.resolutionLines = append(x.resolutionLines, line)
 
 			// Convert coordinates from string to int
 			x, err := strconv.Atoi(xs)
@@ -70,21 +92,50 @@ func XRandrOverlap() (bool, []string) {
 			break
 		}
 	}
-	// Check if the gathered display rectangles overlap
-	return overlaps(rects), resolution_lines
+	x.hasOverlap = overlaps(rects)
+	x.hasChecked = true
 }
 
-// NoXrandrOverlapOrExit is a convenience function for making sure monitor
-// configurations are not overlapping, as reported by "xrandr".
-func NoXrandrOverlapOrExit(verbose bool) {
-	if overlap, reslines := XRandrOverlap(); overlap {
+// String returns a multiline string with the collected
+// resolution lines from xrandr (if any).
+func (x *XRandr) String() string {
+	return strings.Join(x.resolutionLines, "\n")
+}
+
+// Quit with an error if monitor configurations overlap
+func (x *XRandr) QuitIfOverlap() {
+	if x.hasOverlap {
 		red := color.New(color.FgRed)
 		white := color.New(color.FgWhite, color.Bold)
 		red.Fprint(os.Stderr, "ERROR: ")
 		fmt.Fprintln(os.Stderr, "xrandr shows overlapping monitor configurations:")
-		white.Fprintln(os.Stderr, strings.Join(reslines, "\n"))
+		white.Fprintln(os.Stderr, x)
 		os.Exit(1)
-	} else if verbose {
-		fmt.Println("No overlapping monitor configurations.")
+	}
+}
+
+var cachedXRandr *XRandr
+
+// NoXRandrOverlapOrExit is a convenience function for making sure monitor
+// configurations are not overlapping, as reported by "xrandr".
+func NoXRandrOverlapOrExit(verbose bool) {
+	var (
+		err        error
+		initialRun bool
+	)
+	if cachedXRandr == nil {
+		cachedXRandr, err = NewXRandr(verbose)
+		if err != nil {
+			// Could not check, just return
+			return
+		}
+		initialRun = true
+	}
+
+	// Exit with an error if monitor configurations are overlapping
+	cachedXRandr.QuitIfOverlap()
+
+	if initialRun && cachedXRandr.verbose {
+		fmt.Println("Detected no overlapping monitor configurations.")
 	}
 }

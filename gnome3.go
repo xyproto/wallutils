@@ -81,7 +81,7 @@ func (g3 *Gnome3) SetWallpaper(imageFilename string) error {
 
 	// Exit if the monitor configuration will cause artifacts when setting
 	// the desktop wallpaper.
-	NoXrandrOverlapOrExit(g3.verbose)
+	NoXRandrOverlapOrExit(g3.verbose)
 
 	// Create a new GSettings struct, for dealing with GNOME settings
 	g := NewGSettings("org.gnome.desktop.background", g3.verbose)

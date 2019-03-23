@@ -83,7 +83,7 @@ func (m *Mate) SetWallpaper(imageFilename string) error {
 
 	// Exit if the monitor configuration will cause artifacts when setting
 	// the desktop wallpaper.
-	NoXrandrOverlapOrExit(m.verbose)
+	NoXRandrOverlapOrExit(m.verbose)
 
 	// Create a new GSettings struct, for dealing with GNOME settings
 	g := NewGSettings("org.mate.background", m.verbose)
