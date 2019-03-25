@@ -29,7 +29,7 @@ func SetTimedWallpaper(collectionOrFilename string, verbose bool) error {
 				return err
 			}
 			if verbose {
-				fmt.Printf("Using: %s\n", stw.Path)
+				fmt.Printf("Launching event loop for: %s\n", stw.Path)
 			}
 			// Start endless event loop
 			if err := stw.EventLoop(verbose,
@@ -44,7 +44,7 @@ func SetTimedWallpaper(collectionOrFilename string, verbose bool) error {
 				return err
 			}
 			if verbose {
-				fmt.Printf("Using: %s\n", gtw.Path)
+				fmt.Printf("Launching event loop for: %s\n", gtw.Path)
 			}
 			// Start endless event loop
 			if err := gtw.EventLoop(verbose,
@@ -78,7 +78,7 @@ func SetTimedWallpaper(collectionOrFilename string, verbose bool) error {
 	// gnomeTimedWallpapers and simpleTimedWallpapers have now been filtered so that they only contain elements with matching collection names
 
 	if (len(gnomeTimedWallpapers) == 0) && (len(simpleTimedWallpapers) == 0) {
-		return fmt.Errorf("no such timed wallpaper: %s", collectionOrFilename)
+		return fmt.Errorf("could not find timed wallpaper: %s", collectionOrFilename)
 	}
 
 	if (len(gnomeTimedWallpapers) > 1) || (len(simpleTimedWallpapers) > 1) {
@@ -122,7 +122,9 @@ func setTimedWallpaperAction(c *cli.Context) error {
 	if err != nil {
 		// Output the capitalized error message
 		msg := err.Error()
-		fmt.Printf("%s%s\n", strings.ToUpper(string(msg[0])), msg[1:])
+		if verbose {
+			fmt.Printf("%s%s\n", strings.ToUpper(string(msg[0])), msg[1:])
+		}
 		// Try again, but with the "-timed" suffix
 		err = SetTimedWallpaper(collectionOrFilename+"-timed", verbose)
 	}
