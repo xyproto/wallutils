@@ -9,4 +9,4 @@ addons:
       - libwayland-dev
 
 go:
-    - "1.11"
+    - "1.12"
