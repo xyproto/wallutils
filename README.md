@@ -98,23 +98,23 @@ The packages related to X can be removed after building if only wish to keep the
 package main
 
 import (
-	"fmt"
-	"os"
+    "fmt"
+    "os"
 
-	"github.com/xyproto/wallutils"
+    "github.com/xyproto/wallutils"
 )
 
 func main() {
-	// Retrieve a slice of Monitor structs, or exit with an error
-	monitors, err := wallutils.Monitors()
-	if err != nil {
-		fmt.Fprintf(os.Stderr, "%s\n", err)
-		os.Exit(1)
-	}
-	// For every monitor, output the ID, width and height
-	for _, monitor := range monitors {
-		fmt.Printf("%d: %dx%d\n", monitor.ID, monitor.Width, monitor.Height)
-	}
+    // Retrieve a slice of Monitor structs, or exit with an error
+    monitors, err := wallutils.Monitors()
+    if err != nil {
+        fmt.Fprintf(os.Stderr, "%s\n", err)
+        os.Exit(1)
+    }
+    // For every monitor, output the ID, width and height
+    for _, monitor := range monitors {
+        fmt.Printf("%d: %dx%d\n", monitor.ID, monitor.Width, monitor.Height)
+    }
 }
 ~~~
 
@@ -123,7 +123,7 @@ func main() {
 ```go
 fmt.Println("Setting background image to: " + imageFilename)
 if err := wallutils.SetWallpaper(imageFilename); err != nil {
-	return err
+    return err
 }
 ```
 
@@ -142,4 +142,4 @@ if err := wallutils.SetWallpaper(imageFilename); err != nil {
 
 * Author: Alexander F. Rødseth &lt;xyproto@archlinux.org&gt;
 * License: MIT
-* Version: 5.4.0
+* Version: 5.4.1
