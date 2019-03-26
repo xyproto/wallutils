@@ -189,5 +189,7 @@ func Quit(err error) {
 		msg += "."
 	}
 	fmt.Fprintf(os.Stderr, "%s%s\n", strings.ToUpper(string(msg[0])), msg[1:])
+	os.Stdout.Sync()
+	os.Stderr.Sync()
 	os.Exit(1)
 }
