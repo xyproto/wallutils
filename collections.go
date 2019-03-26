@@ -211,7 +211,9 @@ func (sr *SearchResults) sortSimpleTimedWallpapers() {
 	sr.sortedSimpleTimedWallpapers = collected
 }
 
-// FindWallpapers will collect and parse wallpapers and GNOME background XML files in all default wallpaper directories
+// FindWallpapers will search for wallpaper collections, simple timed
+// wallpapers and GNOME timed wallpapers in all default wallpaper directories
+// on the system.
 func FindWallpapers() (*SearchResults, error) {
 	sr := NewSearchResults()
 	for _, path := range DefaultWallpaperDirectories {
@@ -219,6 +221,19 @@ func FindWallpapers() (*SearchResults, error) {
 		if err := powerwalk.WalkLimit(path, sr.visit, numCPU); err != nil {
 			return nil, err
 		}
+	}
+	sr.sortWallpapers()
+	sr.sortSimpleTimedWallpapers()
+	sr.sortGnomeTimedWallpapers()
+	return sr, nil
+}
+
+// FindWallpapersAt will search for wallpaper collections, simple timed
+// wallpapers and GNOME timed wallpapers in the given path.
+func FindWallpapersAt(path string) (*SearchResults, error) {
+	sr := NewSearchResults()
+	if err := powerwalk.WalkLimit(path, sr.visit, numCPU); err != nil {
+		return nil, err
 	}
 	sr.sortWallpapers()
 	sr.sortSimpleTimedWallpapers()
