@@ -42,7 +42,7 @@ Using make, for building and installing all included utilities:
     make
     make install
 
-Using Go 1.11 or later, for a single utility:
+Using Go 1.12 or later, for a single utility:
 
     go get -u github.com/xyproto/wallutils/cmd/settimed
 
@@ -129,7 +129,7 @@ if err := wallutils.SetWallpaper(imageFilename); err != nil {
 
 ## Build requirements
 
-* Go 1.11 or later.
+* Go 1.12 or later.
 * A working C compiler (tested with GCC 8.2.1).
 * Header files for Wayland and X.
 
