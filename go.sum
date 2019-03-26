@@ -30,5 +30,5 @@ github.com/xyproto/imagelib v0.0.0-20190209194312-bbbf5649f300/go.mod h1:28DiltQ
 github.com/xyproto/simpletimed v0.0.0-20190321105733-a13ecda7549a h1:eP00yquOfkjvzqRoYOtkJcCPeLCxdT2BE26DdV+tr2A=
 github.com/xyproto/simpletimed v0.0.0-20190321105733-a13ecda7549a/go.mod h1:JsBKunb59W1HSWvAqqpSUfq0A5hZmSpSA8Bz+yVNPg4=
 golang.org/x/sys v0.0.0-20190222072716-a9d3bda3a223/go.mod h1:STP8DvDyc/dI5b8T5hshtkjS+E42TnysNCUPdjciGhY=
-golang.org/x/sys v0.0.0-20190321052220-f7bb7a8bee54 h1:xe1/2UUJRmA9iDglQSlkx8c5n3twv58+K0mPpC2zmhA=
-golang.org/x/sys v0.0.0-20190321052220-f7bb7a8bee54/go.mod h1:h1NjWce9XRLGQEsW7wpKNCjG9DtNlClVuFLEZdDNbEs=
+golang.org/x/sys v0.0.0-20190322080309-f49334f85ddc h1:4gbWbmmPFp4ySWICouJl6emP0MyS31yy9SrTlAGFT+g=
+golang.org/x/sys v0.0.0-20190322080309-f49334f85ddc/go.mod h1:h1NjWce9XRLGQEsW7wpKNCjG9DtNlClVuFLEZdDNbEs=

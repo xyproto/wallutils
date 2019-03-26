@@ -10,5 +10,5 @@ require (
 	github.com/urfave/cli v1.20.0
 	github.com/xyproto/gnometimed v0.0.0-20190321105902-682d2d9be5dc
 	github.com/xyproto/simpletimed v0.0.0-20190321105733-a13ecda7549a
-	golang.org/x/sys v0.0.0-20190321052220-f7bb7a8bee54 // indirect
+	golang.org/x/sys v0.0.0-20190322080309-f49334f85ddc // indirect
 )
