@@ -58,13 +58,17 @@ func setWallpaperAction(c *cli.Context) error {
 	// Retrieve flags from the context
 	verbose := c.IsSet("verbose")
 	mode := c.String("mode")
+	downloadDir := c.String("download")
+
+	if !exists(downloadDir) {
+		return errors.New("could not find: " + downloadDir)
+	}
 
 	// Check if the argument is an URL that uses the http or https protocol
 	if strings.HasPrefix(imageFilename, "http://") || strings.HasPrefix(imageFilename, "https://") {
 		u, err := url.Parse(imageFilename)
 		if err == nil { // no error
-			// TODO: Use a function for getting the temp directory
-			downloadFilename := filepath.Join("/tmp/", filepath.Base(imageFilename))
+			downloadFilename := filepath.Join(downloadDir, filepath.Base(imageFilename))
 			if err := download(u.String(), downloadFilename, verbose, false); err != nil {
 				return err
 			}
@@ -110,6 +114,11 @@ func main() {
 			Name:  "mode",
 			Value: "fill",
 			Usage: "wallpaper mode (fill | center | scale | tile) + modes specific to the currently running DE/WM",
+		},
+		cli.StringFlag{
+			Name:  "download, d",
+			Value: "/tmp",
+			Usage: "download directory",
 		},
 	}
 
