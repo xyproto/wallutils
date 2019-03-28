@@ -142,4 +142,4 @@ if err := wallutils.SetWallpaper(imageFilename); err != nil {
 
 * Author: Alexander F. Rødseth &lt;xyproto@archlinux.org&gt;
 * License: MIT
-* Version: 5.5.4
+* Version: 5.6.0
