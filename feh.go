@@ -40,7 +40,6 @@ func (f *Feh) SetWallpaper(imageFilename string) error {
 	if !exists(imageFilename) {
 		return fmt.Errorf("no such file: %s", imageFilename)
 	}
-	fmt.Println("WHICH FEH", which("feh"))
 	mode := defaultMode
 	if f.mode != "" {
 		mode = f.mode
@@ -54,6 +53,12 @@ func (f *Feh) SetWallpaper(imageFilename string) error {
 	switch mode {
 	case "bg-fill", "bg-center", "bg-max", "bg-scale", "bg-tile":
 		break
+	case "bg-zoom":
+		mode = "bg-fill"
+	case "bg-stretch":
+		mode = "bg-scale"
+	case "bg-fit":
+		mode = "bg-max"
 	default:
 		// Invalid and unrecognized desktop wallpaper mode
 		return fmt.Errorf("invalid desktop wallpaper mode for Feh: %s", mode)
