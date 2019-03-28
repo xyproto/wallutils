@@ -21,7 +21,7 @@ func (s *Sway) ExecutablesExists() bool {
 }
 
 func (s *Sway) Running() bool {
-	return hasE("SWAYSOCK") && (containsE("GDMSESSION", "sway") || containsE("XDG_SESSION_DESKTOP", "sway") || containsE("XDG_CURRENT_DESKTOP", "sway"))
+	return hasE("SWAYSOCK") || (containsE("GDMSESSION", "sway") || containsE("XDG_SESSION_DESKTOP", "sway") || containsE("XDG_CURRENT_DESKTOP", "sway"))
 }
 
 func (s *Sway) SetMode(mode string) {
