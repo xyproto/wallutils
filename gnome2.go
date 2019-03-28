@@ -36,7 +36,6 @@ func (g2 *Gnome2) SetWallpaper(imageFilename string) error {
 	if !exists(imageFilename) {
 		return fmt.Errorf("no such file: %s", imageFilename)
 	}
-	// TODO: Confirm that this works
-	// TODO: Find out how to set the wallpaper mode as well
-	return run("gconftool-2", []string{"–type", "string", "–set", "/desktop/gnome/background/picture_filename", imageFilename}, g2.verbose)
+	// TODO: Confirm that this works and find a way to set the mode (like "tile" or "fill")
+	return run("gconftool-2", []string{"–type", "string", "–set", imageFilename}, g2.verbose)
 }
