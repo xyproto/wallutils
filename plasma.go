@@ -51,23 +51,27 @@ func (p *Plasma) SetWallpaper(imageFilename string) error {
 	} else {
 		// Drawing inspiration from https://github.com/KDE/plasma-workspace/blob/master/wallpapers/image/imagepackage/contents/ui/config.qml
 		switch mode {
-		case "crop":
-			// Image.PreserveAspectCrop
+		case "fill", "stretch", "stretched":
+			// fill the screen by stretching
 			fillMode = "0"
-		case "stretch":
-			// Image.Stretch
+		case "fit", "scale", "scaled":
+			// fit and scale, but keep aspect ratio
 			fillMode = "1"
-		case "scale", "scaled":
-			// Image.PreserveAaspectFit
+		case "zoom", "zoomed", "crop", "cropped":
+			// zoom
 			fillMode = "2"
-		case "center", "centered":
-			// Image.Pad
-			fillMode = "3"
 		case "tile", "tiled":
-			// Image.Tile
+			// tiled
+			fillMode = "3"
+		case "hfill", "vtile":
+			// fill horizontally, tile vertically
 			fillMode = "4"
-		case "fill":
+		case "vfill", "htile":
+			// fill vertically, tile horizontally
 			fillMode = "5"
+		case "center", "centered":
+			// center
+			fillMode = "6"
 		default:
 			// Invalid and unrecognized desktop wallpaper mode
 			return fmt.Errorf("invalid desktop wallpaper mode for Plasma: %s", p.mode)
@@ -82,8 +86,8 @@ func (p *Plasma) SetWallpaper(imageFilename string) error {
             d.currentConfigGroup = Array("Wallpaper",
                                          "org.kde.image",
                                          "General");
-            d.writeConfig("Image", "file://` + imageFilename + `");
             d.writeConfig("FillMode", ` + fillMode + `);
+            d.writeConfig("Image", "file://` + imageFilename + `");
     }`
 	return run("dbus-send", []string{
 		"--session",
