@@ -32,6 +32,10 @@ func (g3 *Gnome3) Running() bool {
 	return (containsE("GDMSESSION", "gnome") || containsE("XDG_SESSION_DESKTOP", "gnome") || containsE("XDG_CURRENT_DESKTOP", "gnome") || containsE("XDG_CURRENT_DESKTOP", "GNOME"))
 }
 
+func (g3 *Gnome3) SetMode(mode string) {
+	g3.mode = mode
+}
+
 func (g3 *Gnome3) SetVerbose(verbose bool) {
 	g3.verbose = verbose
 }
@@ -62,11 +66,17 @@ func (g3 *Gnome3) SetWallpaper(imageFilename string) error {
 	case "none", "wallpaper", "centered", "scaled", "stretched", "zoom", "spanned":
 		break
 	case "fill":
-		// Invalid desktop wallpaper picture mode, use "stretched" instead
+		// Invalid desktop wallpaper mode, use "stretched" instead
 		mode = "stretched"
+	case "center":
+		mode = "centered"
+	case "scale":
+		mode = "scaled"
+	case "tile":
+		mode = "wallpaper"
 	default:
-		// Invalid and unrecognized desktop wallpaper picture mode
-		return fmt.Errorf("invalid desktop wallpaper picture mode for GNOME3: %s", mode)
+		// Invalid and unrecognized desktop wallpaper mode
+		return fmt.Errorf("invalid desktop wallpaper mode for GNOME3: %s", mode)
 	}
 
 	if !g3.hasGsettings {

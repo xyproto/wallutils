@@ -5,9 +5,11 @@ package wallutils
 import (
 	"errors"
 	"fmt"
+	"strings"
 )
 
 type Feh struct {
+	mode    string
 	verbose bool
 }
 
@@ -23,6 +25,10 @@ func (f *Feh) Running() bool {
 	return true
 }
 
+func (f *Feh) SetMode(mode string) {
+	f.mode = mode
+}
+
 func (f *Feh) SetVerbose(verbose bool) {
 	f.verbose = verbose
 }
@@ -34,8 +40,25 @@ func (f *Feh) SetWallpaper(imageFilename string) error {
 	if !exists(imageFilename) {
 		return fmt.Errorf("no such file: %s", imageFilename)
 	}
-	// bg-fill | bg-center | bg-max | bg-scale | bg-tile
-	mode := "bg-fill"
+	mode := defaultMode
+	if f.mode != "" {
+		mode = f.mode
+	}
+	// if missing, prefix with "bg-"
+	if !strings.HasPrefix(mode, "bg-") {
+		mode = "bg-" + mode
+	}
+
+	// check if the mode is valid
+	switch mode {
+	case "bg-fill", "bg-center", "bg-max", "bg-scale", "bg-tile":
+		break
+	default:
+		// Invalid and unrecognized desktop wallpaper mode
+		return fmt.Errorf("invalid desktop wallpaper mode for Feh: %s", mode)
+	}
+
+	// set the wallpaper with feh
 	if err := run("feh", []string{"--" + mode, imageFilename}, f.verbose); err != nil {
 		return errors.New("feh --" + mode + " " + imageFilename + " failed to run")
 	}

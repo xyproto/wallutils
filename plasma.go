@@ -6,6 +6,7 @@ import (
 
 // Plasma windowmanager detector
 type Plasma struct {
+	mode    string
 	verbose bool
 }
 
@@ -21,6 +22,10 @@ func (p *Plasma) Running() bool {
 	return containsE("GDMSESSION", "plasma") || containsE("XDG_SESSION_DESKTOP", "KDE") || containsE("XDG_CURRENT_DESKTOP", "KDE") || containsE("XDG_SESSION_DESKTOP", "plasma") || containsE("XDG_CURRENT_DESKTOP", "plasma")
 }
 
+func (p *Plasma) SetMode(mode string) {
+	p.mode = mode
+}
+
 func (p *Plasma) SetVerbose(verbose bool) {
 	p.verbose = verbose
 }
@@ -31,6 +36,35 @@ func (p *Plasma) SetWallpaper(imageFilename string) error {
 	if !exists(imageFilename) {
 		return fmt.Errorf("no such file: %s", imageFilename)
 	}
+
+	fillMode := "0"
+	if len(p.mode) == 1 {
+		// Single digit
+		fillMode = p.mode
+	} else {
+		// Drawing inspiration from https://github.com/KDE/plasma-workspace/blob/master/wallpapers/image/imagepackage/contents/ui/config.qml
+		switch p.mode {
+		case "crop":
+			// Image.PreserveAspectCrop
+			fillMode = "0"
+		case "stretch", "fill":
+			// Image.Stretch
+			fillMode = "1"
+		case "scale", "scaled":
+			// Image.PreserveAaspectFit
+			fillMode = "2"
+		case "center", "centered":
+			// Image.Pad
+			fillMode = "3"
+		case "tile", "tiled":
+			// Image.Tile
+			fillMode = "4"
+		default:
+			// Invalid and unrecognized desktop wallpaper mode
+			return fmt.Errorf("invalid desktop wallpaper mode for Plasma: %s", p.mode)
+		}
+	}
+
 	dbusScript := `string:
     var Desktops = desktops();
     for (i=0;i<Desktops.length;i++) {
@@ -40,6 +74,7 @@ func (p *Plasma) SetWallpaper(imageFilename string) error {
                                          "org.kde.image",
                                          "General");
             d.writeConfig("Image", "file://` + imageFilename + `");
+            d.writeConfig("FillMode", ` + fillMode + `);
     }`
 	return run("dbus-send", []string{
 		"--session",

@@ -6,6 +6,7 @@ import (
 
 // Sway windowmanager detector
 type Sway struct {
+	mode    string
 	verbose bool
 }
 
@@ -21,6 +22,10 @@ func (s *Sway) Running() bool {
 	return hasE("SWAYSOCK") && (containsE("GDMSESSION", "sway") || containsE("XDG_SESSION_DESKTOP", "sway") || containsE("XDG_CURRENT_DESKTOP", "sway"))
 }
 
+func (s *Sway) SetMode(mode string) {
+	s.mode = mode
+}
+
 func (s *Sway) SetVerbose(verbose bool) {
 	s.verbose = verbose
 }
@@ -31,5 +36,18 @@ func (s *Sway) SetWallpaper(imageFilename string) error {
 	if !exists(imageFilename) {
 		return fmt.Errorf("no such file: %s", imageFilename)
 	}
-	return run("swaymsg", []string{"output * bg " + imageFilename + " fill"}, s.verbose)
+	mode := defaultMode
+	if s.mode != "" {
+		mode = s.mode
+	}
+
+	switch mode {
+	case "stretch", "fill", "fit", "center", "tile":
+		break
+	default:
+		// Invalid and unrecognized desktop wallpaper mode
+		return fmt.Errorf("invalid desktop wallpaper mode for Sway: %s", mode)
+	}
+
+	return run("swaymsg", []string{"output * bg " + imageFilename + " " + mode}, s.verbose)
 }

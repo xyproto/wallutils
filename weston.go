@@ -8,6 +8,7 @@ import (
 
 // Weston windowmanager detector
 type Weston struct {
+	mode    string
 	verbose bool
 }
 
@@ -23,6 +24,10 @@ func (w *Weston) Running() bool {
 	return containsE("GDMSESSION", "weston") || containsE("XDG_SESSION_DESKTOP", "weston") || containsE("XDG_CURRENT_DESKTOP", "weston")
 }
 
+func (w *Weston) SetMode(mode string) {
+	w.mode = mode
+}
+
 func (w *Weston) SetVerbose(verbose bool) {
 	w.verbose = verbose
 }
@@ -34,12 +39,15 @@ func (*Weston) SetWallpaper(imageFilename string) error {
 		return fmt.Errorf("no such file: %s", imageFilename)
 	}
 
-	// TODO: Add the following to ~/.config/weston.ini (or whichever configuration file Weston uses)
 	fmt.Println("WESTON CONFIG FILE: ", os.Getenv("WESTON_CONFIG_FILE"))
 
+	// TODO: Add the following to ~/.config/weston.ini
+	//       (or whichever configuration file Weston uses)
 	// [shell]
 	// background-image=/home/user/somewhere/image.jpg
 	// background-type=scale
+	//
+	// Also use w.mode for setting the background type
 
 	return errors.New("Weston currently does not support changing the desktop wallpaper at runtime")
 }

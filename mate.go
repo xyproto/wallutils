@@ -64,11 +64,17 @@ func (m *Mate) SetWallpaper(imageFilename string) error {
 	case "none", "wallpaper", "centered", "scaled", "stretched", "zoom", "spanned":
 		break
 	case "fill":
-		// Invalid desktop wallpaper picture mode, use "stretched" instead
+		// Invalid desktop wallpaper mode, use "stretched" instead
 		mode = "stretched"
+	case "center":
+		mode = "centered"
+	case "scale":
+		mode = "scaled"
+	case "tile":
+		mode = "wallpaper"
 	default:
-		// Invalid and unrecognized desktop wallpaper picture mode
-		return fmt.Errorf("invalid desktop wallpaper picture mode for MATE: %s", mode)
+		// Invalid and unrecognized desktop wallpaper mode
+		return fmt.Errorf("invalid desktop wallpaper mode for MATE: %s", mode)
 	}
 
 	if !m.hasGsettings {

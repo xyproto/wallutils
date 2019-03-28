@@ -4,6 +4,7 @@ import (
 	"errors"
 	"fmt"
 	"os"
+	"strings"
 )
 
 type WM interface {
@@ -12,6 +13,7 @@ type WM interface {
 	Running() bool
 	SetWallpaper(string) error
 	SetVerbose(bool)
+	SetMode(string)
 }
 
 type Wallpaper struct {
@@ -22,10 +24,11 @@ type Wallpaper struct {
 	PartOfCollection bool   // likely to be part of a wallpaper collection
 }
 
-// Default mode when setting the wallpaper for Gnome / Mate / Cinnamon
+// "fill" is not supported by all DEs and WMs, but all backends here should
+// either support "fill" or use something equivalent.
 const defaultMode = "fill"
 
-// All available backends for changing the wallpaper
+// WMs contains all available backends for changing the wallpaper
 var WMs = []WM{
 	&Sway{},
 	&Deepin{},
@@ -40,13 +43,7 @@ var WMs = []WM{
 	&X11{},
 }
 
-func SetWallpaper(imageFilename string) error {
-	return SetWallpaperVerbose(imageFilename, false)
-}
-
-// Set the desktop wallpaper (filled/stretched), for any supported windowmanager.
-// The fallback is to use `feh`.
-func SetWallpaperVerbose(imageFilename string, verbose bool) error {
+func SetWallpaperCustom(imageFilename string, verbose bool, mode string) error {
 	if !exists(imageFilename) {
 		return fmt.Errorf("no such file: %s", imageFilename)
 	}
@@ -58,6 +55,9 @@ func SetWallpaperVerbose(imageFilename string, verbose bool) error {
 				fmt.Printf("Using the %s backend.\n", wm.Name())
 			}
 			wm.SetVerbose(verbose)
+			if mode != "" && mode != defaultMode {
+				wm.SetMode(mode)
+			}
 			if err := wm.SetWallpaper(imageFilename); err != nil {
 				lastErr = err
 				switch wm.Name() {
@@ -67,6 +67,10 @@ func SetWallpaperVerbose(imageFilename string, verbose bool) error {
 				default:
 					if verbose {
 						fmt.Fprintf(os.Stderr, "failed: %v\n", err)
+					}
+					// If the wallpaper mode is wrong, don't try the next backend, but return the error
+					if strings.Contains(err.Error(), "invalid desktop wallpaper mode") {
+						return err
 					}
 					// Try the next one
 					continue
@@ -88,6 +92,19 @@ func SetWallpaperVerbose(imageFilename string, verbose bool) error {
 		return err
 	}
 	return errors.New("Found no working method for setting the desktop wallpaper")
+
+}
+
+// SetWallpaperVerbose will set the desktop wallpaper, for any supported
+// windowmanager. The fallback is to use `feh`. The wallpaper mode is "fill".
+func SetWallpaperVerbose(imageFilename string, verbose bool) error {
+	return SetWallpaperCustom(imageFilename, verbose, defaultMode)
+}
+
+// SetWallpaper will set the desktop wallpaper, for any supported
+// windowmanager. The fallback is to use `feh`. The wallpaper mode is "fill".
+func SetWallpaper(imageFilename string) error {
+	return SetWallpaperCustom(imageFilename, false, defaultMode)
 }
 
 // Res returns the wallpaper resolution as a Res struct
