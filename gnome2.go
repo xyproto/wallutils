@@ -2,6 +2,7 @@ package wallutils
 
 import (
 	"fmt"
+	"os"
 )
 
 // Gnome2 windowmanager detector
@@ -19,7 +20,7 @@ func (g2 *Gnome2) ExecutablesExists() bool {
 }
 
 func (g2 *Gnome2) Running() bool {
-	return (containsE("GDMSESSION", "gnome2") || containsE("XDG_SESSION_DESKTOP", "gnome2") || containsE("XDG_CURRENT_DESKTOP", "gnome2"))
+	return (os.Getenv("GDMSESSION") == "gnome") || (os.Getenv("DESKTOP_SESSION") == "gnome")
 }
 
 func (g2 *Gnome2) SetMode(mode string) {
@@ -37,5 +38,5 @@ func (g2 *Gnome2) SetWallpaper(imageFilename string) error {
 		return fmt.Errorf("no such file: %s", imageFilename)
 	}
 	// TODO: Confirm that this works and find a way to set the mode (like "tile" or "fill")
-	return run("gconftool-2", []string{"–type", "string", "–set", imageFilename}, g2.verbose)
+	return run("gconftool-2", []string{"--type", "string", "--set", "/desktop/gnome/background/picture_filename", imageFilename}, g2.verbose)
 }
