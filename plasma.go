@@ -37,17 +37,24 @@ func (p *Plasma) SetWallpaper(imageFilename string) error {
 		return fmt.Errorf("no such file: %s", imageFilename)
 	}
 
+	mode := defaultMode
+
+	// If p.mode is specified, do not use the default value
+	if p.mode != "" {
+		mode = p.mode
+	}
+
 	fillMode := "0"
-	if len(p.mode) == 1 {
+	if len(mode) == 1 {
 		// Single digit
-		fillMode = p.mode
+		fillMode = mode
 	} else {
 		// Drawing inspiration from https://github.com/KDE/plasma-workspace/blob/master/wallpapers/image/imagepackage/contents/ui/config.qml
-		switch p.mode {
+		switch mode {
 		case "crop":
 			// Image.PreserveAspectCrop
 			fillMode = "0"
-		case "stretch", "fill":
+		case "stretch":
 			// Image.Stretch
 			fillMode = "1"
 		case "scale", "scaled":
@@ -59,6 +66,8 @@ func (p *Plasma) SetWallpaper(imageFilename string) error {
 		case "tile", "tiled":
 			// Image.Tile
 			fillMode = "4"
+		case "fill":
+			fillMode = "5"
 		default:
 			// Invalid and unrecognized desktop wallpaper mode
 			return fmt.Errorf("invalid desktop wallpaper mode for Plasma: %s", p.mode)
