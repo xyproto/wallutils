@@ -28,21 +28,6 @@ type Wallpaper struct {
 // either support "fill" or use something equivalent.
 const defaultMode = "fill"
 
-// WMs contains all available backends for changing the wallpaper
-var WMs = []WM{
-	&Sway{},
-	&Deepin{},
-	&Xfce4{},
-	&Mate{},
-	&Cinnamon{},
-	&Plasma{},
-	&Gnome3{},
-	&Gnome2{},
-	&Weston{},
-	&Feh{}, // using feh
-	&X11{},
-}
-
 func SetWallpaperCustom(imageFilename string, verbose bool, mode string) error {
 	if !exists(imageFilename) {
 		return fmt.Errorf("no such file: %s", imageFilename)
@@ -82,14 +67,6 @@ func SetWallpaperCustom(imageFilename string, verbose bool, mode string) error {
 	}
 	if lastErr != nil {
 		return fmt.Errorf("Found no working method for setting the desktop wallpaper:\n%v", lastErr)
-	}
-	// Flush stderr
-	if err := os.Stderr.Sync(); err != nil {
-		return err
-	}
-	// Flush stdout
-	if err := os.Stdout.Sync(); err != nil {
-		return err
 	}
 	return errors.New("Found no working method for setting the desktop wallpaper")
 
