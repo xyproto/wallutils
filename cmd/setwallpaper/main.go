@@ -20,9 +20,14 @@ func exists(path string) bool {
 	return err == nil
 }
 
-// download can download a file to the given filename
-// Use force if existing files should be overwritten.
-func download(url, filename string, force bool) error {
+// download can download a file to the given filename.
+// Set redownload to true for downloading again even if it exists.
+func download(url, filename string, verbose, redownload bool) error {
+	// Check if the file exists (and that force is not enabled)
+	if exists(filename) && !redownload {
+		// The file already exists. This is fine, skip the download
+		return nil
+	}
 	// Prepare the client
 	var client http.Client
 	resp, err := client.Get(url)
@@ -30,14 +35,15 @@ func download(url, filename string, force bool) error {
 		return err
 	}
 	defer resp.Body.Close()
+	if verbose {
+		if verbose {
+			fmt.Println("Downloading " + url)
+		}
+	}
 	// Download the file
 	b, err := ioutil.ReadAll(resp.Body)
 	if err != nil {
 		return err
-	}
-	// Check if the file exists (and that force is not enabled)
-	if exists(filename) && !force {
-		return fmt.Errorf("%s already exists", filename)
 	}
 	// Write the file
 	return ioutil.WriteFile(filename, b, 0644)
@@ -59,10 +65,7 @@ func setWallpaperAction(c *cli.Context) error {
 		if err == nil { // no error
 			// TODO: Use a function for getting the temp directory
 			downloadFilename := filepath.Join("/tmp/", filepath.Base(imageFilename))
-			if verbose {
-				fmt.Println("Downloading " + u.String())
-			}
-			if err := download(u.String(), downloadFilename, true); err != nil {
+			if err := download(u.String(), downloadFilename, verbose, false); err != nil {
 				return err
 			}
 			// Use the downloaded image
