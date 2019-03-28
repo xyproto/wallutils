@@ -29,7 +29,7 @@ func (g3 *Gnome3) ExecutablesExists() bool {
 }
 
 func (g3 *Gnome3) Running() bool {
-	return (containsE("GDMSESSION", "gnome") || containsE("XDG_SESSION_DESKTOP", "gnome") || containsE("XDG_CURRENT_DESKTOP", "gnome") || containsE("XDG_CURRENT_DESKTOP", "GNOME"))
+	return (containsE("GDMSESSION", "gnome") || containsE("XDG_SESSION_DESKTOP", "gnome"))
 }
 
 func (g3 *Gnome3) SetMode(mode string) {
