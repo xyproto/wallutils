@@ -37,6 +37,35 @@ func (g2 *Gnome2) SetWallpaper(imageFilename string) error {
 	if !exists(imageFilename) {
 		return fmt.Errorf("no such file: %s", imageFilename)
 	}
-	// TODO: Confirm that this works and find a way to set the mode (like "tile" or "fill")
+
+	mode := defaultMode
+
+	// If g2.mode is specified, do not use the default value
+	if g2.mode != "" {
+		mode = g2.mode
+	}
+
+	switch mode {
+	case "none", "wallpaper", "centered", "scaled", "stretched", "zoom", "spanned":
+		break
+	case "fill":
+		// Invalid desktop wallpaper mode, use "stretched" instead
+		mode = "stretched"
+	case "center":
+		mode = "centered"
+	case "scale":
+		mode = "scaled"
+	case "tile":
+		mode = "wallpaper"
+	default:
+		// Invalid and unrecognized desktop wallpaper mode
+		return fmt.Errorf("invalid desktop wallpaper mode for GNOME2: %s", mode)
+	}
+
+	// Set the wallpaper mode
+	if err := run("gconftool-2", []string{"--type", "string", "--set", "/desktop/gnome/background/picture_options", mode}, g2.verbose); err != nil {
+		return err
+	}
+	// Set the wallpaper image
 	return run("gconftool-2", []string{"--type", "string", "--set", "/desktop/gnome/background/picture_filename", imageFilename}, g2.verbose)
 }
