@@ -3,7 +3,6 @@ package simpletimed
 import (
 	"errors"
 	"fmt"
-	"io/ioutil"
 	"os"
 	"path/filepath"
 	"time"
@@ -163,7 +162,7 @@ func (stw *Wallpaper) SetInitialWallpaper(verbose bool, setWallpaperFunc func(st
 		tFromFilename := t.FromFilename
 		tToFilename := t.ToFilename
 		loopWait := stw.LoopWait
-		tempDir := ""
+		//tempDir := ""
 		var err error
 
 		if verbose {
@@ -178,12 +177,14 @@ func (stw *Wallpaper) SetInitialWallpaper(verbose bool, setWallpaperFunc func(st
 			fmt.Println("To filename", tToFilename)
 		}
 
-		tempDir, err = ioutil.TempDir("", "crossfade")
-		if err != nil {
-			return fmt.Errorf("Could not create temporary directory: %v\n", err)
-		}
+		//tempDir, err = ioutil.TempDir("", "crossfade")
+		//if err != nil {
+		//	return fmt.Errorf("Could not create temporary directory: %v\n", err)
+		//}
+		tempDir := "/tmp"
+
 		// Prepare to write an image to the temporary directory
-		tempImageFilename := filepath.Join(tempDir, "out.png") // .jpg is also possible
+		tempImageFilename := filepath.Join(tempDir, "simpletimed_crossfade.png") // .jpg is also possible
 
 		// Set the "from" image before crossfading, so that something happens immediately
 
@@ -224,16 +225,16 @@ func (stw *Wallpaper) SetInitialWallpaper(verbose bool, setWallpaperFunc func(st
 		time.Sleep(cooldown / 2)
 
 		// Remove the temporary directory 5 minutes after this
-		go func() {
-			time.Sleep(5 * time.Minute)
-			if exists(tempDir) {
-				if verbose {
-					fmt.Println("Removing", tempDir)
-				}
-				// Clean up
-				os.RemoveAll(tempDir)
-			}
-		}()
+		//go func() {
+		//	time.Sleep(5 * time.Minute)
+		//	if exists(tempDir) {
+		//		if verbose {
+		//			fmt.Println("Removing", tempDir)
+		//		}
+		//		// Clean up
+		//		os.RemoveAll(tempDir)
+		//	}
+		//}()
 
 	default:
 		return errors.New("could not set initial wallpaper: no previous event")
@@ -311,7 +312,7 @@ func (stw *Wallpaper) EventLoop(verbose bool, setWallpaperFunc func(string) erro
 		tFromFilename := t.FromFilename
 		tToFilename := t.ToFilename
 		loopWait := stw.LoopWait
-		tempDir := ""
+		//tempDir := ""
 		var err error
 
 		// Register a transition event
@@ -332,25 +333,26 @@ func (stw *Wallpaper) EventLoop(verbose bool, setWallpaperFunc func(string) erro
 				fmt.Println("To filename", tToFilename)
 			}
 
-			tempDir, err = ioutil.TempDir("", "crossfade")
-			if err != nil {
-				fmt.Fprintf(os.Stderr, "Could not create temporary directory: %v\n", err)
-				return // return from anon func
-			}
+			//tempDir, err = ioutil.TempDir("", "crossfade")
+			//if err != nil {
+			//	fmt.Fprintf(os.Stderr, "Could not create temporary directory: %v\n", err)
+			//	return // return from anon func
+			//}
+			tempDir := "/tmp"
 
 			// Prepare to write an image to the temporary directory
-			tempImageFilename := filepath.Join(tempDir, "out.png") // .jpg is also possible
+			tempImageFilename := filepath.Join(tempDir, "simpletimed_crossfade.png") // .jpg is also possible
 
 			// Remove the temporary directory 5 minutes after this event has passed
-			eventloop.Once(upTo.Add(5*time.Minute), func() {
-				if exists(tempDir) {
-					if verbose {
-						fmt.Println("Removing", tempDir)
-					}
-					// Clean up
-					os.RemoveAll(tempDir)
-				}
-			})
+			//eventloop.Once(upTo.Add(5*time.Minute), func() {
+			//	if exists(tempDir) {
+			//		if verbose {
+			//			fmt.Println("Removing", tempDir)
+			//		}
+			//		// Clean up
+			//		os.RemoveAll(tempDir)
+			//	}
+			//})
 
 			if verbose {
 				fmt.Println("Crossfading between images.")
