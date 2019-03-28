@@ -40,6 +40,7 @@ func (f *Feh) SetWallpaper(imageFilename string) error {
 	if !exists(imageFilename) {
 		return fmt.Errorf("no such file: %s", imageFilename)
 	}
+	fmt.Println("WHICH FEH", which("feh"))
 	mode := defaultMode
 	if f.mode != "" {
 		mode = f.mode

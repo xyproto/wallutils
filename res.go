@@ -37,22 +37,6 @@ func Distance(a, b *Res) int {
 	return abs(int(b.w)-int(a.w)) + abs(int(b.h)-int(a.h))
 }
 
-// AverageResolution returns the average resolution for all connected monitors.
-func AverageResolution() (*Res, error) {
-	monitors, err := Monitors()
-	if err != nil {
-		return nil, err
-	}
-	var ws, hs uint
-	for _, mon := range monitors {
-		ws += mon.Width
-		hs += mon.Height
-	}
-	ws /= uint(len(monitors))
-	hs /= uint(len(monitors))
-	return NewRes(ws, hs), nil
-}
-
 // ParseSize parses a string on the form "1234x1234"
 func ParseSize(widthHeight string) (uint, uint, error) {
 	fields := strings.SplitN(strings.ToLower(widthHeight), "x", 2)

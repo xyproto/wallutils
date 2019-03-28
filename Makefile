@@ -19,17 +19,33 @@ all:
 	(cd cmd/settimed; go build)
 	(cd cmd/xml2stw; go build)
 
+static:
+	CGO_ENABLED=0 go build -ldflags "-s" -a
+	@#(cd cmd/getdpi; CGO_ENABLED=0 go build -ldflags "-s" -a)
+	@#(cd cmd/lsmon; CGO_ENABLED=0 go build -ldflags "-s" -a)
+	(cd cmd/setrandom; CGO_ENABLED=0 go build -ldflags "-s" -a)
+	(cd cmd/setwallpaper; CGO_ENABLED=0 go build -ldflags "-s" -a)
+	@#(cd cmd/wayinfo; CGO_ENABLED=0 go build -ldflags "-s" -a)
+	@#(cd cmd/xinfo; CGO_ENABLED=0 go build -ldflags "-s" -a)
+	(cd cmd/lscollection; CGO_ENABLED=0 go build -ldflags "-s" -a)
+	(cd cmd/timedinfo; CGO_ENABLED=0 go build -ldflags "-s" -a)
+	(cd cmd/lswallpaper; CGO_ENABLED=0 go build -ldflags "-s" -a)
+	@#(cd cmd/setcollection; CGO_ENABLED=0 go build -ldflags "-s" -a)
+	(cd cmd/lstimed; CGO_ENABLED=0 go build -ldflags "-s" -a)
+	(cd cmd/settimed; CGO_ENABLED=0 go build -ldflags "-s" -a)
+	(cd cmd/xml2stw; CGO_ENABLED=0 go build -ldflags "-s" -a)
+
 install:
-	install -Dm755 -t "$(DESTDIR)$(PREFIX)/bin" cmd/getdpi/getdpi
-	install -Dm755 -t "$(DESTDIR)$(PREFIX)/bin" cmd/lsmon/lsmon
+	-install -Dm755 -t "$(DESTDIR)$(PREFIX)/bin" cmd/getdpi/getdpi
+	-install -Dm755 -t "$(DESTDIR)$(PREFIX)/bin" cmd/lsmon/lsmon
 	install -Dm755 -t "$(DESTDIR)$(PREFIX)/bin" cmd/setrandom/setrandom
 	install -Dm755 -t "$(DESTDIR)$(PREFIX)/bin" cmd/setwallpaper/setwallpaper
-	install -Dm755 -t "$(DESTDIR)$(PREFIX)/bin" cmd/wayinfo/wayinfo
-	install -Dm755 -t "$(DESTDIR)$(PREFIX)/bin" cmd/xinfo/xinfo
+	-install -Dm755 -t "$(DESTDIR)$(PREFIX)/bin" cmd/wayinfo/wayinfo
+	-install -Dm755 -t "$(DESTDIR)$(PREFIX)/bin" cmd/xinfo/xinfo
 	install -Dm755 -t "$(DESTDIR)$(PREFIX)/bin" cmd/lscollection/lscollection
 	install -Dm755 -t "$(DESTDIR)$(PREFIX)/bin" cmd/timedinfo/timedinfo
 	install -Dm755 -t "$(DESTDIR)$(PREFIX)/bin" cmd/lswallpaper/lswallpaper
-	install -Dm755 -t "$(DESTDIR)$(PREFIX)/bin" cmd/setcollection/setcollection
+	-install -Dm755 -t "$(DESTDIR)$(PREFIX)/bin" cmd/setcollection/setcollection
 	install -Dm755 -t "$(DESTDIR)$(PREFIX)/bin" cmd/settimed/settimed
 	install -Dm755 -t "$(DESTDIR)$(PREFIX)/bin" cmd/lstimed/lstimed
 	install -Dm755 -t "$(DESTDIR)$(PREFIX)/bin" cmd/xml2stw/xml2stw

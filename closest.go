@@ -1,15 +1,6 @@
+// +build cgo
+
 package wallutils
-
-import (
-	"os"
-)
-
-// Exists checks if the given filename exists in the current directory
-// (or if an absolute path exists)
-func Exists(filename string) bool {
-	_, err := os.Stat(filename)
-	return !os.IsNotExist(err)
-}
 
 // ClosestByResolution returns a wallpaper that is closest to the average
 // monitor resolution. If several wallpapers matches, a random one is returned.

@@ -48,7 +48,7 @@ func firstname(filename string) string {
 // exists checks if the given path exists
 func exists(path string) bool {
 	_, err := os.Stat(path)
-	return err == nil
+	return !os.IsNotExist(err)
 }
 
 func which(executable string) string {

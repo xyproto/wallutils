@@ -1,3 +1,5 @@
+// +build cgo
+
 package wallutils
 
 // #cgo LDFLAGS: -lX11
