@@ -146,7 +146,7 @@ func CommonPrefix(sl []string) string {
 	return shortestString
 }
 
-// CommonPrefix will find the longest common suffix in a slice of strings
+// CommonSuffix will find the longest common suffix in a slice of strings
 func CommonSuffix(sl []string) string {
 	if len(sl) == 0 {
 		return ""

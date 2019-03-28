@@ -41,7 +41,7 @@ type MOutput struct {
 	Primary  string   `xml:"primary,omitempty"`
 }
 
-// ParseMonitors can parse monitor XML files,
+// ParseMonitorFile can parse monitor XML files,
 // like the one that typically exists in ~/.config/monitors.xml
 func ParseMonitorFile(filename string) (*MonitorConfiguration, error) {
 	data, err := ioutil.ReadFile(filename)

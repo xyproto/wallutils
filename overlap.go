@@ -68,9 +68,9 @@ func overlaps(rects []*Rect) bool {
 
 	var (
 		minx uint = 1<<16 - 1
-		maxx uint = 0
+		maxx uint
 		miny uint = 1<<16 - 1
-		maxy uint = 0
+		maxy uint
 	)
 
 	// Scale down all rectangles, and find the min/max values

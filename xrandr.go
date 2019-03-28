@@ -102,7 +102,7 @@ func (x *XRandr) String() string {
 	return strings.Join(x.resolutionLines, "\n")
 }
 
-// Quit with an error if monitor configurations overlap
+// QuitIfOverlap will quit with an error if monitor configurations overlap
 func (x *XRandr) QuitIfOverlap() {
 	if x.hasOverlap {
 		red := color.New(color.FgRed)

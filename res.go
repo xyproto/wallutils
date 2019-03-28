@@ -53,7 +53,7 @@ func AverageResolution() (*Res, error) {
 	return NewRes(ws, hs), nil
 }
 
-// Parses a string on the form "1234x1234"
+// ParseSize parses a string on the form "1234x1234"
 func ParseSize(widthHeight string) (uint, uint, error) {
 	fields := strings.SplitN(strings.ToLower(widthHeight), "x", 2)
 	w, err := strconv.Atoi(fields[0])

@@ -42,7 +42,7 @@ var (
 	sr *SearchResults
 )
 
-// Reset the search, prepare to search again
+// NewSearchResults will reset the search and prepare to search again
 func NewSearchResults() *SearchResults {
 	return &SearchResults{
 		wallpapers:                  sync.Map{},
@@ -241,7 +241,7 @@ func FindWallpapersAt(path string) (*SearchResults, error) {
 	return sr, nil
 }
 
-// FindCollectionNames gathers all the names of all available wallpaper packs or GNOME timed backgrounds
+// CollectionNames gathers all the names of all available wallpaper packs or GNOME timed backgrounds
 func (sr *SearchResults) CollectionNames() []string {
 	var collectionNames []string
 	for _, wp := range sr.sortedWallpapers {

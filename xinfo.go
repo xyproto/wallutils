@@ -21,7 +21,7 @@ func XInfo() (string, error) {
 	return infoString, nil
 }
 
-// Monitor enumerates the monitors and returns a slice of structs,
+// XMointors enumerates the monitors and returns a slice of structs,
 // including the resolution.
 func XMonitors(IDs, widths, heights, wDPIs, hDPIs *[]uint) error {
 	if !XCanConnect() {
