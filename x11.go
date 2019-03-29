@@ -53,7 +53,7 @@ func (x *X11) SetWallpaper(imageFilename string) error {
 	if which("convert") != "" {
 		// Convert the image to xpm
 		xbitmap := ".xbm"
-		convertedImageFilename := filepath.Join("/tmp", "_setwallpaper" + xbitmap)
+		convertedImageFilename := filepath.Join("/tmp", "_setwallpaper"+xbitmap)
 		outputString := ""
 		switch filepath.Ext(imageFilename) {
 		case ".png", ".jpg", ".jpeg":

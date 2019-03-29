@@ -44,29 +44,29 @@ func (f *Feh) SetWallpaper(imageFilename string) error {
 	if f.mode != "" {
 		mode = f.mode
 	}
-	// if missing, prefix with "bg-"
-	if !strings.HasPrefix(mode, "bg-") {
-		mode = "bg-" + mode
+	// remove the "bg-" prefix, if it's there
+	if strings.HasPrefix(mode, "bg-") {
+		mode = mode[3:]
 	}
 
 	// check if the mode is valid
 	switch mode {
-	case "bg-fill", "bg-center", "bg-max", "bg-scale", "bg-tile":
+	case "fill", "center", "max", "scale", "tile":
 		break
-	case "bg-zoom":
-		mode = "bg-fill"
-	case "bg-stretch":
-		mode = "bg-scale"
-	case "bg-fit":
-		mode = "bg-max"
+	case "zoom", "zoomed":
+		mode = "fill"
+	case "stretch", "stretched", "scaled":
+		mode = "scale"
+	case "fit":
+		mode = "max"
 	default:
 		// Invalid and unrecognized desktop wallpaper mode
 		return fmt.Errorf("invalid desktop wallpaper mode for Feh: %s", mode)
 	}
 
 	// set the wallpaper with feh
-	if err := run("feh", []string{"--" + mode, imageFilename}, f.verbose); err != nil {
-		return errors.New("feh --" + mode + " " + imageFilename + " failed to run")
+	if err := run("feh", []string{"--bg-" + mode, imageFilename}, f.verbose); err != nil {
+		return errors.New("feh --bg-" + mode + " " + imageFilename + " failed to run")
 	}
 	return nil
 }

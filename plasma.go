@@ -51,10 +51,10 @@ func (p *Plasma) SetWallpaper(imageFilename string) error {
 	} else {
 		// Drawing inspiration from https://github.com/KDE/plasma-workspace/blob/master/wallpapers/image/imagepackage/contents/ui/config.qml
 		switch mode {
-		case "fill", "stretch", "stretched":
-			// fill the screen by stretching
+		case "stretch", "stretched":
+			// stretch the picture to match the screen
 			fillMode = "0"
-		case "fit", "scale", "scaled":
+		case "fill", "fit", "scale", "scaled":
 			// fit and scale, but keep aspect ratio
 			fillMode = "1"
 		case "zoom", "zoomed", "crop", "cropped":

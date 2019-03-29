@@ -24,9 +24,8 @@ type Wallpaper struct {
 	PartOfCollection bool   // likely to be part of a wallpaper collection
 }
 
-// "fill" is not supported by all DEs and WMs, but all backends here should
-// either support "fill" or use something equivalent.
-const defaultMode = "fill"
+// All backends should support these modes, if possible: stretch, fill, scale, tile, center
+const defaultMode = "stretch"
 
 func SetWallpaperCustom(imageFilename string, verbose bool, mode string) error {
 	if !exists(imageFilename) {

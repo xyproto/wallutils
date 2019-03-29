@@ -44,8 +44,12 @@ func (s *Sway) SetWallpaper(imageFilename string) error {
 	}
 
 	switch mode {
-	case "stretch", "fill", "fit", "center", "tile":
+	case "center", "tile", "fill", "stretch":
 		break
+	case "scale", "scaled":
+		mode = "fill"
+	case "zoom", "zoomed", "stretched":
+		mode = "stretch"
 	default:
 		// Invalid and unrecognized desktop wallpaper mode
 		return fmt.Errorf("invalid desktop wallpaper mode for Sway: %s", mode)

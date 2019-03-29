@@ -63,18 +63,17 @@ func (c *Cinnamon) SetWallpaper(imageFilename string) error {
 	switch mode {
 	case "none", "wallpaper", "centered", "scaled", "stretched", "zoom", "spanned":
 		break
-	case "fill":
-		// Invalid desktop wallpaper mode, use "stretched" instead
+	case "stretch":
 		mode = "stretched"
 	case "center":
 		mode = "centered"
-	case "scale":
+	case "fill", "scale":
 		mode = "scaled"
 	case "tile":
 		mode = "wallpaper"
 	default:
 		// Invalid and unrecognized desktop wallpaper mode
-		return fmt.Errorf("invalid desktop wallpaper mode for Cinnamon: %s", mode)
+		return fmt.Errorf("invalid desktop wallpaper mode for MATE: %s", mode)
 	}
 
 	if !c.hasGsettings {
