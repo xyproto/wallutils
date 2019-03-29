@@ -111,9 +111,9 @@ func main() {
 			Usage: "verbose output",
 		},
 		cli.StringFlag{
-			Name:  "mode",
-			Value: "fill",
-			Usage: "wallpaper mode (fill | center | scale | tile) + modes specific to the currently running DE/WM",
+			Name:  "mode, m",
+			Value: "stretch",
+			Usage: "wallpaper mode (stretch | center | tile | scale) + modes specific to the currently running DE/WM",
 		},
 		cli.StringFlag{
 			Name:  "download, d",
