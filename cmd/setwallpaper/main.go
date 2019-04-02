@@ -113,7 +113,7 @@ func main() {
 		cli.StringFlag{
 			Name:  "mode, m",
 			Value: "stretch",
-			Usage: "wallpaper mode (stretch | center | tile | scale) + modes specific to the currently running DE/WM",
+			Usage: "wallpaper mode (stretch | center | tile | scale) \n\t+ modes specific to the currently running DE/WM",
 		},
 		cli.StringFlag{
 			Name:  "download, d",
