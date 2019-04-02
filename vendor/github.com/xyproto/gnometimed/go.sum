@@ -1,8 +1,8 @@
 github.com/xyproto/crossfade v0.0.0-20190210121323-d884599bd751 h1:9Gj2LYEpPqSE24gIXTak9Ej6HJtZOgFuDlr4xZ2SI3M=
 github.com/xyproto/crossfade v0.0.0-20190210121323-d884599bd751/go.mod h1:EW9b0FpDSnr36patXgO6i09AJJpZ6z+kFxerNwrIoCU=
-github.com/xyproto/event v0.0.0-20190209144958-6bbdc7eb57e4 h1:PONowSXG5DlIoLEsXKQt58GzREAjH0P5Rr5bflIOTi8=
-github.com/xyproto/event v0.0.0-20190209144958-6bbdc7eb57e4/go.mod h1:IAzZJ4LWfM+NVUT/NK5u0Xzvlyo0kFrsRlyrKoHiPp4=
+github.com/xyproto/event v0.0.0-20190402150745-998b02fec9d0 h1:EN1iiCMZ24acPDkYA+6TQKKnCpIkGd1ed89jN1fcmLc=
+github.com/xyproto/event v0.0.0-20190402150745-998b02fec9d0/go.mod h1:IAzZJ4LWfM+NVUT/NK5u0Xzvlyo0kFrsRlyrKoHiPp4=
 github.com/xyproto/imagelib v0.0.0-20190209194312-bbbf5649f300 h1:Qje6856C+ZLSjBbX9cW3bTycIT2RD4xYebbE2b+la80=
 github.com/xyproto/imagelib v0.0.0-20190209194312-bbbf5649f300/go.mod h1:28DiltQEyXiqtA/q9l1+cRteOIozAh1J7/oyzbiR4iM=
-github.com/xyproto/simpletimed v0.0.0-20190402105705-04a4dbf3c9aa h1:zBextb0hbi1FbTiArxYzK7S0b4P09aHNKU1vxJtT7LU=
-github.com/xyproto/simpletimed v0.0.0-20190402105705-04a4dbf3c9aa/go.mod h1:JsBKunb59W1HSWvAqqpSUfq0A5hZmSpSA8Bz+yVNPg4=
+github.com/xyproto/simpletimed v0.0.0-20190402150836-07ab9e1356e7 h1:1ZPIpNtZycihldOsqW8qRgTq1aXMiy494O6yd5nTeqk=
+github.com/xyproto/simpletimed v0.0.0-20190402150836-07ab9e1356e7/go.mod h1:PzzRUWIJmEa8e14Sobh9Ab54ENQVahfGEcMhclnDCOk=

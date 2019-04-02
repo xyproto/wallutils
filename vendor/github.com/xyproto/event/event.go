@@ -59,7 +59,12 @@ func (e *Event) Cooldown() time.Duration {
 // Duration is for how long the window that this event can be triggered is
 func (e *Event) Duration() time.Duration {
 	if e.clockOnly {
-		return ToToday(e.upTo).Sub(ToToday(e.from))
+		// Choose the non-negative difference if the two timestamps crosses midnight
+		a := ToToday(e.upTo).Sub(ToToday(e.from))
+		if a >= 0 {
+			return a
+		}
+		return ToToday(e.upTo).Add(24 * time.Hour).Sub(ToToday(e.from))
 	}
 	return e.upTo.Sub(e.from)
 }

@@ -4,6 +4,6 @@ A simple event system.
 
 ## General info
 
-* Version: 2.1.1
+* Version: 2.1.2
 * License: MIT
 * Author: Alexander F. Rødseth &lt;xyproto@archlinux.org&gt;
