@@ -59,7 +59,7 @@ Install `wallutils` from AUR, or:
 On Fedora:
 
     sudo dnf update
-    sudo dnf install xorg-x11-xbitmaps libXcursor-devel libXmu-devel
+    sudo dnf install git golang libXcursor-devel libXmu-devel xorg-x11-xbitmaps
     git clone https://github.com/xyproto/wallutils
     cd wallutils
     make
@@ -68,7 +68,7 @@ On Fedora:
 On Ubuntu:
 
     sudo apt get update
-    sudo apt get install libxcursor-dev libxmu-dev libx11-dev git golang-go
+    sudo apt get install git golang-go libx11-dev libxcursor-dev libxmu-dev
     git clone https://github.com/xyproto/wallutils
     cd wallutils
     make
