@@ -12,11 +12,11 @@ github.com/urfave/cli
 github.com/xyproto/crossfade
 # github.com/xyproto/event v0.0.0-20190209144958-6bbdc7eb57e4
 github.com/xyproto/event
-# github.com/xyproto/gnometimed v0.0.0-20190328173407-083e83be37f0
+# github.com/xyproto/gnometimed v0.0.0-20190402105849-97ffac6b8344
 github.com/xyproto/gnometimed
 # github.com/xyproto/imagelib v0.0.0-20190209194312-bbbf5649f300
 github.com/xyproto/imagelib
-# github.com/xyproto/simpletimed v0.0.0-20190328172937-5d862e69d814
+# github.com/xyproto/simpletimed v0.0.0-20190402105705-04a4dbf3c9aa
 github.com/xyproto/simpletimed
-# golang.org/x/sys v0.0.0-20190322080309-f49334f85ddc
+# golang.org/x/sys v0.0.0-20190402054613-e4093980e83e
 golang.org/x/sys/unix

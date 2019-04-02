@@ -22,7 +22,10 @@ func (gtw *Wallpaper) EventLoop(verbose bool, setWallpaperFunc func(string) erro
 	if err != nil {
 		return err
 	}
-	stw.SetInitialWallpaper(verbose, setWallpaperFunc)
+
+	if err := stw.SetInitialWallpaper(verbose, setWallpaperFunc); err != nil {
+		return err
+	}
 
 	// Start the event loop
 	eventloop := event.NewLoop()
