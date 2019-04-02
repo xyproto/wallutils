@@ -138,6 +138,14 @@ if err := wallutils.SetWallpaper(imageFilename); err != nil {
 * `libwayland-client.so`, for Wayland support.
 * `libX11.so`, for X support.
 
+## Wallpaper collections
+
+The XML format from GNOME for specifying wallpaper collections is not yet supported (and I'm not sure if it's needed). Creating a directory with images where the filename of the images specify the resolution (like `wallpaper_5639x3561.jpg`) is enough for `lscollection` to recognize it as a collection (if the directory is placed in `/usr/share/backgrounds` or `/usr/share/wallpapers`).
+
+## Setting a wallpaper per monitor
+
+Setting a wallpaper per monitor is not yet supported, but it might be in the future.
+
 ## General info
 
 * Author: Alexander F. Rødseth &lt;xyproto@archlinux.org&gt;
