@@ -54,9 +54,8 @@ func (d *Deepin) SetWallpaper(imageFilename string) error {
 		d.ExecutablesExists()
 	}
 
+	// initialize the mode setting (stretched/tiled etc)
 	mode := defaultMode
-
-	// If d.mode is specified, do not use the default value
 	if d.mode != "" {
 		mode = d.mode
 	}

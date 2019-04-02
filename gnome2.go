@@ -38,9 +38,8 @@ func (g2 *Gnome2) SetWallpaper(imageFilename string) error {
 		return fmt.Errorf("no such file: %s", imageFilename)
 	}
 
+	// initialize the mode setting (stretched/tiled etc)
 	mode := defaultMode
-
-	// If g2.mode is specified, do not use the default value
 	if g2.mode != "" {
 		mode = g2.mode
 	}

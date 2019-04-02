@@ -37,9 +37,8 @@ func (p *Plasma) SetWallpaper(imageFilename string) error {
 		return fmt.Errorf("no such file: %s", imageFilename)
 	}
 
+	// initialize the mode setting (stretched/tiled etc)
 	mode := defaultMode
-
-	// If p.mode is specified, do not use the default value
 	if p.mode != "" {
 		mode = p.mode
 	}

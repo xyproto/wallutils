@@ -54,9 +54,8 @@ func (g3 *Gnome3) SetWallpaper(imageFilename string) error {
 		g3.ExecutablesExists()
 	}
 
+	// initialize the mode setting (stretched/tiled etc)
 	mode := defaultMode
-
-	// If g3.mode is specified, do not use the default value
 	if g3.mode != "" {
 		mode = g3.mode
 	}

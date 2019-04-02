@@ -52,9 +52,8 @@ func (c *Cinnamon) SetWallpaper(imageFilename string) error {
 		c.ExecutablesExists()
 	}
 
+	// initialize the mode setting (stretched/tiled etc)
 	mode := defaultMode
-
-	// If c.mode is specified, do not use the default value
 	if c.mode != "" {
 		mode = c.mode
 	}

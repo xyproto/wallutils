@@ -52,9 +52,8 @@ func (m *Mate) SetWallpaper(imageFilename string) error {
 		m.ExecutablesExists()
 	}
 
+	// initialize the mode setting (stretched/tiled etc)
 	mode := defaultMode
-
-	// If m.mode is specified, do not use the default value
 	if m.mode != "" {
 		mode = m.mode
 	}

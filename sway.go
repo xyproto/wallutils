@@ -38,6 +38,8 @@ func (s *Sway) SetWallpaper(imageFilename string) error {
 	if !exists(imageFilename) {
 		return fmt.Errorf("no such file: %s", imageFilename)
 	}
+
+	// initialize the mode setting (stretched/tiled etc)
 	mode := defaultMode
 	if s.mode != "" {
 		mode = s.mode
