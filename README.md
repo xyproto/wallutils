@@ -54,7 +54,7 @@ Install `wallutils` from AUR, or:
     git clone https://github.com/xyproto/wallutils
     cd wallutils
     make
-    sudo make install
+    sudo make PREFIX=/usr/local install
 
 On Fedora:
 
@@ -63,7 +63,7 @@ On Fedora:
     git clone https://github.com/xyproto/wallutils
     cd wallutils
     make
-    sudo make install
+    sudo make PREFIX=/usr/local install
 
 On Ubuntu:
 
@@ -72,7 +72,7 @@ On Ubuntu:
     git clone https://github.com/xyproto/wallutils
     cd wallutils
     make
-    sudo make install
+    sudo make PREFIX=/usr/local install
 
 ## Wayland or X only
 
