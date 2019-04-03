@@ -146,6 +146,14 @@ The XML format from GNOME for specifying wallpaper collections is not yet suppor
 
 Setting a wallpaper per monitor is not yet supported, but it might be in the future.
 
+## Refreshing the wallpaper after waking from sleep
+
+Try sending the `USR1` signal to the `settimed` process:
+
+    pkill settimed -USR1
+
+This should refresh the wallpaper.
+
 ## General info
 
 * Author: Alexander F. Rødseth &lt;xyproto@archlinux.org&gt;
