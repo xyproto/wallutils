@@ -88,11 +88,11 @@ func ToToday(d time.Time) time.Time {
 	return time.Date(now.Year(), now.Month(), now.Day(), hour, min, sec, now.Nanosecond(), now.Location())
 }
 
-// BetweenClock returns true if the given time t is between the two timestamps
-// a (inclusive) and b (exclusive), where only hours/minutes/seconds count.
-func BetweenClock(t, a, b time.Time) bool {
-	tToday := ToToday(t)
-	return (tToday.Sub(ToToday(a)) >= 0) && (tToday.Sub(ToToday(b)) < 0)
+// ToTomorrow moves the date of a given time.Time to today's date.
+// The hour/minute/second is kept as it is.
+func ToTomorrow(d time.Time) time.Time {
+	// Add 24 hours to today
+	return ToToday(d).Add(time.Hour * 24)
 }
 
 // Has checks if the Event has time t in its interval:
@@ -100,7 +100,10 @@ func BetweenClock(t, a, b time.Time) bool {
 func (e *Event) Has(t time.Time) bool {
 	// If only the hour/minute/second matters, use BetweenClock
 	if e.clockOnly {
-		return BetweenClock(t, e.From(), e.UpTo())
+		fromToday := ToToday(e.From())
+		uptoToday := ToToday(e.UpTo())
+		uptoTomorrow := ToTomorrow(e.UpTo())
+		return Between(t, fromToday, uptoToday) || Between(t, fromToday, uptoTomorrow)
 	}
 	return Between(t, e.From(), e.UpTo())
 }
@@ -112,11 +115,7 @@ func (e *Event) ShouldTrigger() (retval bool) {
 
 	// Safely read the status
 	e.mutex.RLock()
-	if e.clockOnly {
-		retval = !e.ongoing && e.Has(t) && !BetweenClock(t, e.triggered, e.triggered.Add(e.cooldown))
-	} else {
-		retval = !e.ongoing && e.Has(t) && !Between(t, e.triggered, e.triggered.Add(e.cooldown))
-	}
+	retval = !e.ongoing && e.Has(t) && !Between(t, e.triggered, e.triggered.Add(e.cooldown))
 	e.mutex.RUnlock()
 
 	return

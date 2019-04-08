@@ -10,13 +10,13 @@ github.com/stretchr/powerwalk
 github.com/urfave/cli
 # github.com/xyproto/crossfade v0.0.0-20190210121323-d884599bd751
 github.com/xyproto/crossfade
-# github.com/xyproto/event v0.0.0-20190402150745-998b02fec9d0
+# github.com/xyproto/event v3.0.0+incompatible
 github.com/xyproto/event
-# github.com/xyproto/gnometimed v0.0.0-20190403124758-ab91f8af49d5
+# github.com/xyproto/gnometimed v1.0.5
 github.com/xyproto/gnometimed
 # github.com/xyproto/imagelib v0.0.0-20190209194312-bbbf5649f300
 github.com/xyproto/imagelib
-# github.com/xyproto/simpletimed v0.0.0-20190403124623-89315bad61ef
+# github.com/xyproto/simpletimed v1.0.6
 github.com/xyproto/simpletimed
-# golang.org/x/sys v0.0.0-20190402142545-baf5eb976a8c
+# golang.org/x/sys v0.0.0-20190405154228-4b34438f7a67
 golang.org/x/sys/unix

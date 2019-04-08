@@ -1,6 +1,6 @@
 github.com/xyproto/crossfade v0.0.0-20190210121323-d884599bd751 h1:9Gj2LYEpPqSE24gIXTak9Ej6HJtZOgFuDlr4xZ2SI3M=
 github.com/xyproto/crossfade v0.0.0-20190210121323-d884599bd751/go.mod h1:EW9b0FpDSnr36patXgO6i09AJJpZ6z+kFxerNwrIoCU=
-github.com/xyproto/event v0.0.0-20190402150745-998b02fec9d0 h1:EN1iiCMZ24acPDkYA+6TQKKnCpIkGd1ed89jN1fcmLc=
-github.com/xyproto/event v0.0.0-20190402150745-998b02fec9d0/go.mod h1:IAzZJ4LWfM+NVUT/NK5u0Xzvlyo0kFrsRlyrKoHiPp4=
+github.com/xyproto/event v3.0.0+incompatible h1:JkFvjyrYdVgH0xT+gGuQ8zAra0dUhywMj9m7LoboaWE=
+github.com/xyproto/event v3.0.0+incompatible/go.mod h1:IAzZJ4LWfM+NVUT/NK5u0Xzvlyo0kFrsRlyrKoHiPp4=
 github.com/xyproto/imagelib v0.0.0-20190209194312-bbbf5649f300 h1:Qje6856C+ZLSjBbX9cW3bTycIT2RD4xYebbE2b+la80=
 github.com/xyproto/imagelib v0.0.0-20190209194312-bbbf5649f300/go.mod h1:28DiltQEyXiqtA/q9l1+cRteOIozAh1J7/oyzbiR4iM=
