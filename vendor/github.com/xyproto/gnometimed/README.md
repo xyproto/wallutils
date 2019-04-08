@@ -2,4 +2,4 @@
 
 Package for dealing with GNOME Timed Wallpaper XML files
 
-Version: 1.0.5
+Version: 1.0.7

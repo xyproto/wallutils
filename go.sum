@@ -23,12 +23,12 @@ github.com/xyproto/crossfade v0.0.0-20190210121323-d884599bd751 h1:9Gj2LYEpPqSE2
 github.com/xyproto/crossfade v0.0.0-20190210121323-d884599bd751/go.mod h1:EW9b0FpDSnr36patXgO6i09AJJpZ6z+kFxerNwrIoCU=
 github.com/xyproto/event v3.0.0+incompatible h1:JkFvjyrYdVgH0xT+gGuQ8zAra0dUhywMj9m7LoboaWE=
 github.com/xyproto/event v3.0.0+incompatible/go.mod h1:IAzZJ4LWfM+NVUT/NK5u0Xzvlyo0kFrsRlyrKoHiPp4=
-github.com/xyproto/gnometimed v1.0.5 h1:hqklQcm9Ig6ko0b27VsV9aSeOVgQ+tHfyz8xrqpyaWI=
-github.com/xyproto/gnometimed v1.0.5/go.mod h1:85zZtOYrJgbLb+FRwJvcKheb+HY7t9J7C8b50fhTkJc=
+github.com/xyproto/gnometimed v1.0.7 h1:L0eSv2wAEYI+l7rhgSA1b6a4aT1GCrhFGizobLrwlcI=
+github.com/xyproto/gnometimed v1.0.7/go.mod h1:yZX/hvCDcxmN0sZO2MmjDIy9JchxX3ZTHgrNCYwu2c0=
 github.com/xyproto/imagelib v0.0.0-20190209194312-bbbf5649f300 h1:Qje6856C+ZLSjBbX9cW3bTycIT2RD4xYebbE2b+la80=
 github.com/xyproto/imagelib v0.0.0-20190209194312-bbbf5649f300/go.mod h1:28DiltQEyXiqtA/q9l1+cRteOIozAh1J7/oyzbiR4iM=
-github.com/xyproto/simpletimed v1.0.6 h1:2zXMFZha4alhS0Y3xlFDCnMLqhMuGou9i3rCJ6TSQkA=
-github.com/xyproto/simpletimed v1.0.6/go.mod h1:Sv60V9fwEDszmb6V4M8BOMr3gNNUIRBYoNEFKzXUUN4=
+github.com/xyproto/simpletimed v1.0.8 h1:y63hE6Hw3klWRbcMWAerLNEL3JuW9i8Ga8Z7qyLqihg=
+github.com/xyproto/simpletimed v1.0.8/go.mod h1:Sv60V9fwEDszmb6V4M8BOMr3gNNUIRBYoNEFKzXUUN4=
 golang.org/x/sys v0.0.0-20190222072716-a9d3bda3a223/go.mod h1:STP8DvDyc/dI5b8T5hshtkjS+E42TnysNCUPdjciGhY=
 golang.org/x/sys v0.0.0-20190405154228-4b34438f7a67 h1:1Fzlr8kkDLQwqMP8GxrhptBLqZG/EDpiATneiZHY998=
 golang.org/x/sys v0.0.0-20190405154228-4b34438f7a67/go.mod h1:h1NjWce9XRLGQEsW7wpKNCjG9DtNlClVuFLEZdDNbEs=
