@@ -61,6 +61,11 @@ func setWallpaperAction(c *cli.Context) error {
 	downloadDir := c.String("download")
 
 	if !exists(downloadDir) {
+		// Last resort
+		downloadDir = "/tmp"
+	}
+
+	if !exists(downloadDir) {
 		return errors.New("could not find: " + downloadDir)
 	}
 
@@ -90,6 +95,54 @@ func setWallpaperAction(c *cli.Context) error {
 	return nil
 }
 
+func expanduser(path string) string {
+	if strings.HasPrefix(path, "~") {
+		path = strings.Replace(path, "~", os.Getenv("HOME"), 1)
+	} else if strings.HasPrefix(path, "$HOME") {
+		path = strings.Replace(path, "$HOME", os.Getenv("HOME"), 1)
+	}
+	return path
+}
+
+func downloadDirectory() string {
+	// Check if $XDG_DOWNLOAD_DIR is set
+	path := os.Getenv("XDG_DOWNLOAD_DIR")
+	if exists(path) {
+		return path
+	}
+	// Check if XDG_DOWNLOAD_DIR is defined in ~/.config/user-dirs.dirs
+	dirfileContents, err := ioutil.ReadFile(expanduser("~/.config/user-dirs.dirs"))
+	if err == nil {
+		for _, line := range strings.Split(string(dirfileContents), "\n") {
+			if strings.HasPrefix(line, "XDG_DOWNLOAD_DIR") {
+				elements := strings.SplitN(line, "=", 2)
+				path = strings.TrimSpace(elements[1])
+				if exists(path) {
+					return path
+				}
+				break
+			}
+		}
+	}
+	// Check if ~/downloads exists
+	path = expanduser("~/downloads")
+	if exists(path) {
+		return path
+	}
+	// Check if ~/download exists
+	path = expanduser("~/download")
+	if exists(path) {
+		return path
+	}
+	// Use the home directory, if it exists
+	path = expanduser("~")
+	if exists(path) {
+		return path
+	}
+	// Using /tmp is the last resort
+	return "/tmp"
+}
+
 func main() {
 	app := cli.NewApp()
 
@@ -112,12 +165,12 @@ func main() {
 		},
 		cli.StringFlag{
 			Name:  "mode, m",
-			Value: "stretch",
+			Value: "stretch", // the default value
 			Usage: "wallpaper mode (stretch | center | tile | scale) \n\t+ modes specific to the currently running DE/WM",
 		},
 		cli.StringFlag{
 			Name:  "download, d",
-			Value: "/tmp",
+			Value: downloadDirectory(), // the default value
 			Usage: "download directory",
 		},
 	}
