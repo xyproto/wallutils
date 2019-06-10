@@ -144,20 +144,20 @@ It is also possible to build with `make static`, to only build the utilities tha
 
 The XML format from GNOME for specifying wallpaper collections is not yet supported (and I'm not sure if it's needed). Creating a directory with images where the filename of the images specify the resolution (like `wallpaper_5639x3561.jpg`) is enough for `lscollection` to recognize it as a collection (if the directory is placed in `/usr/share/backgrounds` or `/usr/share/wallpapers`).
 
-## Setting a wallpaper per monitor
-
-Setting a wallpaper per monitor is not yet supported, but it might be in the future.
-
 ## Refreshing the wallpaper after waking from sleep
 
-Try sending the `USR1` signal to the `settimed` process:
+Send the `USR1` signal to the `settimed` process:
 
     pkill settimed -USR1
 
 This should refresh the wallpaper.
 
+## Setting a wallpaper per monitor
+
+* Setting a wallpaper per monitor is not supported, yet. Currently, a wallpaper is set for all monitors.
+
 ## General info
 
 * Author: Alexander F. Rødseth &lt;xyproto@archlinux.org&gt;
 * License: MIT
-* Version: 5.8.0
+* Version: 5.8.1
