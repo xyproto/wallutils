@@ -4,5 +4,5 @@ github.com/xyproto/event v3.0.0+incompatible h1:JkFvjyrYdVgH0xT+gGuQ8zAra0dUhywM
 github.com/xyproto/event v3.0.0+incompatible/go.mod h1:IAzZJ4LWfM+NVUT/NK5u0Xzvlyo0kFrsRlyrKoHiPp4=
 github.com/xyproto/imagelib v0.0.0-20190209194312-bbbf5649f300 h1:Qje6856C+ZLSjBbX9cW3bTycIT2RD4xYebbE2b+la80=
 github.com/xyproto/imagelib v0.0.0-20190209194312-bbbf5649f300/go.mod h1:28DiltQEyXiqtA/q9l1+cRteOIozAh1J7/oyzbiR4iM=
-github.com/xyproto/simpletimed v1.0.8 h1:y63hE6Hw3klWRbcMWAerLNEL3JuW9i8Ga8Z7qyLqihg=
-github.com/xyproto/simpletimed v1.0.8/go.mod h1:Sv60V9fwEDszmb6V4M8BOMr3gNNUIRBYoNEFKzXUUN4=
+github.com/xyproto/simpletimed v1.0.9-0.20190610121941-ea0cd56eea21 h1:ZoUvD6zXTCC7tai12LWicVe7QQHqNwW4D7I413E3GMI=
+github.com/xyproto/simpletimed v1.0.9-0.20190610121941-ea0cd56eea21/go.mod h1:Sv60V9fwEDszmb6V4M8BOMr3gNNUIRBYoNEFKzXUUN4=

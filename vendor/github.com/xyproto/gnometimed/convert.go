@@ -4,13 +4,13 @@ import (
 	"fmt"
 	"github.com/xyproto/simpletimed"
 	"strings"
+	"time"
 )
 
 const simpleTimedWallpaperFormatVersion = "1.0"
 
 // GnomeToSimple converts a Gnome Timed Wallpaper to a Simple Timed Wallpaper
 func GnomeToSimple(gtw *Wallpaper) (*simpletimed.Wallpaper, error) {
-
 	// TODO: Convert from struct to struct, without excercising the serializer and the parser
 
 	// Convert the given struct to the string contents of a simpletimed.Wallpaper file
@@ -79,6 +79,9 @@ func GnomeToSimpleString(gtw *Wallpaper) (string, error) {
 		}
 		if s, ok := eInterface.(GStatic); ok {
 			window := s.Duration()
+			if window < 1*time.Minute {
+				sb.WriteString(fmt.Sprintf("# warning: static image duration is less than a minute: %s\n", window))
+			}
 
 			sb.WriteString(fmt.Sprintf("@%s: %s\n", cFmt(eventTime), Meat(s.Filename, commonPrefix, commonSuffix)))
 

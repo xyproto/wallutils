@@ -150,6 +150,16 @@ func findOrder(XMLData []byte) (StaticMap, TransitionMap, error) {
 	//transitionIndex -> totalIndex
 	transitionOrder := make(TransitionMap, transitionCount)
 
+	// if there are no transitions, only static images,
+	// create a simple map of increasing indexes and exit early
+	if transitionCount == 0 {
+		// No transition tags, only static tags
+		for i := 0; i < staticCount; i++ {
+			staticOrder[i] = i
+		}
+		return staticOrder, transitionOrder, nil
+	}
+
 	// Iterate one time per static or transition tag
 	for count := 0; count < (staticCount + transitionCount); count++ {
 		sPos := bytes.Index(XMLData[offset:], staticTag)
