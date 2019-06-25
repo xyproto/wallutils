@@ -2,7 +2,7 @@
 
 package wallutils
 
-// #cgo LDFLAGS: -lX11
+// #cgo LDFLAGS: -lX11 -lXpm
 // #include "xwallpaper.h"
 import "C"
 import (

@@ -4,6 +4,7 @@
 #include <X11/Xlib.h>
 #include <X11/Xmu/CurUtil.h>
 #include <X11/Xutil.h>
+#include <X11/xpm.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -12,8 +13,8 @@ static Display* dpy;
 static int screen;
 static Window root;
 
-static Pixmap ReadBitmapFile(
-    char* filename, unsigned int* width, unsigned int* height, int* x_hot, int* y_hot)
+// Read black/white X bitmap file
+static Pixmap ReadXBMFile(char* filename, unsigned int* width, unsigned int* height, int* x_hot, int* y_hot)
 {
     Pixmap bitmap;
     int status = XReadBitmapFile(dpy, root, filename, width, height, &bitmap, x_hot, y_hot);
@@ -28,7 +29,24 @@ static Pixmap ReadBitmapFile(
     exit(1);
 }
 
-static void SetBackgroundToBitmap(Pixmap bitmap, unsigned int width, unsigned int height)
+// Read colorful X pixmap file
+static Pixmap ReadXPMFile(char* filename, unsigned int* width, unsigned int* height)
+{
+    Pixmap pixmap;
+    XpmAttributes attributes;
+    // shapemask is set to NULL and is only used for transparency
+    int status = XpmReadFileToPixmap(dpy, root, filename, &pixmap, NULL, &attributes);
+    if (status == XpmSuccess) {
+        *width = attributes.width;
+        *height = attributes.height;
+        return (pixmap);
+    }
+    fprintf(stderr, "could not read XPM: %s", filename);
+    exit(1);
+}
+
+// Set the background image to the given pixmap
+static void SetBackgroundToPixmapAndFree(Pixmap bitmap, unsigned int width, unsigned int height)
 {
     XGCValues gc_init;
     GC gc = XCreateGC(dpy, root, GCForeground | GCBackground, &gc_init);
@@ -53,8 +71,9 @@ int SetBackground(char* filename)
     screen = DefaultScreen(dpy);
     root = RootWindow(dpy, screen);
 
-    Pixmap bitmap = ReadBitmapFile(filename, &ww, &hh, (int*)NULL, (int*)NULL);
-    SetBackgroundToBitmap(bitmap, ww, hh);
+    //Pixmap bitmap = ReadBitmapFile(filename, &ww, &hh, (int*)NULL, (int*)NULL);
+    Pixmap bitmap = ReadXPMFile(filename, &ww, &hh);
+    SetBackgroundToPixmapAndFree(bitmap, ww, hh);
 
     if (dpy) {
         XCloseDisplay(dpy);
