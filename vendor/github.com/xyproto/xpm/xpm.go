@@ -7,6 +7,7 @@ import (
 	"io"
 	"strings"
 )
+
 // AllowedLetters is the 93 available ASCII letters
 // ref: https://en.wikipedia.org/wiki/X_PixMap
 // They are in the same order as GIMP, but with the question mark character as well.
@@ -30,6 +31,17 @@ type Encoder struct {
 }
 
 func NewEncoder(imageName string) *Encoder {
+	var validIdentifier []rune
+	for _, letter := range imageName {
+		if strings.ContainsRune("abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ_", letter) {
+			validIdentifier = append(validIdentifier, letter)
+		}
+	}
+	if len(validIdentifier) > 0 {
+		imageName = string(validIdentifier)
+	} else {
+		imageName = "img"
+	}
 	return &Encoder{imageName, false, 0.5, []rune(AllowedLetters)}
 }
 
