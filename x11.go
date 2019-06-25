@@ -8,7 +8,11 @@ import "C"
 import (
 	"errors"
 	"fmt"
+	"github.com/xyproto/imagelib"
+	"github.com/xyproto/xpm"
+	"os"
 	"path/filepath"
+	"strings"
 	"unsafe"
 )
 
@@ -50,24 +54,29 @@ func (x *X11) SetWallpaper(imageFilename string) error {
 		return fmt.Errorf("no such file: %s", imageFilename)
 	}
 
-	if which("convert") != "" {
-		// Convert the image to xpm
-		xbitmap := ".xbm"
-		convertedImageFilename := filepath.Join("/tmp", "_setwallpaper"+xbitmap)
-		outputString := ""
-		switch filepath.Ext(imageFilename) {
-		case ".png", ".jpg", ".jpeg":
-			outputString = output("convert", []string{imageFilename, convertedImageFilename}, x.verbose)
-		case ".gif":
-			outputString = output("convert", []string{imageFilename + "[0]", convertedImageFilename}, x.verbose)
+	convertedImageFilename := filepath.Join("/tmp", "_setwallpaper.xpm")
+	ext := strings.ToLower(filepath.Ext(imageFilename))
+	switch ext {
+	case ".png", ".jpg", ".jpeg", ".gif":
+		m, err := imagelib.Read(imageFilename)
+		imageName := filepath.Base(imageFilename[:len(imageFilename)-len(ext)])
+		enc := xpm.NewEncoder(imageName)
+		f, err := os.Create(convertedImageFilename)
+		if err != nil {
+			return err
 		}
-		if x.verbose && outputString != "" {
-			fmt.Println(outputString)
-		}
-		if exists(convertedImageFilename) {
-			imageFilename = convertedImageFilename
-		}
+		defer f.Close()
+		// Write the XPM image
+		enc.Encode(f, m)
+	default:
+		return errors.New("unrecognized image file extension for: " + imageFilename)
 	}
+
+	if exists(convertedImageFilename) {
+		imageFilename = convertedImageFilename
+	}
+	// TODO: Return an error here if convertedImageFilename does not exist,
+	//       or return an error later, when trying to set the imageFilename?
 
 	// NOTE: The C counterpart to this function may exit(1) if it's out of memory
 	imageFilenameC := C.CString(imageFilename)
