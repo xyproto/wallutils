@@ -20,13 +20,14 @@ func (a HCLSortablePalette) Less(i, j int) bool {
 	h1, c1, l1 := ci.Hcl()
 	h2, c2, l2 := cj.Hcl()
 	// Compare the H, C and L values
-	if l1 == l2 {
-		if h1 == h2 {
-			return c1 < c2
+	if h1 == h2 {
+		if c1 == c2 {
+			return l1 < l2
 		}
-		return h1 < h2
+		return c1 < c2
 	}
-	return l1 < l2
+	return h1 < h2
+
 }
 
 // Sort the palette by luminance, hue and then chroma

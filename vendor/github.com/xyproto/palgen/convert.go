@@ -37,6 +37,8 @@ func Convert(m image.Image) (image.Image, error) {
 	if len(customPalette) > 256 {
 		return nil, errors.New("the generated palette has too many colors")
 	}
+	// Sort using the HCL colorspace
+	Sort(customPalette)
 	// Return a new Paletted image
 	return ConvertCustom(m, customPalette)
 }
