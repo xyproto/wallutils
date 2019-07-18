@@ -6,6 +6,6 @@ The resulting images are smaller than the one from GIMP, since the question mark
 
 Includes a `png2xpm` utility.
 
-* Version: 1.2.1
+* Version: 2.0.0
 * License: MIT
 * Author: Alexander F. Rødseth &lt;xyproto@archlinux.org&gt;
