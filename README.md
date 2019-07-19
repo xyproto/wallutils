@@ -35,28 +35,15 @@ $ lsmon
 2: 1920x1200
 ```
 
-## Building and installing utilities
+## Installing `wallutils`
 
-Using make, for building and installing all included utilities:
+### Arch Linux
 
-    make
-    make install
+    pacman -S wallutils
 
-Using Go 1.12 or later, for a single utility:
+### Fedora
 
-    go get -u github.com/xyproto/wallutils/cmd/settimed
-
-On Arch Linux:
-
-Install `wallutils` from AUR, or:
-
-    sudo pacman -Syu git go libxcursor libxmu wayland xbitmaps xorgproto
-    git clone https://github.com/xyproto/wallutils
-    cd wallutils
-    make
-    sudo make PREFIX=/usr/local install
-
-On Fedora:
+Until an official package is available:
 
     sudo dnf update
     sudo dnf install git golang libXcursor-devel libXmu-devel xorg-x11-xbitmaps
@@ -65,14 +52,29 @@ On Fedora:
     make
     sudo make PREFIX=/usr/local install
 
-On Ubuntu:
+### Ubuntu
 
-    sudo apt get update
-    sudo apt get install git golang-go libx11-dev libxcursor-dev libxmu-dev
+Until an official package is available:
+
+Go 1.12 or later is required, [here's an easy way to install Go 1.12](https://github.com/golang/go/wiki/Ubuntu):
+
+    sudo add-apt-repository ppa:longsleep/golang-backports
+    sudo apt-get update
+    sudo apt-get install golang-go
+
+Then install the required dependencies, clone the repository and install wallutils:
+
+    sudo apt get install git golang-go libx11-dev libxcursor-dev libxmu-dev libwayland-dev libxpm-dev
     git clone https://github.com/xyproto/wallutils
     cd wallutils
     make
     sudo make PREFIX=/usr/local install
+
+## Installing a single utility
+
+Using Go 1.12 or later, installing the `settimed` utility:
+
+    go get -u github.com/xyproto/wallutils/cmd/settimed
 
 ## Wayland or X only
 
@@ -151,6 +153,10 @@ Send the `USR1` signal to the `settimed` process:
     pkill settimed -USR1
 
 This should refresh the wallpaper.
+
+## A note about i3
+
+* When using wallutils together with `i3`, it works best with also having `feh` and `imlib2` installed.
 
 ## Setting a wallpaper per monitor
 
