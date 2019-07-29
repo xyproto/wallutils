@@ -9,7 +9,7 @@ require (
 	github.com/urfave/cli v1.20.0
 	github.com/xyproto/gnometimed v1.0.8-0.20190610123140-e0dff4ff3f0f
 	github.com/xyproto/imagelib v0.0.0-20190209194312-bbbf5649f300
-	github.com/xyproto/simpletimed v1.0.9-0.20190610121941-ea0cd56eea21
+	github.com/xyproto/simpletimed v1.0.9-0.20190729064335-8c1a107c9d55
 	github.com/xyproto/xpm v0.0.0-20190718214658-993fa777f935
-	golang.org/x/sys v0.0.0-20190712062909-fae7ac547cb7 // indirect
+	golang.org/x/sys v0.0.0-20190726091711-fc99dfbffb4e // indirect
 )

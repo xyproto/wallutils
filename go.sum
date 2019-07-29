@@ -33,8 +33,10 @@ github.com/xyproto/palgen v0.0.0-20190718214536-8a7b02ffedfd h1:uSB7SQOlGaTv2TmC
 github.com/xyproto/palgen v0.0.0-20190718214536-8a7b02ffedfd/go.mod h1:qIsIO9fpiThyQj3xjt9KNX6PVWS3c/pHMAs+czi/a6k=
 github.com/xyproto/simpletimed v1.0.9-0.20190610121941-ea0cd56eea21 h1:ZoUvD6zXTCC7tai12LWicVe7QQHqNwW4D7I413E3GMI=
 github.com/xyproto/simpletimed v1.0.9-0.20190610121941-ea0cd56eea21/go.mod h1:Sv60V9fwEDszmb6V4M8BOMr3gNNUIRBYoNEFKzXUUN4=
+github.com/xyproto/simpletimed v1.0.9-0.20190729064335-8c1a107c9d55 h1:+DrvqirSPMedDt3zPXl3bewIRYjqGfMEyYyVPJXvC90=
+github.com/xyproto/simpletimed v1.0.9-0.20190729064335-8c1a107c9d55/go.mod h1:Sv60V9fwEDszmb6V4M8BOMr3gNNUIRBYoNEFKzXUUN4=
 github.com/xyproto/xpm v0.0.0-20190718214658-993fa777f935 h1:nhOE8aJ097xM1wSR3zH6CpMx0cASCFn3c2CHWguM0e8=
 github.com/xyproto/xpm v0.0.0-20190718214658-993fa777f935/go.mod h1:FelxICCrmGUCmyb4SWKrYb4+UsC/F4XzkCcirOF7YD8=
 golang.org/x/sys v0.0.0-20190222072716-a9d3bda3a223/go.mod h1:STP8DvDyc/dI5b8T5hshtkjS+E42TnysNCUPdjciGhY=
-golang.org/x/sys v0.0.0-20190712062909-fae7ac547cb7 h1:LepdCS8Gf/MVejFIt8lsiexZATdoGVyp5bcyS+rYoUI=
-golang.org/x/sys v0.0.0-20190712062909-fae7ac547cb7/go.mod h1:h1NjWce9XRLGQEsW7wpKNCjG9DtNlClVuFLEZdDNbEs=
+golang.org/x/sys v0.0.0-20190726091711-fc99dfbffb4e h1:D5TXcfTk7xF7hvieo4QErS3qqCB4teTffacDWr7CI+0=
+golang.org/x/sys v0.0.0-20190726091711-fc99dfbffb4e/go.mod h1:h1NjWce9XRLGQEsW7wpKNCjG9DtNlClVuFLEZdDNbEs=

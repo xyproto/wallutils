@@ -19,7 +19,7 @@ func(string) error
 
 Where the given string is the image filename to be set.
 
-* `simpletimed` module version: 1.0.8
+* `simpletimed` Go module version: `1.0.9`.
 
 # General info
 

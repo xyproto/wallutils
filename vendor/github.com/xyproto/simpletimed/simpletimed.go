@@ -4,7 +4,6 @@ import (
 	"bytes"
 	"fmt"
 	"io/ioutil"
-	"os"
 	"sort"
 	"strings"
 	"time"
@@ -135,11 +134,11 @@ func DataToSimple(path string, data []byte) (*Wallpaper, error) {
 	parsed := make(map[string]string)
 	for lineCount, byteLine := range bytes.Split(data, []byte("\n")) {
 		trimmed := strings.TrimSpace(string(byteLine))
-		if strings.HasPrefix(trimmed, "//") {
-			fmt.Fprintf(os.Stderr, trimmed[1:])
+		if strings.HasPrefix(trimmed, "#") {
+			//fmt.Fprintf(os.Stderr, trimmed[1:])
 			continue
 		} else if strings.HasPrefix(trimmed, "//") {
-			fmt.Fprintf(os.Stderr, trimmed[2:])
+			//fmt.Fprintf(os.Stderr, trimmed[2:])
 			continue
 		} else if len(trimmed) == 0 {
 			continue
