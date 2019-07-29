@@ -9,6 +9,7 @@ addons:
       - libwayland-dev
       - xbitmaps
       - libxmu-headers
+      - libxpm-dev
 
 go:
     - "1.12"
