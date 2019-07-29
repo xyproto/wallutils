@@ -5,6 +5,7 @@ package wallutils
 import (
 	"encoding/xml"
 	"fmt"
+	"image"
 	"io/ioutil"
 	"os"
 	"path/filepath"
@@ -75,7 +76,7 @@ func (mc *MonitorConfiguration) Overlapping() bool {
 	}
 	// Run a check per <configuration> section in the XML file
 	for _, conf := range mc.Configurations {
-		rects := make([]*Rect, 0)
+		rects := make([]image.Rectangle, 0)
 		for _, output := range conf.Outputs {
 			if output.X != "" && output.Y != "" && output.Width != "" && output.Height != "" {
 				x, err := strconv.Atoi(output.X)

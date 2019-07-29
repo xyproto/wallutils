@@ -4,6 +4,7 @@ import (
 	"errors"
 	"fmt"
 	"github.com/fatih/color"
+	"image"
 	"os"
 	"strconv"
 	"strings"
@@ -41,7 +42,7 @@ func (x *XRandr) CheckOverlap() {
 		fmt.Print("Running ")
 	}
 	xrandrOutput := output("xrandr", []string{}, x.verbose)
-	rects := make([]*Rect, 0)
+	rects := make([]image.Rectangle, 0)
 	for _, line := range strings.Split(xrandrOutput, "\n") {
 		words := strings.Fields(line)
 		if len(words) < 3 {
