@@ -99,7 +99,7 @@ func (x *X11) SetWallpaper(imageFilename string) error {
 		return errors.New("The generated XPM image does not exist: " + convertedImageFilename)
 	}
 
-	// Now that the file has been written, save the temprary filename for later deletion, at the next call to this function
+	// Now that the file has been written, save the temporary filename for later deletion, at the next call to this function
 	x.tempFile = imageFilename
 
 	// NOTE: The C counterpart to this function may exit(1) if it's out of memory
