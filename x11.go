@@ -10,6 +10,7 @@ import (
 	"fmt"
 	"github.com/xyproto/imagelib"
 	"github.com/xyproto/xpm"
+	"io/ioutil"
 	"os"
 	"path/filepath"
 	"strings"
@@ -18,8 +19,9 @@ import (
 
 // X11 or Xorg windowmanager detector
 type X11 struct {
-	mode    string
-	verbose bool
+	mode     string
+	verbose  bool
+	tempFile string
 }
 
 func (x *X11) Name() string {
@@ -54,11 +56,30 @@ func (x *X11) SetWallpaper(imageFilename string) error {
 		return fmt.Errorf("no such file: %s", imageFilename)
 	}
 
-	convertedImageFilename := filepath.Join("/tmp", "_setwallpaper.xpm")
+	// Remove any existing temporary file before continuing
+	if exists(x.tempFile) {
+		if err := os.Remove(x.tempFile); err != nil {
+			return err
+		}
+		x.tempFile = ""
+	}
+
+	// Generate a temporary filename
+	tf, err := ioutil.TempFile("", "setwallpaper*.xpm")
+	if err != nil {
+		return err
+	}
+	convertedImageFilename := tf.Name()
+	tf.Close()
+
+	// Convert the given imageFilename to a temporary XPM file
 	ext := strings.ToLower(filepath.Ext(imageFilename))
 	switch ext {
 	case ".png", ".jpg", ".jpeg", ".gif":
 		m, err := imagelib.Read(imageFilename)
+		if err != nil {
+			return err
+		}
 		imageName := filepath.Base(imageFilename[:len(imageFilename)-len(ext)])
 		enc := xpm.NewEncoder(imageName)
 		f, err := os.Create(convertedImageFilename)
@@ -74,14 +95,19 @@ func (x *X11) SetWallpaper(imageFilename string) error {
 
 	if exists(convertedImageFilename) {
 		imageFilename = convertedImageFilename
+	} else {
+		return errors.New("The generated XPM image does not exist: " + convertedImageFilename)
 	}
-	// TODO: Return an error here if convertedImageFilename does not exist,
-	//       or return an error later, when trying to set the imageFilename?
+
+	// Now that the file has been written, save the temprary filename for later deletion, at the next call to this function
+	x.tempFile = imageFilename
 
 	// NOTE: The C counterpart to this function may exit(1) if it's out of memory
 	imageFilenameC := C.CString(imageFilename)
+
 	// TODO: Figure out how to set the wallpaper mode
 	retval := C.SetBackground(imageFilenameC)
+
 	C.free(unsafe.Pointer(imageFilenameC))
 	switch retval {
 	case -1:
