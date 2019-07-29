@@ -64,7 +64,7 @@ Go 1.12 or later is required, [here's an easy way to install Go 1.12](https://gi
 
 Then install the required dependencies, clone the repository and install wallutils:
 
-    sudo apt get install git libx11-dev libxcursor-dev libxmu-dev libwayland-dev libxpm-dev xbitmaps
+    sudo apt get install git libx11-dev libxcursor-dev libxmu-dev libwayland-dev libxpm-dev xbitmaps libxmu-headers
     git clone https://github.com/xyproto/wallutils
     cd wallutils
     make

@@ -8,6 +8,7 @@ addons:
       - libxcursor-dev
       - libwayland-dev
       - xbitmaps
+      - libxmu-headers
 
 go:
     - "1.12"
