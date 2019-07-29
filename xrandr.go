@@ -93,7 +93,7 @@ func (x *XRandr) CheckOverlap() {
 			break
 		}
 	}
-	x.hasOverlap = overlaps(rects)
+	x.hasOverlap = Overlaps(rects)
 	x.hasChecked = true
 }
 

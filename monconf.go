@@ -99,7 +99,7 @@ func (mc *MonitorConfiguration) Overlapping() bool {
 				rects = append(rects, r)
 			}
 		}
-		if overlaps(rects) {
+		if Overlaps(rects) {
 			return true
 		}
 	}
