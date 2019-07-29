@@ -7,6 +7,7 @@ addons:
       - libx11-dev
       - libxcursor-dev
       - libwayland-dev
+      - xbitmaps
 
 go:
     - "1.12"
