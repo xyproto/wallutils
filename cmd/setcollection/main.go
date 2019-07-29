@@ -56,10 +56,6 @@ func setWallpaperCollectionAction(c *cli.Context) error {
 		return err
 	}
 
-	wallpapers := searchResults.Wallpapers()
-	gnomeTimedWallpapers := searchResults.GnomeTimedWallpapers()
-	simpleTimedWallpapers := searchResults.SimpleTimedWallpapers()
-
 	if searchResults.Empty() {
 		return errors.New("could not find any wallpapers on the system")
 	}
@@ -69,9 +65,9 @@ func setWallpaperCollectionAction(c *cli.Context) error {
 		fmt.Print("Filtering wallpapers by collection name...")
 	}
 
-	wallpapers = searchResults.WallpapersByName(collectionName)
-	gnomeTimedWallpapers = searchResults.GnomeTimedWallpapersByName(collectionName)
-	simpleTimedWallpapers = searchResults.SimpleTimedWallpapersByName(collectionName)
+	wallpapers := searchResults.WallpapersByName(collectionName)
+	gnomeTimedWallpapers := searchResults.GnomeTimedWallpapersByName(collectionName)
+	simpleTimedWallpapers := searchResults.SimpleTimedWallpapersByName(collectionName)
 
 	if verbose {
 		fmt.Println("ok")
