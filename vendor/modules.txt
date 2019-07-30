@@ -1,3 +1,10 @@
+# github.com/anthonynsimon/bild v0.10.1-0.20190730160404-c66fc7e29724
+github.com/anthonynsimon/bild/blend
+github.com/anthonynsimon/bild/imgio
+github.com/anthonynsimon/bild/clone
+github.com/anthonynsimon/bild/fcolor
+github.com/anthonynsimon/bild/math/f64
+github.com/anthonynsimon/bild/parallel
 # github.com/fatih/color v1.7.0
 github.com/fatih/color
 # github.com/lucasb-eyer/go-colorful v1.0.2
@@ -10,19 +17,19 @@ github.com/mattn/go-isatty
 github.com/stretchr/powerwalk
 # github.com/urfave/cli v1.20.0
 github.com/urfave/cli
-# github.com/xyproto/crossfade v0.0.0-20190210121323-d884599bd751
-github.com/xyproto/crossfade
 # github.com/xyproto/event v3.0.0+incompatible
 github.com/xyproto/event
-# github.com/xyproto/gnometimed v1.0.8-0.20190610123140-e0dff4ff3f0f
+# github.com/xyproto/gnometimed v0.0.0-20190730164116-a5d0e01742d0
 github.com/xyproto/gnometimed
 # github.com/xyproto/imagelib v0.0.0-20190209194312-bbbf5649f300
 github.com/xyproto/imagelib
 # github.com/xyproto/palgen v0.0.0-20190718214536-8a7b02ffedfd
 github.com/xyproto/palgen
-# github.com/xyproto/simpletimed v1.0.9-0.20190729064335-8c1a107c9d55
+# github.com/xyproto/simpletimed v0.0.0-20190730162825-f18e72d07cb7
 github.com/xyproto/simpletimed
 # github.com/xyproto/xpm v0.0.0-20190718214658-993fa777f935
 github.com/xyproto/xpm
+# golang.org/x/image v0.0.0-20190729225735-1bd0cf576493
+golang.org/x/image/bmp
 # golang.org/x/sys v0.0.0-20190726091711-fc99dfbffb4e
 golang.org/x/sys/unix

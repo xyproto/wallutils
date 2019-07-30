@@ -6,12 +6,16 @@ import (
 	"os"
 	"os/signal"
 	"path/filepath"
+	"sync"
 	"syscall"
 	"time"
 
-	"github.com/xyproto/crossfade"
+	"github.com/anthonynsimon/bild/blend"
+	"github.com/anthonynsimon/bild/imgio"
 	"github.com/xyproto/event"
 )
+
+var setmut = &sync.RWMutex{}
 
 // UntilNext finds the duration until the next event starts
 func (stw *Wallpaper) UntilNext(et time.Time) time.Duration {
@@ -107,7 +111,7 @@ func (stw *Wallpaper) PrevEvent(now time.Time) (interface{}, error) {
 }
 
 // SetInitialWallpaper will set the first wallpaper, before starting the event loop
-func (stw *Wallpaper) SetInitialWallpaper(verbose bool, setWallpaperFunc func(string) error) error {
+func (stw *Wallpaper) SetInitialWallpaper(verbose bool, setWallpaperFunc func(string) error, tempImageFilename string) error {
 	e, err := stw.PrevEvent(time.Now())
 	if err != nil {
 		return err
@@ -143,7 +147,7 @@ func (stw *Wallpaper) SetInitialWallpaper(verbose bool, setWallpaperFunc func(st
 
 		// Check that the file exists
 		if _, err := os.Stat(imageFilename); os.IsNotExist(err) {
-			return fmt.Errorf("File does not exist: %s\n", imageFilename)
+			return fmt.Errorf("file does not exist: %s", imageFilename)
 		}
 
 		// Set the desktop wallpaper, if possible
@@ -151,7 +155,7 @@ func (stw *Wallpaper) SetInitialWallpaper(verbose bool, setWallpaperFunc func(st
 			fmt.Printf("Setting %s.\n", imageFilename)
 		}
 		if err := setWallpaperFunc(imageFilename); err != nil {
-			return fmt.Errorf("Could not set wallpaper: %v\n", err)
+			return fmt.Errorf("could not set wallpaper: %v", err)
 		}
 
 		// Just sleep for half the cooldown, to have some time to register events too
@@ -174,7 +178,6 @@ func (stw *Wallpaper) SetInitialWallpaper(verbose bool, setWallpaperFunc func(st
 		tFromFilename := t.FromFilename
 		tToFilename := t.ToFilename
 		loopWait := stw.LoopWait
-		//tempDir := ""
 		var err error
 
 		if verbose {
@@ -189,15 +192,6 @@ func (stw *Wallpaper) SetInitialWallpaper(verbose bool, setWallpaperFunc func(st
 			fmt.Println("To filename", tToFilename)
 		}
 
-		//tempDir, err = ioutil.TempDir("", "crossfade")
-		//if err != nil {
-		//	return fmt.Errorf("Could not create temporary directory: %v\n", err)
-		//}
-		tempDir := "/tmp"
-
-		// Prepare to write an image to the temporary directory
-		tempImageFilename := filepath.Join(tempDir, "simpletimed_crossfade.png") // .jpg is also possible
-
 		// Set the "from" image before crossfading, so that something happens immediately
 
 		// Set the desktop wallpaper, if possible
@@ -205,49 +199,54 @@ func (stw *Wallpaper) SetInitialWallpaper(verbose bool, setWallpaperFunc func(st
 			fmt.Printf("Setting %s.\n", tFromFilename)
 		}
 		if err := setWallpaperFunc(tFromFilename); err != nil {
-			return fmt.Errorf("Could not set wallpaper: %v\n", err)
+			return fmt.Errorf("could not set wallpaper: %v", err)
 		}
 
 		if verbose {
 			fmt.Println("Crossfading between images.")
 		}
 
-		// Crossfade and write the new image to the temporary directory
-		if crossfade.Files(tFromFilename, tToFilename, tempImageFilename, ratio) != nil {
-			return fmt.Errorf("Could not crossfade images in transition: %v\n", err)
+		tFromImg, err := imgio.Open(tFromFilename)
+		if err != nil {
+			return err
 		}
+
+		tToImg, err := imgio.Open(tToFilename)
+		if err != nil {
+			return err
+		}
+
+		// Crossfade and write the new image to the temporary directory
+		setmut.Lock()
+		blendedImage := blend.Opacity(tFromImg, tToImg, ratio)
+		err = imgio.Save(tempImageFilename, blendedImage, imgio.JPEGEncoder(100))
+		if err != nil {
+			setmut.Unlock()
+			return fmt.Errorf("could not crossfade images in transition: %v", err)
+		}
+		setmut.Unlock()
 
 		// Double check that the generated file exists
 		if _, err := os.Stat(tempImageFilename); os.IsNotExist(err) {
-			return fmt.Errorf("File does not exist: %s\n", tempImageFilename)
+			return fmt.Errorf("file does not exist: %s", tempImageFilename)
 		}
 
 		// Set the desktop wallpaper, if possible
 		if verbose {
 			fmt.Printf("Setting %s.\n", tempImageFilename)
 		}
+		setmut.Lock()
 		if err := setWallpaperFunc(tempImageFilename); err != nil {
-			return fmt.Errorf("Could not set wallpaper: %v\n", err)
+			setmut.Unlock()
+			return fmt.Errorf("could not set wallpaper: %v", err)
 		}
+		setmut.Unlock()
 
 		// Just sleep for half the cooldown, to have some time to register events too
 		if verbose {
 			fmt.Println("Activating events in", dFmt(cooldown/2))
 		}
 		time.Sleep(cooldown / 2)
-
-		// Remove the temporary directory 5 minutes after this
-		//go func() {
-		//	time.Sleep(5 * time.Minute)
-		//	if exists(tempDir) {
-		//		if verbose {
-		//			fmt.Println("Removing", tempDir)
-		//		}
-		//		// Clean up
-		//		os.RemoveAll(tempDir)
-		//	}
-		//}()
-
 	default:
 		return errors.New("could not set initial wallpaper: no previous event")
 	}
@@ -255,8 +254,7 @@ func (stw *Wallpaper) SetInitialWallpaper(verbose bool, setWallpaperFunc func(st
 }
 
 // EventLoop will start the event loop for this Simple Timed Wallpaper
-func (stw *Wallpaper) EventLoop(verbose bool, setWallpaperFunc func(string) error) error {
-
+func (stw *Wallpaper) EventLoop(verbose bool, setWallpaperFunc func(string) error, tempImageFilename string) error {
 	if verbose {
 		fmt.Println("Using the Simple Timed Wallpaper format.")
 	}
@@ -273,16 +271,21 @@ func (stw *Wallpaper) EventLoop(verbose bool, setWallpaperFunc func(string) erro
 			fmt.Println("Received signal", sig)
 			// Launch a goroutine for setting the wallpaper
 			go func() {
-				if err := stw.SetInitialWallpaper(verbose, setWallpaperFunc); err != nil {
+				setmut.Lock()
+				if err := stw.SetInitialWallpaper(verbose, setWallpaperFunc, tempImageFilename); err != nil {
 					fmt.Fprintln(os.Stderr, "Error:", err)
 				}
+				setmut.Unlock()
 			}()
 		}
 	}()
 
-	if err := stw.SetInitialWallpaper(verbose, setWallpaperFunc); err != nil {
+	setmut.Lock()
+	if err := stw.SetInitialWallpaper(verbose, setWallpaperFunc, tempImageFilename); err != nil {
+		setmut.Unlock()
 		return err
 	}
+	setmut.Unlock()
 
 	eventloop := event.NewLoop()
 
@@ -345,8 +348,6 @@ func (stw *Wallpaper) EventLoop(verbose bool, setWallpaperFunc func(string) erro
 		tFromFilename := t.FromFilename
 		tToFilename := t.ToFilename
 		loopWait := stw.LoopWait
-		//tempDir := ""
-		var err error
 
 		// Register a transition event
 		//eventloop.Add(event.New(from, window, cooldown, event.ProgressWrapperInterval(from, upTo, loopWait, func(ratio float64) {
@@ -366,36 +367,33 @@ func (stw *Wallpaper) EventLoop(verbose bool, setWallpaperFunc func(string) erro
 				fmt.Println("To filename", tToFilename)
 			}
 
-			//tempDir, err = ioutil.TempDir("", "crossfade")
-			//if err != nil {
-			//	fmt.Fprintf(os.Stderr, "Could not create temporary directory: %v\n", err)
-			//	return // return from anon func
-			//}
-			tempDir := "/tmp"
-
-			// Prepare to write an image to the temporary directory
-			tempImageFilename := filepath.Join(tempDir, "simpletimed_crossfade.png") // .jpg is also possible
-
-			// Remove the temporary directory 5 minutes after this event has passed
-			//eventloop.Once(upTo.Add(5*time.Minute), func() {
-			//	if exists(tempDir) {
-			//		if verbose {
-			//			fmt.Println("Removing", tempDir)
-			//		}
-			//		// Clean up
-			//		os.RemoveAll(tempDir)
-			//	}
-			//})
-
 			if verbose {
 				fmt.Println("Crossfading between images.")
 			}
 
 			// Crossfade and write the new image to the temporary directory
-			if crossfade.Files(tFromFilename, tToFilename, tempImageFilename, ratio) != nil {
-				fmt.Fprintf(os.Stderr, "Could not crossfade images in transition: %v\n", err)
-				return // return from anon func
+			tFromImg, err := imgio.Open(tFromFilename)
+			if err != nil {
+				fmt.Fprintln(os.Stderr, err)
+				return
 			}
+
+			tToImg, err := imgio.Open(tToFilename)
+			if err != nil {
+				fmt.Fprintln(os.Stderr, err)
+				return
+			}
+
+			// Crossfade and write the new image to the temporary directory
+			setmut.Lock()
+			blendedImage := blend.Opacity(tFromImg, tToImg, ratio)
+			err = imgio.Save(tempImageFilename, blendedImage, imgio.JPEGEncoder(100))
+			if err != nil {
+				fmt.Fprintf(os.Stderr, "Could not crossfade images in transition: %v\n", err)
+				setmut.Unlock()
+				return
+			}
+			setmut.Unlock()
 
 			// Double check that the generated file exists
 			if _, err := os.Stat(tempImageFilename); os.IsNotExist(err) {
@@ -407,10 +405,13 @@ func (stw *Wallpaper) EventLoop(verbose bool, setWallpaperFunc func(string) erro
 			if verbose {
 				fmt.Printf("Setting %s.\n", tempImageFilename)
 			}
+			setmut.Lock()
 			if err := setWallpaperFunc(tempImageFilename); err != nil {
+				setmut.Unlock()
 				fmt.Fprintf(os.Stderr, "Could not set wallpaper: %v\n", err)
 				return // return from anon func
 			}
+			setmut.Unlock()
 		}))
 	}
 

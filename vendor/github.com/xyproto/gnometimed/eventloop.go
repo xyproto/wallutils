@@ -5,16 +5,19 @@ import (
 	"os"
 	"os/signal"
 	"path/filepath"
+	"sync"
 	"syscall"
 	"time"
 
-	"github.com/xyproto/crossfade"
+	"github.com/anthonynsimon/bild/blend"
+	"github.com/anthonynsimon/bild/imgio"
 	"github.com/xyproto/event"
 )
 
-// EventLoop will start the event loop for this GNOME Timed Wallpaper
-func (gtw *Wallpaper) EventLoop(verbose bool, setWallpaperFunc func(string) error) error {
+var setmut = &sync.RWMutex{}
 
+// EventLoop will start the event loop for this GNOME Timed Wallpaper
+func (gtw *Wallpaper) EventLoop(verbose bool, setWallpaperFunc func(string) error, tempImageFilename string) error {
 	if verbose {
 		fmt.Println("Using the GNOME Timed Wallpaper format")
 	}
@@ -36,16 +39,21 @@ func (gtw *Wallpaper) EventLoop(verbose bool, setWallpaperFunc func(string) erro
 			// Refresh the wallpaper
 			fmt.Println("Received signal", sig)
 			go func() {
-				if err := stw.SetInitialWallpaper(verbose, setWallpaperFunc); err != nil {
+				setmut.Lock()
+				if err := stw.SetInitialWallpaper(verbose, setWallpaperFunc, tempImageFilename); err != nil {
 					fmt.Fprintln(os.Stderr, "Error:", err)
 				}
+				setmut.Unlock()
 			}()
 		}
 	}()
 
-	if err := stw.SetInitialWallpaper(verbose, setWallpaperFunc); err != nil {
+	setmut.Lock()
+	if err := stw.SetInitialWallpaper(verbose, setWallpaperFunc, tempImageFilename); err != nil {
+		setmut.Unlock()
 		return err
 	}
+	setmut.Unlock()
 
 	// Start the event loop
 	eventloop := event.NewLoop()
@@ -133,16 +141,12 @@ func (gtw *Wallpaper) EventLoop(verbose bool, setWallpaperFunc func(string) erro
 			tFromFilename := t.FromFilename
 			tToFilename := t.ToFilename
 			loopWait := gtw.LoopWait
-			//tempDir := ""
-			var err error
 
 			// Register a transition event
 			eventloop.Add(event.New(from, window, cooldown, func() {
-				progress := window - event.ToToday(upTo).Sub(event.ToToday(time.Now()))
-				if progress < 0 {
-					progress *= -1
-				}
+				progress := mod24(window - event.ToToday(upTo).Sub(event.ToToday(time.Now())))
 				ratio := float64(progress) / float64(window)
+
 				if verbose {
 					fmt.Printf("Triggered transition event at %s (%d%% complete)\n", cFmt(from), int(ratio*100))
 					fmt.Println("Progress:", dFmt(progress))
@@ -155,35 +159,33 @@ func (gtw *Wallpaper) EventLoop(verbose bool, setWallpaperFunc func(string) erro
 					fmt.Println("To filename", tToFilename)
 				}
 
-				//tempDir, err = ioutil.TempDir("", "crossfade")
-				//if err != nil {
-				//	fmt.Fprintf(os.Stderr, "Could not create temporary directory: %v\n", err)
-				//	return // return from anon func
-				//}
-				tempDir := "/tmp"
-				// Prepare to write an image to the temporary directory
-				tempImageFilename := filepath.Join(tempDir, "gnometimed_crossfade.png") // .jpg is also possible
-
-				//// Remove the temporary directory 5 minutes after this has passed
-				//eventloop.Once(upTo.Add(5*time.Minute), func() {
-				//	if exists(tempDir) {
-				//		if verbose {
-				//			fmt.Println("Removing", tempDir)
-				//		}
-				//		// Clean up
-				//		os.RemoveAll(tempDir)
-				//	}
-				//})
-
 				if verbose {
 					fmt.Println("Crossfading between images.")
 				}
 
 				// Crossfade and write the new image to the temporary directory
-				if crossfade.Files(tFromFilename, tToFilename, tempImageFilename, ratio) != nil {
-					fmt.Fprintf(os.Stderr, "Could not crossfade images in transition: %v\n", err)
-					return // return from anon func
+				tFromImg, err := imgio.Open(tFromFilename)
+				if err != nil {
+					fmt.Fprintln(os.Stderr, err)
+					return
 				}
+
+				tToImg, err := imgio.Open(tToFilename)
+				if err != nil {
+					fmt.Fprintln(os.Stderr, err)
+					return
+				}
+
+				// Crossfade and write the new image to the temporary directory
+				setmut.Lock()
+				blendedImage := blend.Opacity(tFromImg, tToImg, ratio)
+				err = imgio.Save(tempImageFilename, blendedImage, imgio.JPEGEncoder(100))
+				if err != nil {
+					fmt.Fprintf(os.Stderr, "Could not crossfade images in transition: %v\n", err)
+					setmut.Unlock()
+					return
+				}
+				setmut.Unlock()
 
 				// Double check that the generated file exists
 				if _, err := os.Stat(tempImageFilename); os.IsNotExist(err) {
