@@ -17,19 +17,19 @@ github.com/mattn/go-isatty
 github.com/stretchr/powerwalk
 # github.com/urfave/cli v1.20.0
 github.com/urfave/cli
-# github.com/xyproto/event v3.0.0+incompatible
+# github.com/xyproto/event v0.0.0-20190731100357-a3d8ddca97ef
 github.com/xyproto/event
-# github.com/xyproto/gnometimed v0.0.0-20190730164116-a5d0e01742d0
+# github.com/xyproto/gnometimed v0.0.0-20190731101420-745a6701ce92
 github.com/xyproto/gnometimed
 # github.com/xyproto/imagelib v0.0.0-20190209194312-bbbf5649f300
 github.com/xyproto/imagelib
 # github.com/xyproto/palgen v0.0.0-20190718214536-8a7b02ffedfd
 github.com/xyproto/palgen
-# github.com/xyproto/simpletimed v0.0.0-20190730162825-f18e72d07cb7
+# github.com/xyproto/simpletimed v0.0.0-20190731100742-17a9b15a6cbc
 github.com/xyproto/simpletimed
 # github.com/xyproto/xpm v0.0.0-20190718214658-993fa777f935
 github.com/xyproto/xpm
 # golang.org/x/image v0.0.0-20190729225735-1bd0cf576493
 golang.org/x/image/bmp
-# golang.org/x/sys v0.0.0-20190726091711-fc99dfbffb4e
+# golang.org/x/sys v0.0.0-20190730183949-1393eb018365
 golang.org/x/sys/unix

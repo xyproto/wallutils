@@ -11,14 +11,16 @@ import (
 // action should be performed when triggered, when it was last triggered, a mutex
 // and a boolean variable for keeping track of if the action is still ongoing or not.
 type Event struct {
-	from       time.Time
-	upTo       time.Time
-	cooldown   time.Duration // How long to cool down before retriggering
-	actionFunc func()        // Action takes no arguments
-	triggered  time.Time     // When was the event last triggered
-	mutex      *sync.RWMutex
-	ongoing    bool
-	clockOnly  bool // Is the triggering based on the clock or date?
+	from           time.Time
+	upTo           time.Time
+	cooldown       time.Duration // How long to cool down before retriggering
+	actionFunc     func()        // Action takes no arguments
+	triggered      time.Time     // When was the event last triggered
+	mutex          *sync.RWMutex
+	ongoing        bool
+	clockOnly      bool // Is the triggering based on the clock or date?
+	oneTimeEvent   bool
+	triggerCounter uint64
 }
 
 // New creates a new Event, that should happen at the given "when" time,
@@ -26,12 +28,23 @@ type Event struct {
 // event has been triggered. The event can be retriggered after every cooldown,
 // within the time window. Only hour/minute/second will be considered.
 func New(when time.Time, window, cooldown time.Duration, action func()) *Event {
-	return &Event{when, when.Add(window), cooldown, action, time.Time{}, &sync.RWMutex{}, false, true}
+	return &Event{when, when.Add(window), cooldown, action, time.Time{}, &sync.RWMutex{}, false, true, false, 0}
+}
+
+// A mutex to make sure "once" events are only run once
+var onceMutex = &sync.RWMutex{}
+
+// NewOnce creates a new one-time Event, that should happen at the given "when" time,
+// within the given time window, with an associated cooldown period after the
+// event has been triggered. The event can be retriggered after every cooldown,
+// within the time window. Only hour/minute/second will be considered.
+func NewOnce(when time.Time, window, cooldown time.Duration, action func()) *Event {
+	return &Event{when, when.Add(window), cooldown, action, time.Time{}, onceMutex, false, true, true, 0}
 }
 
 // NewDateEvent is like New, but the date will also be considered when triggering events.
 func NewDateEvent(when time.Time, window, cooldown time.Duration, action func()) *Event {
-	return &Event{when, when.Add(window), cooldown, action, time.Time{}, &sync.RWMutex{}, false, false}
+	return &Event{when, when.Add(window), cooldown, action, time.Time{}, &sync.RWMutex{}, false, false, false, 0}
 }
 
 // From is the time from when the event should be able to be triggered.
@@ -125,23 +138,33 @@ func (e *Event) ShouldTrigger() (retval bool) {
 // action is performed and a cooldown period is initiated with time.Sleep.
 // It is expected that this function will be called as a goroutine.
 func (e *Event) Trigger() {
+
 	// Safely update the status
 	e.mutex.Lock()
-	e.ongoing = true
+	defer e.mutex.Unlock()
+
 	e.triggered = time.Now()
+	e.triggerCounter++
+
+	// Don't run one-time events twice!
+	if e.oneTimeEvent && (e.ongoing || e.triggerCounter > 1) {
+		return
+	}
+
+	e.ongoing = true
 	e.mutex.Unlock()
 
 	// Perform the action
 	e.actionFunc()
+
+	e.mutex.Lock()
 
 	// If there is time left, sleep some
 	passed := time.Now().Sub(e.triggered)
 	time.Sleep(e.cooldown - passed)
 
 	// Safely update the status
-	e.mutex.Lock()
 	e.ongoing = false
-	e.mutex.Unlock()
 }
 
 // String returns a string with information about this event
