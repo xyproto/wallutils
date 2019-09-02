@@ -11,11 +11,11 @@ github.com/fatih/color
 github.com/lucasb-eyer/go-colorful
 # github.com/mattn/go-colorable v0.1.2
 github.com/mattn/go-colorable
-# github.com/mattn/go-isatty v0.0.8
+# github.com/mattn/go-isatty v0.0.9
 github.com/mattn/go-isatty
 # github.com/stretchr/powerwalk v0.0.0-20151124150408-bceb9d014549
 github.com/stretchr/powerwalk
-# github.com/urfave/cli v1.20.0
+# github.com/urfave/cli v1.21.0
 github.com/urfave/cli
 # github.com/xyproto/event v0.0.0-20190731100357-a3d8ddca97ef
 github.com/xyproto/event
@@ -29,7 +29,7 @@ github.com/xyproto/palgen
 github.com/xyproto/simpletimed
 # github.com/xyproto/xpm v0.0.0-20190718214658-993fa777f935
 github.com/xyproto/xpm
-# golang.org/x/image v0.0.0-20190729225735-1bd0cf576493
+# golang.org/x/image v0.0.0-20190902063713-cb417be4ba39
 golang.org/x/image/bmp
-# golang.org/x/sys v0.0.0-20190730183949-1393eb018365
+# golang.org/x/sys v0.0.0-20190830142957-1e83adbbebd0
 golang.org/x/sys/unix
