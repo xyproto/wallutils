@@ -15,3 +15,9 @@ testdata/*.gpl
 cmd/png256/png256
 cmd/png2gpl/png2gpl
 cmd/png2palette/png2palette
+cmd/websafe/websafe
+cmd/websafe/*.png
+cmd/plan9/plan9
+cmd/plan9/*.png
+cmd/burn/burn
+cmd/burn/*.png
