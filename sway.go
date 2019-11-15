@@ -17,18 +17,23 @@ func (s *Sway) Name() string {
 	return "Sway"
 }
 
+// ExecutablesExists checks if executables associated with this backend exists in the PATH
 func (s *Sway) ExecutablesExists() bool {
 	return which("sway") != "" && which("swaymsg") != ""
 }
 
+// Running examines environment variables to try to figure out if this backend is currently running
 func (s *Sway) Running() bool {
 	return hasE("SWAYSOCK") || (containsE("GDMSESSION", "sway") || containsE("XDG_SESSION_DESKTOP", "sway") || containsE("XDG_CURRENT_DESKTOP", "sway"))
 }
 
+// SetMode will set the current way to display the wallpaper (stretched, tiled etc)
 func (s *Sway) SetMode(mode string) {
 	s.mode = mode
 }
 
+// SetVerbose can be used for setting the verbose field to true or false.
+// This will cause this backend to output information about what is is doing on stdout.
 func (s *Sway) SetVerbose(verbose bool) {
 	s.verbose = verbose
 }

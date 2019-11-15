@@ -15,18 +15,23 @@ func (p *Plasma) Name() string {
 	return "Plasma"
 }
 
+// ExecutablesExists checks if executables associated with this backend exists in the PATH
 func (p *Plasma) ExecutablesExists() bool {
 	return (which("dbus-send") != "") && ((which("kwin_x11") != "") || (which("kwin_wayland") != "") || (which("kwin") != ""))
 }
 
+// Running examines environment variables to try to figure out if this backend is currently running
 func (p *Plasma) Running() bool {
 	return containsE("GDMSESSION", "plasma") || containsE("XDG_SESSION_DESKTOP", "KDE") || containsE("XDG_CURRENT_DESKTOP", "KDE") || containsE("XDG_SESSION_DESKTOP", "plasma") || containsE("XDG_CURRENT_DESKTOP", "plasma")
 }
 
+// SetMode will set the current way to display the wallpaper (stretched, tiled etc)
 func (p *Plasma) SetMode(mode string) {
 	p.mode = mode
 }
 
+// SetVerbose can be used for setting the verbose field to true or false.
+// This will cause this backend to output information about what is is doing on stdout.
 func (p *Plasma) SetVerbose(verbose bool) {
 	p.verbose = verbose
 }

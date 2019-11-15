@@ -8,6 +8,7 @@ import (
 	"strings"
 )
 
+// Feh is a structure containing settings for running the "feh" executble
 type Feh struct {
 	mode    string
 	verbose bool
@@ -18,18 +19,24 @@ func (f *Feh) Name() string {
 	return "Feh"
 }
 
+// ExecutablesExists checks if the feh executable exists in the PATH
 func (f *Feh) ExecutablesExists() bool {
 	return which("feh") != ""
 }
 
+// Running just returns true for the Feh backend, since this is an application and not a WM / DM
 func (f *Feh) Running() bool {
 	return true
 }
 
+// SetMode will set the current way to display the wallpaper (stretched, tiled etc).
+// The selected mode must be compatible with feh.
 func (f *Feh) SetMode(mode string) {
 	f.mode = mode
 }
 
+// SetVerbose can be used for setting the verbose field to true or false.
+// This will cause this backend to output information about what is is doing on stdout.
 func (f *Feh) SetVerbose(verbose bool) {
 	f.verbose = verbose
 }

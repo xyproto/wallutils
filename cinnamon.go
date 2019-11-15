@@ -19,6 +19,7 @@ func (c *Cinnamon) Name() string {
 	return "Cinnamon"
 }
 
+// ExecutablesExists checks if executables associated with this backend exists in the PATH
 func (c *Cinnamon) ExecutablesExists() bool {
 	// Cache the results
 	c.hasGsettings = which("gsettings") != ""
@@ -29,14 +30,18 @@ func (c *Cinnamon) ExecutablesExists() bool {
 	return c.hasCinnamon && c.hasGsettings
 }
 
+// Running examines environment variables to try to figure out if this backend is currently running
 func (c *Cinnamon) Running() bool {
 	return (containsE("XDG_CURRENT_DESKTOP", "X-Cinnamon") || containsE("GDMSESSION", "cinnamon") || containsE("DESKTOP_SESSION", "xsessions/cinnamon"))
 }
 
+// SetMode will set the current way to display the wallpaper (stretched, tiled etc)
 func (c *Cinnamon) SetMode(mode string) {
 	c.mode = mode
 }
 
+// SetVerbose can be used for setting the verbose field to true or false.
+// This will cause this backend to output information about what is is doing on stdout.
 func (c *Cinnamon) SetVerbose(verbose bool) {
 	c.verbose = verbose
 }

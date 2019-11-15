@@ -19,6 +19,7 @@ func (m *Mate) Name() string {
 	return "Mate"
 }
 
+// ExecutablesExists checks if executables associated with this backend exists in the PATH
 func (m *Mate) ExecutablesExists() bool {
 	// Cache the results
 	m.hasGsettings = which("gsettings") != ""
@@ -29,14 +30,18 @@ func (m *Mate) ExecutablesExists() bool {
 	return m.hasMate && m.hasGsettings
 }
 
+// Running examines environment variables to try to figure out if this backend is currently running
 func (m *Mate) Running() bool {
 	return containsE("GDMSESSION", "mate") || containsE("XDG_SESSION_DESKTOP", "MATE") || containsE("XDG_CURRENT_DESKTOP", "MATE") || containsE("DESKTOP_SESSION", "xsessions/mate")
 }
 
+// SetMode will set the current way to display the wallpaper (stretched, tiled etc)
 func (m *Mate) SetMode(mode string) {
 	m.mode = mode
 }
 
+// SetVerbose can be used for setting the verbose field to true or false.
+// This will cause this backend to output information about what is is doing on stdout.
 func (m *Mate) SetVerbose(verbose bool) {
 	m.verbose = verbose
 }

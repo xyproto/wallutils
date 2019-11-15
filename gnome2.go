@@ -16,18 +16,23 @@ func (g2 *Gnome2) Name() string {
 	return "Gnome2"
 }
 
+// ExecutablesExists checks if executables associated with this backend exists in the PATH
 func (g2 *Gnome2) ExecutablesExists() bool {
 	return which("gconftool-2") != ""
 }
 
+// Running examines environment variables to try to figure out if this backend is currently running
 func (g2 *Gnome2) Running() bool {
 	return (os.Getenv("GDMSESSION") == "gnome") || (os.Getenv("DESKTOP_SESSION") == "gnome")
 }
 
+// SetMode will set the current way to display the wallpaper (stretched, tiled etc)
 func (g2 *Gnome2) SetMode(mode string) {
 	g2.mode = mode
 }
 
+// SetVerbose can be used for setting the verbose field to true or false.
+// This will cause this backend to output information about what is is doing on stdout.
 func (g2 *Gnome2) SetVerbose(verbose bool) {
 	g2.verbose = verbose
 }

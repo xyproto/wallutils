@@ -19,6 +19,7 @@ func (g3 *Gnome3) Name() string {
 	return "Gnome3"
 }
 
+// ExecutablesExists checks if executables associated with this backend exists in the PATH
 func (g3 *Gnome3) ExecutablesExists() bool {
 	// Cache the results
 	g3.hasGsettings = which("gsettings") != ""
@@ -29,14 +30,18 @@ func (g3 *Gnome3) ExecutablesExists() bool {
 	return g3.hasGnome3 && g3.hasGsettings
 }
 
+// Running examines environment variables to try to figure out if this backend is currently running
 func (g3 *Gnome3) Running() bool {
 	return (containsE("GDMSESSION", "gnome") || containsE("XDG_SESSION_DESKTOP", "gnome"))
 }
 
+// SetMode will set the current way to display the wallpaper (stretched, tiled etc)
 func (g3 *Gnome3) SetMode(mode string) {
 	g3.mode = mode
 }
 
+// SetVerbose can be used for setting the verbose field to true or false.
+// This will cause this backend to output information about what is is doing on stdout.
 func (g3 *Gnome3) SetVerbose(verbose bool) {
 	g3.verbose = verbose
 }

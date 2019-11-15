@@ -12,22 +12,28 @@ type Xfce4 struct {
 	verbose bool
 }
 
+// Name returns the name of this window manager or desktop environment
 func (x *Xfce4) Name() string {
 	return "Xfce4"
 }
 
+// ExecutablesExists checks if executables associated with this backend exists in the PATH
 func (x *Xfce4) ExecutablesExists() bool {
 	return (which("xfconf-query") != "") && (which("xfce4-session") != "")
 }
 
+// Running examines environment variables to try to figure out if this backend is currently running
 func (x *Xfce4) Running() bool {
 	return (containsE("GDMSESSION", "xfce") || containsE("XDG_SESSION_DESKTOP", "xfce") || containsE("DESKTOP_SESSION", "xfce"))
 }
 
+// SetMode will set the current way to display the wallpaper (stretched, tiled etc)
 func (x *Xfce4) SetMode(mode string) {
 	x.mode = mode
 }
 
+// SetVerbose can be used for setting the verbose field to true or false.
+// This will cause this backend to output information about what is is doing on stdout.
 func (x *Xfce4) SetVerbose(verbose bool) {
 	x.verbose = verbose
 }

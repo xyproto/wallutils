@@ -29,10 +29,12 @@ func (x *X11) Name() string {
 	return "X11"
 }
 
+// ExecutablesExists checks if executables associated with this backend exists in the PATH
 func (x *X11) ExecutablesExists() bool {
 	return which("X") != ""
 }
 
+// Running examines environment variables to try to figure out if either i3 or an X session is running (DISPLAY will then be set)
 func (x *X11) Running() bool {
 	// The X11 method of setting a wallpaper does not seem to work with i3,
 	// so check if i3 is running first.
@@ -42,10 +44,13 @@ func (x *X11) Running() bool {
 	return hasE("DISPLAY") && !i3
 }
 
+// SetMode will set the current way to display the wallpaper (stretched, tiled etc)
 func (x *X11) SetMode(mode string) {
 	x.mode = mode
 }
 
+// SetVerbose can be used for setting the verbose field to true or false.
+// This will cause this backend to output information about what is is doing on stdout.
 func (x *X11) SetVerbose(verbose bool) {
 	x.verbose = verbose
 }

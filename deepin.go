@@ -19,6 +19,7 @@ func (d *Deepin) Name() string {
 	return "Deepin"
 }
 
+// ExecutablesExists checks if executables associated with this backend exists in the PATH
 func (d *Deepin) ExecutablesExists() bool {
 	// Cache the results
 	d.hasDeepin = which("deepin-session") != ""
@@ -29,14 +30,18 @@ func (d *Deepin) ExecutablesExists() bool {
 	return d.hasDeepin && d.hasGsettings
 }
 
+// Running examines environment variables to try to figure out if this backend is currently running
 func (d *Deepin) Running() bool {
 	return containsE("GDMSESSION", "deepin") || containsE("XDG_CURRENT_DESKTOP", "Deepin") || containsE("DESKTOP_SESSION", "xsessions/deepin")
 }
 
+// SetMode will set the current way to display the wallpaper (stretched, tiled etc)
 func (d *Deepin) SetMode(mode string) {
 	d.mode = mode
 }
 
+// SetVerbose can be used for setting the verbose field to true or false.
+// This will cause this backend to output information about what is is doing on stdout.
 func (d *Deepin) SetVerbose(verbose bool) {
 	d.verbose = verbose
 }
