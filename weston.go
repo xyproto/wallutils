@@ -32,6 +32,8 @@ func (w *Weston) SetMode(mode string) {
 	w.mode = mode
 }
 
+// SetVerbose can be used for setting the verbose field to true or false.
+// This will cause this backend to output information about what is is doing on stdout.
 func (w *Weston) SetVerbose(verbose bool) {
 	w.verbose = verbose
 }
