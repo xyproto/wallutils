@@ -53,9 +53,7 @@ func (f *Feh) SetWallpaper(imageFilename string) error {
 		mode = f.mode
 	}
 	// remove the "bg-" prefix, if it's there
-	if strings.HasPrefix(mode, "bg-") {
-		mode = mode[3:]
-	}
+	mode = strings.TrimPrefix(mode, "bg-")
 
 	// check if the mode is valid
 	switch mode {
