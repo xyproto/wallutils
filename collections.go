@@ -1,9 +1,6 @@
 package wallutils
 
 import (
-	"github.com/stretchr/powerwalk"
-	"github.com/xyproto/gnometimed"
-	"github.com/xyproto/simpletimed"
 	"image/jpeg"
 	"image/png"
 	"os"
@@ -11,7 +8,10 @@ import (
 	"runtime"
 	"sort"
 	"sync"
-	"time"
+
+	"github.com/stretchr/powerwalk"
+	"github.com/xyproto/gnometimed"
+	"github.com/xyproto/simpletimed"
 )
 
 const (
@@ -20,9 +20,16 @@ const (
 	minimumHeight = 480
 )
 
-var (
-	DefaultWallpaperDirectories = []string{"/usr/share/pixmaps", "/usr/share/wallpapers", "/usr/share/backgrounds", "/usr/local/share/pixmaps", "/usr/local/share/wallpapers", "/usr/local/share/backgrounds", "/usr/share/archlinux"}
-)
+// DefaultWallpaperDirectories lists the default locations to look for wallpapers
+var DefaultWallpaperDirectories = []string{
+	"/usr/share/pixmaps",
+	"/usr/share/wallpapers",
+	"/usr/share/backgrounds",
+	"/usr/local/share/pixmaps",
+	"/usr/local/share/wallpapers",
+	"/usr/local/share/backgrounds",
+	"/usr/share/archlinux",
+}
 
 type SearchResults struct {
 	wallpapers                  sync.Map                 // stores the full path -> *Wallpaper struct, for png + jpeg files
@@ -33,14 +40,7 @@ type SearchResults struct {
 	sortedSimpleTimedWallpapers []*simpletimed.Wallpaper // holds sorted Simple Timed Wallpapers
 }
 
-var (
-	numCPU = runtime.NumCPU()
-
-	defaultLoopTime = 5 * time.Second
-
-	// Global search results struct, to be filled by the visit function that is passed to the powerwalk.WalkLimit function
-	sr *SearchResults
-)
+var numCPU = runtime.NumCPU()
 
 // NewSearchResults will reset the search and prepare to search again
 func NewSearchResults() *SearchResults {
