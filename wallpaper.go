@@ -65,9 +65,9 @@ func SetWallpaperCustom(imageFilename string, verbose bool, mode string) error {
 		}
 	}
 	if lastErr != nil {
-		return fmt.Errorf("Found no working method for setting the desktop wallpaper:\n%v", lastErr)
+		return fmt.Errorf("found no working method for setting the desktop wallpaper:\n%v", lastErr)
 	}
-	return errors.New("Found no working method for setting the desktop wallpaper")
+	return errors.New("found no working method for setting the desktop wallpaper")
 
 }
 

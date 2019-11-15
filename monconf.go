@@ -52,7 +52,7 @@ func ParseMonitorFile(filename string) (*MonitorConfiguration, error) {
 
 	var monitors MonitorConfiguration
 	if err = xml.Unmarshal(data, &monitors); err != nil {
-		return nil, fmt.Errorf("Could not parse %s as XML: error: %s", filename, err)
+		return nil, fmt.Errorf("could not parse %s as XML: error: %s", filename, err)
 	}
 
 	return &monitors, nil

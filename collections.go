@@ -31,6 +31,10 @@ var DefaultWallpaperDirectories = []string{
 	"/usr/share/archlinux",
 }
 
+// SearchResults is a struct containing all found wallpaper collections, of these types:
+// * wallpaper images (several in one directory, of different sizes)
+// * gnome wallpapers (contains a GNOME-compatible XML file)
+// * sime timed wallpapers (contains a .stw file)
 type SearchResults struct {
 	wallpapers                  sync.Map                 // stores the full path -> *Wallpaper struct, for png + jpeg files
 	gnomeWallpapers             sync.Map                 // stores the full path -> *gnometimed.Wallpaper struct, for xml files
@@ -40,6 +44,7 @@ type SearchResults struct {
 	sortedSimpleTimedWallpapers []*simpletimed.Wallpaper // holds sorted Simple Timed Wallpapers
 }
 
+// Find the number of available logical CPUs
 var numCPU = runtime.NumCPU()
 
 // NewSearchResults will reset the search and prepare to search again

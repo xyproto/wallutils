@@ -6,10 +6,7 @@ import (
 	"os/exec"
 	"path/filepath"
 	"strings"
-	"time"
 )
-
-var h24 = time.Hour * 24
 
 // has checks if a string slice has the given element
 func has(sl []string, e string) bool {
@@ -72,18 +69,6 @@ func run(executable string, arguments []string, verbose bool) error {
 	return nil
 }
 
-// runShell is the same as the "run" function, but runs the commands in a shell.
-func runShell(shellCommand string, verbose bool) error {
-	if verbose {
-		fmt.Println(shellCommand)
-	}
-	cmd := exec.Command("sh", "-c", shellCommand)
-	if _, err := cmd.CombinedOutput(); err != nil {
-		return err
-	}
-	return nil
-}
-
 // output returns the output after running a given executable
 // if verbose is true, the command will be printed before running
 func output(executable string, arguments []string, verbose bool) string {
@@ -96,6 +81,18 @@ func output(executable string, arguments []string, verbose bool) string {
 		return ""
 	}
 	return string(stdoutStderr)
+}
+
+// runShell is the same as the "run" function, but runs the commands in a shell.
+func runShell(shellCommand string, verbose bool) error {
+	if verbose {
+		fmt.Println(shellCommand)
+	}
+	cmd := exec.Command("sh", "-c", shellCommand)
+	if _, err := cmd.CombinedOutput(); err != nil {
+		return err
+	}
+	return nil
 }
 
 // outputShell is the same as the "output" function,
