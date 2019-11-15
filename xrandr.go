@@ -111,6 +111,7 @@ func (x *XRandr) QuitIfOverlap() {
 		red.Fprint(os.Stderr, "ERROR: ")
 		fmt.Fprintln(os.Stderr, "xrandr shows overlapping monitor configurations:")
 		white.Fprintln(os.Stderr, x)
+		fmt.Fprintln(os.Stderr, "Please check your display settings.")
 		os.Exit(1)
 	}
 }
