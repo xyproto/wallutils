@@ -14,6 +14,14 @@ func getDPIAction(c *cli.Context) error {
 	if err != nil {
 		return err
 	}
+
+	if c.IsSet("all") {
+		for i, monitor := range monitors {
+			fmt.Printf("[%d] %dx%d\n", i, monitor.DPIw, monitor.DPIh)
+		}
+		return nil
+	}
+
 	// Output the average DPI
 	DPIw, DPIh := uint(0), uint(0)
 	for _, monitor := range monitors {
@@ -50,6 +58,10 @@ func main() {
 	}
 
 	app.Flags = []cli.Flag{
+		cli.BoolFlag{
+			Name:  "all, a",
+			Usage: "output DPI information for all available monitors",
+		},
 		cli.BoolFlag{
 			Name:  "both, b",
 			Usage: "output both the horizontal and vertical average DPI",
