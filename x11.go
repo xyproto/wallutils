@@ -24,6 +24,7 @@ type X11 struct {
 	tempFile string
 }
 
+// Name returns the name of this window manager or desktop environment
 func (x *X11) Name() string {
 	return "X11"
 }

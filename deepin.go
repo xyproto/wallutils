@@ -14,6 +14,7 @@ type Deepin struct {
 	verbose      bool
 }
 
+// Name returns the name of this window manager or desktop environment
 func (d *Deepin) Name() string {
 	return "Deepin"
 }

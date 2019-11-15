@@ -11,6 +11,7 @@ type Gnome2 struct {
 	verbose bool
 }
 
+// Name returns the name of this window manager or desktop environment
 func (g2 *Gnome2) Name() string {
 	return "Gnome2"
 }

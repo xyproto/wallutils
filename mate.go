@@ -14,6 +14,7 @@ type Mate struct {
 	verbose      bool
 }
 
+// Name returns the name of this window manager or desktop environment
 func (m *Mate) Name() string {
 	return "Mate"
 }

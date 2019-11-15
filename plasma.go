@@ -10,6 +10,7 @@ type Plasma struct {
 	verbose bool
 }
 
+// Name returns the name of this window manager or desktop environment
 func (p *Plasma) Name() string {
 	return "Plasma"
 }

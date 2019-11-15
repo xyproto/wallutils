@@ -12,6 +12,7 @@ type Weston struct {
 	verbose bool
 }
 
+// Name returns the name of this window manager or desktop environment
 func (w *Weston) Name() string {
 	return "Weston"
 }

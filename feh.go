@@ -13,6 +13,7 @@ type Feh struct {
 	verbose bool
 }
 
+// Name returns the name of this method of setting a wallpaper
 func (f *Feh) Name() string {
 	return "Feh"
 }

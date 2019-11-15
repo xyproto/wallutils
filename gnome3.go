@@ -14,6 +14,7 @@ type Gnome3 struct {
 	verbose      bool
 }
 
+// Name returns the name of this window manager or desktop environment
 func (g3 *Gnome3) Name() string {
 	return "Gnome3"
 }

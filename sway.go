@@ -12,6 +12,7 @@ type Sway struct {
 	verbose bool
 }
 
+// Name returns the name of this window manager or desktop environment
 func (s *Sway) Name() string {
 	return "Sway"
 }
