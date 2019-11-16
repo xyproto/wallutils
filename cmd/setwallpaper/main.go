@@ -89,7 +89,7 @@ func setWallpaperAction(c *cli.Context) error {
 	}
 
 	// Set the desktop wallpaper
-	if err := wallutils.SetWallpaperCustom(imageFilename, verbose, mode); err != nil {
+	if err := wallutils.SetWallpaperCustom(imageFilename, mode, verbose); err != nil {
 		return fmt.Errorf("could not set wallpaper: %s", err)
 	}
 	return nil
