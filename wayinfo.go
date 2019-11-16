@@ -24,7 +24,7 @@ func WaylandInfo() (string, error) {
 	return infoString, nil
 }
 
-// WaylandMonitors returns information about the available monitors
+// WaylandMonitors returns information about the available monitors.
 // The given slices are filled with data about resolution and DPI.
 func WaylandMonitors(IDs, widths, heights, wDPIs, hDPIs *[]uint) error {
 	if !WaylandCanConnect() {
