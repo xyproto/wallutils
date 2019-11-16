@@ -7,6 +7,7 @@ import (
 	"strings"
 )
 
+// WM is an interface with the functions that needs to be implemented for adding support for setting the wallpaper for a new WM or DE
 type WM interface {
 	Name() string
 	ExecutablesExists() bool
@@ -16,6 +17,7 @@ type WM interface {
 	SetMode(string)
 }
 
+// Wallpaper represents an image file that is part of a wallpaper collection (in a directory with several resolutions of the same image, for example)
 type Wallpaper struct {
 	CollectionName   string // the name of the directory containing this wallpaper, if it's not "pixmaps", "images" or "contents". May use the parent of the parent.
 	Path             string // full path to the image filename
@@ -27,7 +29,9 @@ type Wallpaper struct {
 // All backends should support these modes, if possible: stretch, fill, scale, tile, center
 const defaultMode = "stretch"
 
-func SetWallpaperCustom(imageFilename string, verbose bool, mode string) error {
+// SetWallpaperCustom will set the given image filename as the wallpaper,
+// regardless of which display server, window manager or desktop environment is in use.
+func SetWallpaperCustom(imageFilename, mode string, verbose bool) error {
 	if !exists(imageFilename) {
 		return fmt.Errorf("no such file: %s", imageFilename)
 	}
@@ -74,13 +78,13 @@ func SetWallpaperCustom(imageFilename string, verbose bool, mode string) error {
 // SetWallpaperVerbose will set the desktop wallpaper, for any supported
 // windowmanager. The fallback is to use `feh`. The wallpaper mode is "fill".
 func SetWallpaperVerbose(imageFilename string, verbose bool) error {
-	return SetWallpaperCustom(imageFilename, verbose, defaultMode)
+	return SetWallpaperCustom(imageFilename, defaultMode, verbose)
 }
 
 // SetWallpaper will set the desktop wallpaper, for any supported
 // windowmanager. The fallback is to use `feh`. The wallpaper mode is "fill".
 func SetWallpaper(imageFilename string) error {
-	return SetWallpaperCustom(imageFilename, false, defaultMode)
+	return SetWallpaperCustom(imageFilename, defaultMode, false)
 }
 
 // Res returns the wallpaper resolution as a Res struct

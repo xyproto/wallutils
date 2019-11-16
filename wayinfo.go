@@ -10,10 +10,12 @@ import (
 	"strings"
 )
 
+// WaylandCanConnect checks if a Wayland server is up and running
 func WaylandCanConnect() bool {
 	return bool(C.WaylandRunning())
 }
 
+// WaylandInfo returns a long info string about the current Wayland setup
 func WaylandInfo() (string, error) {
 	if !WaylandCanConnect() {
 		return "", errors.New("WaylandInfo(): not connected over Wayland")
@@ -22,6 +24,8 @@ func WaylandInfo() (string, error) {
 	return infoString, nil
 }
 
+// WaylandMonitors returns information about the available monitors
+// The given slices are filled with data about resolution and DPI.
 func WaylandMonitors(IDs, widths, heights, wDPIs, hDPIs *[]uint) error {
 	if !WaylandCanConnect() {
 		return errors.New("WaylandMonitors(): not connected over Wayland")

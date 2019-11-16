@@ -9,10 +9,12 @@ import (
 	"strings"
 )
 
+// XCanConnect checks if an X server is up and running
 func XCanConnect() bool {
 	return bool(C.X11Running())
 }
 
+// XInfo returns a long info string about the current X server setup
 func XInfo() (string, error) {
 	if !XCanConnect() {
 		return "", errors.New("XInfo(): not connected over X11")
@@ -21,8 +23,8 @@ func XInfo() (string, error) {
 	return infoString, nil
 }
 
-// XMointors enumerates the monitors and returns a slice of structs,
-// including the resolution.
+// XMonitors returns information about the available monitors.
+// The given slices are filled with data about resolution and DPI.
 func XMonitors(IDs, widths, heights, wDPIs, hDPIs *[]uint) error {
 	if !XCanConnect() {
 		return errors.New("XMonitors(): not connected over X11")

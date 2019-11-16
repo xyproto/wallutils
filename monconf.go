@@ -13,18 +13,22 @@ import (
 	"strings"
 )
 
+// MonitorConfiguration is mainly a collection of MConfiguration + a Version field
 type MonitorConfiguration struct {
 	XMLName        xml.Name         `xml:"monitors"`
 	Version        string           `xml:"version,attr"`
 	Configurations []MConfiguration `xml:"configuration"`
 }
 
+// MConfiguration is mainly a collection of MOutput + a Clone field
 type MConfiguration struct {
 	XMLName xml.Name  `xml:"configuration"`
 	Clone   string    `xml:"clone,omitempty"`
 	Outputs []MOutput `xml:"output"`
 }
 
+// MOutput represents a monitor configuration, including:
+// width, height, rotation and if the monitor is the primary monitor.
 type MOutput struct {
 	XMLName  xml.Name `xml:"output"`
 	Name     string   `xml:"name,attr"`
@@ -58,6 +62,8 @@ func ParseMonitorFile(filename string) (*MonitorConfiguration, error) {
 	return &monitors, nil
 }
 
+// NewMonitorConfiguration returns a new MonitorConfiguration struct,
+// filled with the contents of ~/.config/monitors.xml.
 func NewMonitorConfiguration() (*MonitorConfiguration, error) {
 	// Check if there are overlapping monitors (overlapping rectangles)
 	homedir, err := os.UserHomeDir()

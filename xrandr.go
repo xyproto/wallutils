@@ -10,6 +10,7 @@ import (
 	"strings"
 )
 
+// XRandr can contain information that has been extracted by running the xrandr executable
 type XRandr struct {
 	hasOverlap      bool
 	resolutionLines []string
@@ -17,11 +18,14 @@ type XRandr struct {
 	hasChecked      bool
 }
 
+// NewXRandr creates a new XRandr struct and fills it with information
+// by running "xrandr". An error is returned if xrandr could not be found.
 func NewXRandr(verbose bool) (*XRandr, error) {
 	if which("xrandr") == "" {
 		return nil, errors.New("could not find the xrandr executable")
 	}
 	x := &XRandr{verbose: verbose}
+	// TODO: Let CheckOverlap return an error if something went wrong
 	x.CheckOverlap()
 	return x, nil
 }

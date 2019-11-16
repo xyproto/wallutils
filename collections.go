@@ -311,10 +311,12 @@ func (sr *SearchResults) SimpleTimedWallpapersByName(name string) []*simpletimed
 	return collection
 }
 
+// Empty checks if these search results are empty
 func (sr *SearchResults) Empty() bool {
 	return len(sr.sortedSimpleTimedWallpapers) == 0 && len(sr.sortedGnomeTimedWallpapers) == 0 && len(sr.sortedWallpapers) == 0
 }
 
+// NoTimedWallpapers checks if the current search results contains no timed wallpapers
 func (sr *SearchResults) NoTimedWallpapers() bool {
 	return len(sr.sortedSimpleTimedWallpapers) == 0 && len(sr.sortedGnomeTimedWallpapers) == 0
 }
