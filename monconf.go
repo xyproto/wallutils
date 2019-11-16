@@ -7,10 +7,7 @@ import (
 	"fmt"
 	"image"
 	"io/ioutil"
-	"os"
-	"path/filepath"
 	"strconv"
-	"strings"
 )
 
 // MonitorConfiguration is mainly a collection of MConfiguration + a Version field
@@ -111,14 +108,8 @@ func (mc *MonitorConfiguration) Overlapping() bool {
 // overlapping or not. If monitors.xml can not be parsed or read,
 // false is returned.
 func MonConfOverlap(filename string) bool {
-	// Replace ~ with the home directory
-	if strings.HasPrefix(filename, "~") {
-		homedir, err := os.UserHomeDir()
-		if err == nil {
-			filename = filepath.Join(homedir, filename[1:])
-		}
-	}
-	if mc, err := ParseMonitorFile(filename); err != nil {
+	// a leading ~ will be expanded to the home directory
+	if mc, err := ParseMonitorFile(expanduser(filename)); err != nil {
 		return mc.Overlapping()
 	}
 	return false
