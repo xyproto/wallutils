@@ -58,7 +58,7 @@ Until an official package is available:
 
 Until an official package is available:
 
-Go 1.12 or later is required, [here's an easy way to install Go 1.12](https://github.com/golang/go/wiki/Ubuntu):
+Go 1.11 or later is required, [here's an easy way to install Go 1.12](https://github.com/golang/go/wiki/Ubuntu):
 
     sudo add-apt-repository ppa:longsleep/golang-backports
     sudo apt-get update
@@ -74,7 +74,7 @@ Then install the required dependencies, clone the repository and install walluti
 
 ## Installing a single utility
 
-Using Go 1.12 or later, installing the `settimed` utility:
+Using Go 1.11 or later, installing the `settimed` utility:
 
     go get -u github.com/xyproto/wallutils/cmd/settimed
 
@@ -133,7 +133,7 @@ if err := wallutils.SetWallpaper(imageFilename); err != nil {
 
 ## Build requirements
 
-* Go 1.12 or later.
+* Go 1.11 or later.
 * A working C compiler (tested with GCC 8.2.1).
 * Header files for Wayland and X.
 
