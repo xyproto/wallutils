@@ -65,13 +65,7 @@ func ParseMonitorFile(filename string) (*MonitorConfiguration, error) {
 // NewMonitorConfiguration returns a new MonitorConfiguration struct,
 // filled with the contents of ~/.config/monitors.xml.
 func NewMonitorConfiguration() (*MonitorConfiguration, error) {
-	// Check if there are overlapping monitors (overlapping rectangles)
-	homedir, err := os.UserHomeDir()
-	if err != nil {
-		return nil, err
-	}
-	filename := filepath.Join(homedir, ".config/monitors.xml")
-	return ParseMonitorFile(filename)
+	return ParseMonitorFile(expanduser("~/.config/monitors.xml"))
 }
 
 // Overlapping can check if configurations in monitors.xml have overlapping areas.

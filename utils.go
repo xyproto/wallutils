@@ -190,3 +190,15 @@ func Quit(err error) {
 	os.Stderr.Sync()
 	os.Exit(1)
 }
+
+// expanduser replaces a leading ~ or $HOME with the path
+// to the home directory of the current user
+func expanduser(path string) string {
+	// this is a simpler alternative to using os.UserHomeDir (which requires Go 1.12 or later)
+	if strings.HasPrefix(path, "~") {
+		path = strings.Replace(path, "~", os.Getenv("HOME"), 1)
+	} else if strings.HasPrefix(path, "$HOME") {
+		path = strings.Replace(path, "$HOME", os.Getenv("HOME"), 1)
+	}
+	return path
+}
