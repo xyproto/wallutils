@@ -48,12 +48,21 @@ func exists(path string) bool {
 	return !os.IsNotExist(err)
 }
 
+// which tries to find the given executable name in the $PATH
+// Returns an empty string if not found.
 func which(executable string) string {
 	p, err := exec.LookPath(executable)
 	if err != nil {
 		return ""
 	}
 	return p
+}
+
+// which2 tries to find the given executable name in the $PATH
+// This is the same as exec.LookPath.
+// Returns an error if not found.
+func which2(executable string) (string, error) {
+	return exec.LookPath(executable)
 }
 
 // run executes the given executable and returns an error if the exit code is
