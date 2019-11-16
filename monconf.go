@@ -62,7 +62,7 @@ func ParseMonitorFile(filename string) (*MonitorConfiguration, error) {
 // NewMonitorConfiguration returns a new MonitorConfiguration struct,
 // filled with the contents of ~/.config/monitors.xml.
 func NewMonitorConfiguration() (*MonitorConfiguration, error) {
-	return ParseMonitorFile(expanduser("~/.config/monitors.xml"))
+	return ParseMonitorFile(expandUser("~/.config/monitors.xml"))
 }
 
 // Overlapping can check if configurations in monitors.xml have overlapping areas.
@@ -109,7 +109,7 @@ func (mc *MonitorConfiguration) Overlapping() bool {
 // false is returned.
 func MonConfOverlap(filename string) bool {
 	// a leading ~ will be expanded to the home directory
-	if mc, err := ParseMonitorFile(expanduser(filename)); err != nil {
+	if mc, err := ParseMonitorFile(expandUser(filename)); err != nil {
 		return mc.Overlapping()
 	}
 	return false

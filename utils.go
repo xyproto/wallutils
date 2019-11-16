@@ -179,8 +179,9 @@ func CommonSuffix(sl []string) string {
 }
 
 // Meat returns the meat of the string: the part that is after the prefix and
-// before the suffix. Will return the given string if it is too short to
-// contain the prefix and suffix.
+// before the suffix. It does not check if the prefix and suffix exists in the
+// string. If the given string is too short to contain the prefix and suffix,
+// it will be returned as it is.
 func Meat(s, prefix, suffix string) string {
 	if len(s) < (len(prefix) + len(suffix)) {
 		return s
@@ -200,9 +201,9 @@ func Quit(err error) {
 	os.Exit(1)
 }
 
-// expanduser replaces a leading ~ or $HOME with the path
+// expandUser replaces a leading ~ or $HOME with the path
 // to the home directory of the current user
-func expanduser(path string) string {
+func expandUser(path string) string {
 	// this is a simpler alternative to using os.UserHomeDir (which requires Go 1.12 or later)
 	if strings.HasPrefix(path, "~") {
 		path = strings.Replace(path, "~", os.Getenv("HOME"), 1)
