@@ -77,14 +77,10 @@ github.com/xyproto/gnometimed v0.0.0-20190731101420-745a6701ce92 h1:FaSxOXvyWThi
 github.com/xyproto/gnometimed v0.0.0-20190731101420-745a6701ce92/go.mod h1:zWaXH8pigZm/g4HIicC6MSL3DRvYU0r/R1anJQ7pbhg=
 github.com/xyproto/imagelib v0.0.0-20190209194312-bbbf5649f300 h1:Qje6856C+ZLSjBbX9cW3bTycIT2RD4xYebbE2b+la80=
 github.com/xyproto/imagelib v0.0.0-20190209194312-bbbf5649f300/go.mod h1:28DiltQEyXiqtA/q9l1+cRteOIozAh1J7/oyzbiR4iM=
-github.com/xyproto/palgen v0.0.0-20190718214536-8a7b02ffedfd h1:uSB7SQOlGaTv2TmC1je0xQFTVJ81RDISk1Pqn+aINo8=
-github.com/xyproto/palgen v0.0.0-20190718214536-8a7b02ffedfd/go.mod h1:qIsIO9fpiThyQj3xjt9KNX6PVWS3c/pHMAs+czi/a6k=
 github.com/xyproto/palgen v1.0.1-0.20191014132556-f8cafa988771 h1:E1mB9kRZrabyC1nMfK+VM67GAlOhUBPQNqhD8H9g3NE=
 github.com/xyproto/palgen v1.0.1-0.20191014132556-f8cafa988771/go.mod h1:7vSlc1tE/yNxzeGxMtzdSJf1inenvCmasTSego0ZvOs=
 github.com/xyproto/simpletimed v0.0.0-20190731100742-17a9b15a6cbc h1:TJP2DdryliejcrnZ3bM4RxmZw8M68XZKCAIcg2qal60=
 github.com/xyproto/simpletimed v0.0.0-20190731100742-17a9b15a6cbc/go.mod h1:N0oF6NpyPYV9rxf6yMg9B7yB/dMq96FeMwRgahQIr9Y=
-github.com/xyproto/xpm v0.0.0-20190718214658-993fa777f935 h1:nhOE8aJ097xM1wSR3zH6CpMx0cASCFn3c2CHWguM0e8=
-github.com/xyproto/xpm v0.0.0-20190718214658-993fa777f935/go.mod h1:FelxICCrmGUCmyb4SWKrYb4+UsC/F4XzkCcirOF7YD8=
 github.com/xyproto/xpm v1.2.2-0.20191117144354-2cc4223960ab h1:1eX9aK6zKEROt07bP/LzwbUfOmxk9PgkhyQSJXudYLI=
 github.com/xyproto/xpm v1.2.2-0.20191117144354-2cc4223960ab/go.mod h1:9hP08PVcEDEuafYYUwKds+STLzq9MHMU2mvQu/uQAYc=
 golang.org/x/crypto v0.0.0-20181203042331-505ab145d0a9/go.mod h1:6SG95UA2DQfeDnfUPMdvaQW0Q7yPrPDi9nlGo2tz2b4=

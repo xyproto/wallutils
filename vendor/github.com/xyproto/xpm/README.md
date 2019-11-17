@@ -1,4 +1,4 @@
-# xpm
+# xpm [![Build Status](https://travis-ci.com/xyproto/xpm.svg?branch=master)](https://travis-ci.com/xyproto/xpm) [![Go Report Card](https://goreportcard.com/badge/github.com/xyproto/xpm)](https://goreportcard.com/report/github.com/xyproto/xpm) [![GoDoc](https://godoc.org/github.com/xyproto/xpm?status.svg)](https://godoc.org/github.com/xyproto/xpm)
 
 Encode images to the X PixMap (XPM3) image format.
 

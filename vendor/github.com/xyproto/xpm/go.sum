@@ -2,5 +2,9 @@ github.com/DATA-DOG/go-sqlmock v1.3.3 h1:CWUqKXe0s8A2z6qCgkP4Kru7wC11YoAnoupUKFD
 github.com/DATA-DOG/go-sqlmock v1.3.3/go.mod h1:f/Ixk793poVmq4qj/V1dPUg2JEAKC73Q5eFN3EC/SaM=
 github.com/lucasb-eyer/go-colorful v1.0.2 h1:mCMFu6PgSozg9tDNMMK3g18oJBX7oYGrC09mS6CXfO4=
 github.com/lucasb-eyer/go-colorful v1.0.2/go.mod h1:0MS4r+7BZKSJ5mw4/S5MPN+qHFF1fYclkSPilDOKW0s=
-github.com/xyproto/palgen v0.0.0-20190718214536-8a7b02ffedfd h1:uSB7SQOlGaTv2TmC1je0xQFTVJ81RDISk1Pqn+aINo8=
-github.com/xyproto/palgen v0.0.0-20190718214536-8a7b02ffedfd/go.mod h1:qIsIO9fpiThyQj3xjt9KNX6PVWS3c/pHMAs+czi/a6k=
+github.com/lucasb-eyer/go-colorful v1.0.3 h1:QIbQXiugsb+q10B+MI+7DI1oQLdmnep86tWFlaaUAac=
+github.com/lucasb-eyer/go-colorful v1.0.3/go.mod h1:R4dSotOR9KMtayYi1e77YzuveK+i7ruzyGqttikkLy0=
+github.com/peterhellberg/gfx v0.0.0-20191011152831-b91a0de61948/go.mod h1:itlt/V2ABb7sDu42VXQHXmQ4KOdrEbFZDVIaHsRcwak=
+github.com/xyproto/burnpal v0.0.0-20191014130824-80030bc13096/go.mod h1:j3S/tDDOEkIChz0sWDqO3zXOgIjz/6nhuc+JrmZNLnA=
+github.com/xyproto/palgen v1.0.1-0.20191014132556-f8cafa988771 h1:E1mB9kRZrabyC1nMfK+VM67GAlOhUBPQNqhD8H9g3NE=
+github.com/xyproto/palgen v1.0.1-0.20191014132556-f8cafa988771/go.mod h1:7vSlc1tE/yNxzeGxMtzdSJf1inenvCmasTSego0ZvOs=
