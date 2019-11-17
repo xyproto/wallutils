@@ -49,7 +49,7 @@ func (p *Plasma) SetWallpaper(imageFilename string) error {
 		mode = p.mode
 	}
 
-	fillMode := "0"
+	var fillMode string
 	if len(mode) == 1 {
 		// Single digit
 		fillMode = mode

@@ -58,7 +58,7 @@ func (x *Xfce4) SetWallpaper(imageFilename string) error {
 	}
 
 	// Wallpaper mode for Xfce4: Auto=0, Centered=1, Tiled=2, Stretched=3, Scaled=4, Zoomed=5
-	fillMode := "3"
+	var fillMode string
 	if len(mode) == 1 {
 		// Single digit
 		fillMode = mode
