@@ -168,4 +168,4 @@ This should refresh the wallpaper.
 
 * Author: Alexander F. Rødseth &lt;xyproto@archlinux.org&gt;
 * License: MIT
-* Version: 5.8.2
+* Version: 5.8.3
