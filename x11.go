@@ -8,13 +8,14 @@ import "C"
 import (
 	"errors"
 	"fmt"
-	"github.com/xyproto/imagelib"
-	"github.com/xyproto/xpm"
 	"io/ioutil"
 	"os"
 	"path/filepath"
 	"strings"
 	"unsafe"
+
+	"github.com/xyproto/imagelib"
+	"github.com/xyproto/xpm"
 )
 
 // X11 or Xorg windowmanager detector
@@ -36,12 +37,27 @@ func (x *X11) ExecutablesExists() bool {
 
 // Running examines environment variables to try to figure out if either i3 or an X session is running (DISPLAY will then be set)
 func (x *X11) Running() bool {
-	// The X11 method of setting a wallpaper does not seem to work with i3,
-	// so check if i3 is running first.
+	// The X11 method of setting a wallpaper does not work correctly with some windowmanagers.
+
+	// If NOFEH is set, the X11 backend will be used for i3 and AwesomeWM (useful for debugging the X11 backend)
+	if hasE("NOFEH") {
+		return hasE("DISPLAY")
+	}
+
+	// Check if i3 is running
 	i3 := containsE("DESKTOP_SESSION", "i3") || containsE("XDG_CURRENT_DESKTOP", "i3") || containsE("XDG_SESSION_DESKTOP", "i3")
 
-	// X is running, but not i3
-	return hasE("DISPLAY") && !i3
+	// Check if AwesomeWM is running
+	awm := containsE("DESKTOP_SESSION", "awesome") || containsE("XDG_CURRENT_DESKTOP", "awesome") || containsE("XDG_SESSION_DESKTOP", "awesome")
+
+	// Recommend feh while working on the X11 backend
+	if (i3 || awm) && (which("feh") == "") {
+		// Output a helpful warning
+		fmt.Println("Please install feh for i3 and AwesomeWM support")
+	}
+
+	// X is running, but not i3 or AwesomeWM
+	return hasE("DISPLAY") && !(i3 || awm)
 }
 
 // SetMode will set the current way to display the wallpaper (stretched, tiled etc)
@@ -111,8 +127,12 @@ func (x *X11) SetWallpaper(imageFilename string) error {
 	// NOTE: The C counterpart to this function may exit(1) if it's out of memory
 	imageFilenameC := C.CString(imageFilename)
 
+	// Should the C functions outut verbose messages to stdout?
+	//verboseC := C.bool(x.verbose)
+	verboseC := C.bool(true) // set to true while debugging an issue with the X11 backend
+
 	// TODO: Figure out how to set the wallpaper mode
-	retval := C.SetBackground(imageFilenameC)
+	retval := C.SetBackground(imageFilenameC, verboseC)
 
 	C.free(unsafe.Pointer(imageFilenameC))
 	switch retval {
