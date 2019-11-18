@@ -1,6 +1,6 @@
 // +build cgo
 
-package wallutils
+package xbg
 
 // #cgo LDFLAGS: -lX11 -lXpm
 // #include "xwallpaper.h"

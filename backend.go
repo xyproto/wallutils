@@ -2,6 +2,10 @@
 
 package wallutils
 
+import (
+	"github.com/xyproto/xbg"
+)
+
 // WMs contains all available backends for changing the wallpaper
 // Some backends may require cgo (sway + x11)
 var WMs = []WM{
@@ -14,8 +18,8 @@ var WMs = []WM{
 	&Gnome3{},
 	&Gnome2{},
 	&Weston{},
-	&Feh{}, // using feh
-	&X11{}, // final resort!
+	&Feh{},     // using feh
+	&xbg.X11{}, // final resort!
 }
 
 // Info returns a long info string that looks different for Wayland and for X.

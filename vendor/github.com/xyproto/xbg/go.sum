@@ -1,0 +1,5 @@
+github.com/xyproto/imagelib v0.0.0-20190209194312-bbbf5649f300 h1:Qje6856C+ZLSjBbX9cW3bTycIT2RD4xYebbE2b+la80=
+github.com/xyproto/imagelib v0.0.0-20190209194312-bbbf5649f300/go.mod h1:28DiltQEyXiqtA/q9l1+cRteOIozAh1J7/oyzbiR4iM=
+github.com/xyproto/xbg v0.0.0-20191118080514-b37700f2d682 h1:w4dVS/Wos+rMlqW7OC8tE7FASqIG5cEyPas6kFxquwo=
+github.com/xyproto/xpm v1.2.1 h1:trdvGjjWBsOOKzBBUPT6JvaIQM3acJEEYfbxN7M96wg=
+github.com/xyproto/xpm v1.2.1/go.mod h1:cMnesLsD0PBXLgjDfTDEaKr8XyTFsnP1QycSqRw7BiY=
