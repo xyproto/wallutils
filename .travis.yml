@@ -7,9 +7,9 @@ addons:
       - libx11-dev
       - libxcursor-dev
       - libwayland-dev
-      - xbitmaps
       - libxmu-headers
-      - libxpm-dev
+      - libimlib2-dev
+      - libxinerama-dev
 
 go:
     - "1.11"

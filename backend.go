@@ -18,8 +18,8 @@ var WMs = []WM{
 	&Gnome3{},
 	&Gnome2{},
 	&Weston{},
-	&Feh{},     // using feh
-	&xbg.X11{}, // final resort!
+	&xbg.X11{},
+	&Feh{}, // last resort, use feh
 }
 
 // Info returns a long info string that looks different for Wayland and for X.

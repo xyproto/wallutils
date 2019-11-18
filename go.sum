@@ -83,6 +83,10 @@ github.com/xyproto/simpletimed v0.0.0-20190731100742-17a9b15a6cbc h1:TJP2Ddrylie
 github.com/xyproto/simpletimed v0.0.0-20190731100742-17a9b15a6cbc/go.mod h1:N0oF6NpyPYV9rxf6yMg9B7yB/dMq96FeMwRgahQIr9Y=
 github.com/xyproto/xbg v0.0.1 h1:ebE+qxoCmetIUwRVBsQrQneK0qQ+D8j85qJzIKQygPk=
 github.com/xyproto/xbg v0.0.1/go.mod h1:bTAheswNsD5rI4Bd/HmUz2zqP+wAjaUFe84jtjgxpxk=
+github.com/xyproto/xbg v0.0.3 h1:RpnIZ1hbPKb12f8lZxidY4dPHujv9OE2lT8yzmdtC1o=
+github.com/xyproto/xbg v0.0.3/go.mod h1:bTAheswNsD5rI4Bd/HmUz2zqP+wAjaUFe84jtjgxpxk=
+github.com/xyproto/xbg v0.0.4 h1:PXNqthpHW439DGNSwlY2I5Z1HAbAMNyKpfcA9L+AlSs=
+github.com/xyproto/xbg v0.0.4/go.mod h1:bTAheswNsD5rI4Bd/HmUz2zqP+wAjaUFe84jtjgxpxk=
 github.com/xyproto/xpm v1.2.1/go.mod h1:cMnesLsD0PBXLgjDfTDEaKr8XyTFsnP1QycSqRw7BiY=
 github.com/xyproto/xpm v1.2.2-0.20191117144354-2cc4223960ab h1:1eX9aK6zKEROt07bP/LzwbUfOmxk9PgkhyQSJXudYLI=
 github.com/xyproto/xpm v1.2.2-0.20191117144354-2cc4223960ab/go.mod h1:9hP08PVcEDEuafYYUwKds+STLzq9MHMU2mvQu/uQAYc=
