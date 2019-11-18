@@ -18,15 +18,19 @@ func SetWallpaper(imageFilename, mode string, verbose bool) error {
 	if !exists(imageFilename) {
 		return fmt.Errorf("no such file: %s", imageFilename)
 	}
-	wm := X11{}
+	wm := New()
+	defer wm.Release()
+	if wm == nil {
+		return errors.New("the X11 wallpaper backend is already in use")
+	}
 	if !(wm.Running() && wm.ExecutablesExists()) {
 		return errors.New("found no working method for setting the desktop wallpaper, maybe X11 is not installed or DISPLAY not set")
 	}
 	if verbose {
 		fmt.Printf("Using the %s backend.\n", wm.Name())
 	}
-	wm.SetVerbose(verbose)
-	wm.SetMode(mode)
+	wm.verbose = verbose
+	wm.mode = mode
 	if err := wm.SetWallpaper(imageFilename); err != nil {
 		if verbose {
 			fmt.Fprintf(os.Stderr, "failed: %v\n", err)

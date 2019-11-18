@@ -1,6 +1,3 @@
-// This is a modified version of bgs.c from https://github.com/Gottox/bgs (also MIT licensed).
-// Credits are given in the LICENSE file.
-
 #include <math.h>
 #include <stdbool.h>
 #include <stdio.h>
@@ -223,10 +220,12 @@ char* SetBackground(const char* filename, bool rotate, ImageMode mode, bool verb
     const char* col = "#000000";
     char* err = setup(filename, col);
     if (err != nil) {
+        cleanup();
         return err;
     }
     err = run(mode, rotate);
     if (err != nil) {
+        cleanup();
         return err;
     }
     err = cleanup();

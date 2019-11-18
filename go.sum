@@ -71,8 +71,8 @@ github.com/xyproto/imagelib v0.0.0-20190209194312-bbbf5649f300 h1:Qje6856C+ZLSjB
 github.com/xyproto/imagelib v0.0.0-20190209194312-bbbf5649f300/go.mod h1:28DiltQEyXiqtA/q9l1+cRteOIozAh1J7/oyzbiR4iM=
 github.com/xyproto/simpletimed v0.0.0-20190731100742-17a9b15a6cbc h1:TJP2DdryliejcrnZ3bM4RxmZw8M68XZKCAIcg2qal60=
 github.com/xyproto/simpletimed v0.0.0-20190731100742-17a9b15a6cbc/go.mod h1:N0oF6NpyPYV9rxf6yMg9B7yB/dMq96FeMwRgahQIr9Y=
-github.com/xyproto/xbg v0.1.1 h1:iXEdu/xMVfkd2+i0m/KjxhZ94tFgIGATw7JcDcUHOew=
-github.com/xyproto/xbg v0.1.1/go.mod h1:bTAheswNsD5rI4Bd/HmUz2zqP+wAjaUFe84jtjgxpxk=
+github.com/xyproto/xbg v0.2.0 h1:Lzb5O5Y9F3kjpjwpRm7U6SjVRp/IkBZn109wNyUkGE0=
+github.com/xyproto/xbg v0.2.0/go.mod h1:bTAheswNsD5rI4Bd/HmUz2zqP+wAjaUFe84jtjgxpxk=
 github.com/xyproto/xpm v1.2.1/go.mod h1:cMnesLsD0PBXLgjDfTDEaKr8XyTFsnP1QycSqRw7BiY=
 golang.org/x/crypto v0.0.0-20181203042331-505ab145d0a9/go.mod h1:6SG95UA2DQfeDnfUPMdvaQW0Q7yPrPDi9nlGo2tz2b4=
 golang.org/x/image v0.0.0-20190703141733-d6a02ce849c9/go.mod h1:FeLwcggjj3mMvU+oOTbSwawSJRM1uh48EjtB4UJZlP0=
@@ -83,8 +83,8 @@ golang.org/x/image v0.0.0-20191009234506-e7c1f5e7dbb8/go.mod h1:FeLwcggjj3mMvU+o
 golang.org/x/sys v0.0.0-20181205085412-a5c9d58dba9a/go.mod h1:STP8DvDyc/dI5b8T5hshtkjS+E42TnysNCUPdjciGhY=
 golang.org/x/sys v0.0.0-20190222072716-a9d3bda3a223/go.mod h1:STP8DvDyc/dI5b8T5hshtkjS+E42TnysNCUPdjciGhY=
 golang.org/x/sys v0.0.0-20191008105621-543471e840be/go.mod h1:h1NjWce9XRLGQEsW7wpKNCjG9DtNlClVuFLEZdDNbEs=
-golang.org/x/sys v0.0.0-20191118090420-b5d5184f72d2 h1:LEXoa2mfx+ZHKVuyzu3/fnknuCCoTfywJVHMkWECH3Y=
-golang.org/x/sys v0.0.0-20191118090420-b5d5184f72d2/go.mod h1:h1NjWce9XRLGQEsW7wpKNCjG9DtNlClVuFLEZdDNbEs=
+golang.org/x/sys v0.0.0-20191118133127-cf1e2d577169 h1:LPLFLulk2vyM7yI3CwNW64O6e8AxBmr9opfv14yI7HI=
+golang.org/x/sys v0.0.0-20191118133127-cf1e2d577169/go.mod h1:h1NjWce9XRLGQEsW7wpKNCjG9DtNlClVuFLEZdDNbEs=
 golang.org/x/text v0.3.0/go.mod h1:NqM8EUOU14njkJ3fqMW+pc6Ldnwhi/IjpwHt7yyuwOQ=
 gopkg.in/check.v1 v0.0.0-20161208181325-20d25e280405/go.mod h1:Co6ibVJAznAaIkqp8huTwlJQCZ016jof/cbN4VW5Yz0=
 gopkg.in/check.v1 v1.0.0-20190902080502-41f04d3bba15 h1:YR8cESwS4TdDjEe65xsg0ogRM/Nc3DYOhEAlW+xobZo=
