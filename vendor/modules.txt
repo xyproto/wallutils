@@ -27,7 +27,7 @@ github.com/xyproto/event
 github.com/xyproto/gnometimed
 # github.com/xyproto/simpletimed v0.0.0-20190731100742-17a9b15a6cbc
 github.com/xyproto/simpletimed
-# github.com/xyproto/xbg v0.0.5
+# github.com/xyproto/xbg v0.1.1
 github.com/xyproto/xbg
 # golang.org/x/image v0.0.0-20191009234506-e7c1f5e7dbb8
 golang.org/x/image/bmp
