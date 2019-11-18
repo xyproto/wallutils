@@ -14,6 +14,6 @@ var WMs = []WM{
 	&Gnome3{},
 	&Gnome2{},
 	&Weston{},
-	//&xbg.X11{},
+	//xbg.New(), // X11
 	&Feh{}, // last resort, use feh
 }
