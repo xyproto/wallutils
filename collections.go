@@ -233,6 +233,46 @@ func FindWallpapers() (*SearchResults, error) {
 	return sr, nil
 }
 
+// FindImages will find images at the given search path.
+// Extensions will filter for images ending with .png, .jpg etc.
+// Set onlyLarge to true if the images should be large enough for the desktop.
+func FindImagesAt(searchPath string, extensions []string, onlyLarge bool) ([]string, error) {
+	found := []string{}
+	// A visit function that will be called for every file found by the WalkLimit function below
+	visit := func(path string, f os.FileInfo, err error) error {
+		switch filepath.Ext(path) {
+		case ".png":
+			if onlyLarge {
+				width, height, err := pngSize(path)
+				if err != nil {
+					return err
+				}
+				if !largeEnough(width, height) {
+					return nil
+				}
+			}
+			found = append(found, path)
+		case ".jpg", ".jpeg":
+			if onlyLarge {
+				width, height, err := jpegSize(path)
+				if err != nil {
+					return err
+				}
+				if !largeEnough(width, height) {
+					return nil
+				}
+			}
+			found = append(found, path)
+		}
+		return nil
+	}
+	// Search the given path, using the visit function
+	if err := powerwalk.WalkLimit(searchPath, visit, numCPU); err != nil {
+		return found, err
+	}
+	return found, nil
+}
+
 // FindWallpapersAt will search for wallpaper collections, simple timed
 // wallpapers and GNOME timed wallpapers in the given path.
 func FindWallpapersAt(path string) (*SearchResults, error) {
