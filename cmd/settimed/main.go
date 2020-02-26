@@ -18,7 +18,7 @@ func exists(path string) bool {
 	return err == nil
 }
 
-func SetTimedWallpaper(collectionOrFilename string, verbose bool, tempImageFilename string) error {
+func SetTimedWallpaper(collectionOrFilename string, verbose bool, mode string, tempImageFilename string) error {
 	// Check if it is a timed wallpaper filename
 	if strings.Contains(collectionOrFilename, ".") && exists(collectionOrFilename) {
 		filename := collectionOrFilename
@@ -34,7 +34,7 @@ func SetTimedWallpaper(collectionOrFilename string, verbose bool, tempImageFilen
 			// Start endless event loop
 			if err := stw.EventLoop(verbose,
 				func(path string) error {
-					return wallutils.SetWallpaperVerbose(path, verbose)
+					return wallutils.SetWallpaperCustom(path, mode, verbose)
 				}, tempImageFilename); err != nil {
 				return err
 			}
@@ -49,7 +49,7 @@ func SetTimedWallpaper(collectionOrFilename string, verbose bool, tempImageFilen
 			// Start endless event loop
 			if err := gtw.EventLoop(verbose,
 				func(path string) error {
-					return wallutils.SetWallpaperVerbose(path, verbose)
+					return wallutils.SetWallpaperCustom(path, mode, verbose)
 				}, tempImageFilename); err != nil {
 				return err
 			}
@@ -91,7 +91,7 @@ func SetTimedWallpaper(collectionOrFilename string, verbose bool, tempImageFilen
 			fmt.Printf("Using: %s\n", stw.Path)
 		}
 		// Start endless event loop
-		if err := stw.EventLoop(verbose, func(path string) error { return wallutils.SetWallpaperVerbose(path, verbose) }, tempImageFilename); err != nil {
+		if err := stw.EventLoop(verbose, func(path string) error { return wallutils.SetWallpaperCustom(path, mode, verbose) }, tempImageFilename); err != nil {
 			return err
 		}
 	} else if len(gnomeTimedWallpapers) == 1 {
@@ -100,7 +100,7 @@ func SetTimedWallpaper(collectionOrFilename string, verbose bool, tempImageFilen
 			fmt.Printf("Using: %s\n", gtw.Path)
 		}
 		// Start endless event loop
-		if err := gtw.EventLoop(verbose, func(path string) error { return wallutils.SetWallpaperVerbose(path, verbose) }, tempImageFilename); err != nil {
+		if err := gtw.EventLoop(verbose, func(path string) error { return wallutils.SetWallpaperCustom(path, mode, verbose) }, tempImageFilename); err != nil {
 			return err
 		}
 	}
@@ -113,22 +113,27 @@ func setTimedWallpaperAction(c *cli.Context) error {
 	if c.NArg() == 0 {
 		return errors.New("please provide a timed wallpaper filename as the first argument")
 	}
-	collectionOrFilename := c.Args().Get(0)
 
-	// Be verbose unless a silent flag (-s) has been given
-	verbose := !c.IsSet("silent")
+	var (
+		collectionOrFilename = c.Args().Get(0)
 
-	tempImageFilename := "/tmp/_settimed.jpg"
+		// Retrieve flags from the context
+		// Be verbose unless a silent flag (-s) has been given
+		verbose = !c.IsSet("silent")
+		mode    = c.String("mode")
 
-	err := SetTimedWallpaper(collectionOrFilename, verbose, tempImageFilename)
+		tempImageFilename = "/tmp/_settimed.jpg"
+	)
+
+	err := SetTimedWallpaper(collectionOrFilename, verbose, mode, tempImageFilename)
 	if err != nil {
 		// Output the capitalized error message
 		msg := err.Error()
 		if verbose {
-			fmt.Printf("%s%s\n", strings.ToUpper(string(msg[0])), msg[1:])
+			fmt.Printf("%s%s", strings.ToUpper(string(msg[0])), msg[1:])
 		}
 		// Try again, but with the "-timed" suffix
-		err = SetTimedWallpaper(collectionOrFilename+"-timed", verbose, tempImageFilename)
+		err = SetTimedWallpaper(collectionOrFilename+"-timed", verbose, mode, tempImageFilename)
 	}
 	return err
 }
@@ -152,6 +157,11 @@ func main() {
 		cli.BoolFlag{
 			Name:  "silent, s",
 			Usage: "silence output",
+		},
+		cli.StringFlag{
+			Name:  "mode, m",
+			Value: "stretch", // the default value
+			Usage: "wallpaper mode (stretch | center | tile | scale) \n\t+ modes specific to the currently running DE/WM",
 		},
 	}
 
