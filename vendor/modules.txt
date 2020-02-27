@@ -7,11 +7,11 @@ github.com/anthonynsimon/bild/math/f64
 github.com/anthonynsimon/bild/parallel
 # github.com/cpuguy83/go-md2man/v2 v2.0.0
 github.com/cpuguy83/go-md2man/v2/md2man
-# github.com/fatih/color v1.7.0
+# github.com/fatih/color v1.9.0
 github.com/fatih/color
-# github.com/mattn/go-colorable v0.1.4
+# github.com/mattn/go-colorable v0.1.6
 github.com/mattn/go-colorable
-# github.com/mattn/go-isatty v0.0.10
+# github.com/mattn/go-isatty v0.0.12
 github.com/mattn/go-isatty
 # github.com/russross/blackfriday/v2 v2.0.1
 github.com/russross/blackfriday/v2
@@ -27,9 +27,7 @@ github.com/xyproto/event
 github.com/xyproto/gnometimed
 # github.com/xyproto/simpletimed v0.0.0-20190731100742-17a9b15a6cbc
 github.com/xyproto/simpletimed
-# github.com/xyproto/xbg v0.2.0
-github.com/xyproto/xbg
-# golang.org/x/image v0.0.0-20191009234506-e7c1f5e7dbb8
+# golang.org/x/image v0.0.0-20200119044424-58c23975cae1
 golang.org/x/image/bmp
-# golang.org/x/sys v0.0.0-20191118133127-cf1e2d577169
+# golang.org/x/sys v0.0.0-20200223170610-d5e6a3e2c0ae
 golang.org/x/sys/unix
