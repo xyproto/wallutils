@@ -2,4 +2,4 @@
 package wallutils
 
 // VersionString is the current version of wallutils and all included utilities
-const VersionString = "5.8.3"
+const VersionString = "5.9.0"
