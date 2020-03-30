@@ -29,5 +29,5 @@ github.com/xyproto/gnometimed
 github.com/xyproto/simpletimed
 # golang.org/x/image v0.0.0-20200119044424-58c23975cae1
 golang.org/x/image/bmp
-# golang.org/x/sys v0.0.0-20200223170610-d5e6a3e2c0ae
+# golang.org/x/sys v0.0.0-20200327173247-9dae0f8f5775
 golang.org/x/sys/unix
