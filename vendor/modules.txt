@@ -1,4 +1,4 @@
-# github.com/anthonynsimon/bild v0.11.1
+# github.com/anthonynsimon/bild v0.12.0
 github.com/anthonynsimon/bild/blend
 github.com/anthonynsimon/bild/clone
 github.com/anthonynsimon/bild/fcolor
@@ -27,7 +27,8 @@ github.com/xyproto/event
 github.com/xyproto/gnometimed
 # github.com/xyproto/simpletimed v0.0.0-20190731100742-17a9b15a6cbc
 github.com/xyproto/simpletimed
-# golang.org/x/image v0.0.0-20200119044424-58c23975cae1
+# golang.org/x/image v0.0.0-20200430140353-33d19683fad8
 golang.org/x/image/bmp
-# golang.org/x/sys v0.0.0-20200327173247-9dae0f8f5775
+# golang.org/x/sys v0.0.0-20200523222454-059865788121
+golang.org/x/sys/internal/unsafeheader
 golang.org/x/sys/unix
