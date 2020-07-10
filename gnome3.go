@@ -87,12 +87,6 @@ func (g3 *Gnome3) SetWallpaper(imageFilename string) error {
 		return errors.New("could not find gsettings")
 	}
 
-	//if MonConfOverlap("~/.config/monitors.xml") {
-	//	return errors.New("there are overlapping monitor configurations in ~/.config/monitors.xml")
-	//} else if g3.verbose {
-	//	fmt.Println("No monitor overlap in ~/.config/monitors.xml")
-	//}
-
 	// Exit if the monitor configuration will cause artifacts when setting
 	// the desktop wallpaper.
 	NoXRandrOverlapOrExit(g3.verbose)

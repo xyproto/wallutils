@@ -85,12 +85,6 @@ func (m *Mate) SetWallpaper(imageFilename string) error {
 		return errors.New("could not find gsettings")
 	}
 
-	//if MonConfOverlap("~/.config/monitors.xml") {
-	//	return errors.New("there are overlapping monitor configurations in ~/.config/monitors.xml")
-	//} else if m.verbose {
-	//	fmt.Println("No monitor overlap in ~/.config/monitors.xml")
-	//}
-
 	// Exit if the monitor configuration will cause artifacts when setting
 	// the desktop wallpaper.
 	NoXRandrOverlapOrExit(m.verbose)
