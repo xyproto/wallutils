@@ -233,7 +233,7 @@ func FindWallpapers() (*SearchResults, error) {
 	return sr, nil
 }
 
-// FindImages will find images at the given search path.
+// FindImagesAt will find images at the given search path.
 // Extensions will filter for images ending with .png, .jpg etc.
 // Set onlyLarge to true if the images should be large enough for the desktop.
 func FindImagesAt(searchPath string, extensions []string, onlyLarge bool) ([]string, error) {
