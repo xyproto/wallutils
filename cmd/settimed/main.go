@@ -18,6 +18,7 @@ func exists(path string) bool {
 	return err == nil
 }
 
+// SetTimedWallpaper launches an event loop for switching the timed wallpaper
 func SetTimedWallpaper(collectionOrFilename string, verbose bool, mode string, tempImageFilename string) error {
 	// Check if it is a timed wallpaper filename
 	if strings.Contains(collectionOrFilename, ".") && exists(collectionOrFilename) {

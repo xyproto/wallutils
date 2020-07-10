@@ -10,7 +10,7 @@ import (
 	"github.com/xyproto/wallutils"
 )
 
-// Select the wallpaper that is closest to the current monitor resolution and set that as the wallpaper
+// SelectAndSetWallpaper will choose the wallpaper that is closest to the current monitor resolution and set that as the wallpaper
 func SelectAndSetWallpaper(wallpapers []*wallutils.Wallpaper) error {
 	// Gather a slice of filenames
 	var filenames []string
