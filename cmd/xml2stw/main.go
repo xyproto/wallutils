@@ -6,7 +6,7 @@ import (
 	"os"
 
 	"github.com/urfave/cli"
-	"github.com/xyproto/gnometimed"
+	"github.com/xyproto/wallutils/pkg/gnometimed"
 	"github.com/xyproto/wallutils"
 )
 

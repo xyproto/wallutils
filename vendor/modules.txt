@@ -23,14 +23,8 @@ github.com/stretchr/powerwalk
 github.com/urfave/cli
 # github.com/xyproto/env v1.7.0
 github.com/xyproto/env
-# github.com/xyproto/event v0.0.0-20190731100357-a3d8ddca97ef
-github.com/xyproto/event
-# github.com/xyproto/gnometimed v0.0.0-20190731101420-745a6701ce92
-github.com/xyproto/gnometimed
-# github.com/xyproto/simpletimed v0.0.0-20190731100742-17a9b15a6cbc
-github.com/xyproto/simpletimed
 # golang.org/x/image v0.0.0-20211028202545-6944b10bf410
 golang.org/x/image/bmp
-# golang.org/x/sys v0.0.0-20211103235746-7861aae1554b
+# golang.org/x/sys v0.0.0-20211109065445-02f5c0300f6e
 golang.org/x/sys/internal/unsafeheader
 golang.org/x/sys/unix

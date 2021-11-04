@@ -1,5 +1,9 @@
 # The Simple Timed Wallpaper Format
 
+STW is a format for a configuration file that specifies in which time ranges wallpapers should change from one to another, and with which transition.
+
+It's a similar to the GNOME timed wallpaper XML format, but much simpler and less verbose.
+
 ## Specification
 
 ### Version 1.0.0

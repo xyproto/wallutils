@@ -9,9 +9,9 @@ import (
 )
 
 // has checks if a string slice has the given element
-func has(sl []string, e string) bool {
-	for _, s := range sl {
-		if s == e {
+func hasS(xs []string, x string) bool {
+	for _, e := range xs {
+		if e == x {
 			return true
 		}
 	}
@@ -22,7 +22,7 @@ func has(sl []string, e string) bool {
 func unique(sl []string) []string {
 	var nl []string
 	for _, s := range sl {
-		if !has(nl, s) {
+		if !hasS(nl, s) {
 			nl = append(nl, s)
 		}
 	}
@@ -56,13 +56,6 @@ func which(executable string) string {
 		return ""
 	}
 	return p
-}
-
-// which2 tries to find the given executable name in the $PATH
-// This is the same as exec.LookPath.
-// Returns an error if not found.
-func which2(executable string) (string, error) {
-	return exec.LookPath(executable)
 }
 
 // run executes the given executable and returns an error if the exit code is

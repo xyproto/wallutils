@@ -1,0 +1,26 @@
+
+<!-- blabla -->
+<background>
+	<starttime>
+		<year>2018</year>
+		<month>1</month>
+		<day>1</day>
+		<hour>7</hour>
+		<minute>0</minute>
+		<second>0</second>
+	</starttime>
+
+	<static>
+		<file>/usr/share/wallpapers/Spring/contents/images/1440x900.jpg</file>
+		<duration>10.0</duration>
+	</static>
+
+	<static>
+		<file>/usr/share/wallpapers/Autumn/contents/images/1440x900.jpg</file>
+		<duration>10.0</duration>
+	</static>
+</background>
+
+
+
+

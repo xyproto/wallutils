@@ -6,7 +6,7 @@ import (
 	"time"
 )
 
-var DefaultEventLoopDelay = 5 * time.Second
+var DefaultEventLoopDelay = 30 * time.Second
 
 type Wallpaper struct {
 	// The name of this timed wallpaper

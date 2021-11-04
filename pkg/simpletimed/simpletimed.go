@@ -32,7 +32,7 @@ type Transition struct {
 	Type         string
 }
 
-var DefaultLoopTime = 5 * time.Second
+var DefaultLoopTime = 30 * time.Second
 
 func (t *Transition) Duration() time.Duration {
 	return mod24(t.UpTo.Sub(t.From))

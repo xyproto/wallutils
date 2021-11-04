@@ -2,7 +2,7 @@ package gnometimed
 
 import (
 	"fmt"
-	"github.com/xyproto/simpletimed"
+	"github.com/xyproto/wallutils/pkg/simpletimed"
 	"strings"
 	"time"
 )

@@ -12,3 +12,5 @@
 .vscode
 *.svg
 !img/*
+pkg/event/cmd/clock/clock
+pkg/event/cmd/leetoclock/leetoclock

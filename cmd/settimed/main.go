@@ -8,9 +8,9 @@ import (
 	"strings"
 
 	"github.com/urfave/cli"
-	"github.com/xyproto/gnometimed"
-	"github.com/xyproto/simpletimed"
 	"github.com/xyproto/wallutils"
+	"github.com/xyproto/wallutils/pkg/gnometimed"
+	"github.com/xyproto/wallutils/pkg/simpletimed"
 )
 
 func exists(path string) bool {

@@ -1,0 +1,14 @@
+#
+# Simple Timed Wallpaper
+# 2019-03-18
+# Alexander F. Rødseth <xyproto@archlinux.org>
+#
+# Activate with `settimed` from the `wallutils` package.
+#
+// Another comment
+#
+stw: 1.0
+name: comments
+format: /usr/share/backgrounds/comments/comments-%s
+@05:00: early.jpg
+@23:00: late.png

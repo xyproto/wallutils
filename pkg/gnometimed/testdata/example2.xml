@@ -1,0 +1,54 @@
+<!-- Template created by Ross Larson for linuxjournal.com -->
+<background>
+  <starttime>
+    <hour>0</hour>
+    <minute>00</minute>
+    <second>01</second>
+  </starttime>
+<!-- this creates an arbitrary start time of 12 am -->
+  <static>
+    <duration>855.0</duration>
+    <file>/path/to/wallpaper_number_one.jpg</file>
+  </static>
+  <transition>
+    <duration>5.0</duration>
+    <from>/path/to/wallpaper_number_one.jpg</from>
+    <to>/path/to/wallpaper_number_two.jpg</to>
+  </transition>
+  <static>
+    <duration>855.0</duration>
+    <file>/path/to/wallpaper_number_two.jpg</file>
+  </static>
+  <transition>
+    <duration>5.0</duration>
+    <from>/path/to/wallpaper_number_two.jpg</from>
+    <to>/path/to/wallpaper_number_three.jpg</to>
+  </transition>
+  <static>
+    <duration>855.0</duration>
+    <file>/path/to/wallpaper_number_three.jpg</file>
+  </static>
+  <transition>
+    <duration>5.0</duration>
+    <from>/path/to/wallpaper_number_three.jpg</from>
+    <to>/path/to/wallpaper_number_four.jpg</to>
+  </transition>
+  <static>
+    <duration>855.0</duration>
+    <file>/path/to/wallpaper_number_four.jpg</file>
+  </static>
+  <transition>
+    <duration>5.0</duration>
+    <from>/path/to/wallpaper_number_four.jpg</from>
+    <to>/path/to/wallpaper_number_five.jpg</to>
+  </transition>
+  <static>
+    <duration>855.0</duration>
+    <file>/path/to/wallpaper_number_five.jpg</file>
+  </static>
+  <transition>
+    <duration>5.0</duration>
+    <from>/path/to/wallpaper_number_five.jpg</from>
+    <to>/path/to/wallpaper_number_one.jpg</to>
+  </transition>
+</background>

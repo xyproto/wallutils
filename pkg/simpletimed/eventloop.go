@@ -12,13 +12,15 @@ import (
 
 	"github.com/anthonynsimon/bild/blend"
 	"github.com/anthonynsimon/bild/imgio"
-	"github.com/xyproto/event"
+	"github.com/xyproto/wallutils/pkg/event"
 )
 
 var setmut = &sync.RWMutex{}
 
 // UntilNext finds the duration until the next event starts
-func (stw *Wallpaper) UntilNext(et time.Time) time.Duration {
+func (stw *Wallpaper) UntilNext(et time.Time) (time.Duration, time.Time) {
+
+	// Gather all start times from the list of transitions and list of static wallpaper commands
 	var startTimes []time.Time
 	for _, t := range stw.Transitions {
 		startTimes = append(startTimes, t.From)
@@ -26,21 +28,35 @@ func (stw *Wallpaper) UntilNext(et time.Time) time.Duration {
 	for _, s := range stw.Statics {
 		startTimes = append(startTimes, s.At)
 	}
+
+	// Using all the collected hours&minutes, create a list of times both today and tomorrow that uses those hours&minutes
+	now := time.Now()
+	var allTimes []time.Time
+	for _, t := range startTimes {
+		today := time.Date(now.Year(), now.Month(), now.Day(), t.Hour(), t.Minute(), 0, 0, now.Location())
+		tomorrow := today.AddDate(0, 0, 1)
+		allTimes = append(allTimes, today, tomorrow)
+	}
+
+	// Now we have all possible start times, now to find the ones that are both positive and smallest
 	mindiff := h24
-	// OK, have all start times, now to find the ones that are both positive and smallest
-	for _, st := range startTimes {
-		//diff := st.Sub(et)
-		diff := event.ToToday(et).Sub(event.ToToday(st))
+	when := now
+	for _, t := range allTimes {
+		diff := t.Sub(et)
 		if diff > 0 && diff < mindiff {
 			mindiff = diff
+			when = t
 		}
 	}
-	return mindiff
+
+	// Return the smallest time difference and the point in time for when that is
+	return mindiff, when
 }
 
 // NextEvent finds the next event, given a timestamp.
 // Returns an interface{} that is either a static or transition event.
-func (stw *Wallpaper) NextEvent(now time.Time) (interface{}, error) {
+func (stw *Wallpaper) NextEvent(et time.Time) (interface{}, time.Time, error) {
+
 	// Create a map, from timestamps to wallpaper events
 	events := make(map[time.Time]interface{})
 	for _, t := range stw.Transitions {
@@ -50,28 +66,42 @@ func (stw *Wallpaper) NextEvent(now time.Time) (interface{}, error) {
 		events[s.At] = s
 	}
 	if len(events) == 0 {
-		return nil, errors.New("can not find next event: got no events")
+		return nil, et, errors.New("can not find next event: got no events")
 	}
-	// Go though all the event time stamps, and find the one that has the smallest (now time - event time)
-	minDiff := h24
-	var minEvent interface{}
+
+	// Using all the collected hours&minutes, create a list of times both today and tomorrow that uses those hours&minutes
+	var allTimes = make(map[time.Time]interface{})
+	now := time.Now()
 	for t, e := range events {
-		//fmt.Printf("now is: %v (%T)\n", now, now)
-		//fmt.Printf("t is: %v (%T)\n", t, t)
-		diff := event.ToToday(t).Sub(event.ToToday(now))
-		//fmt.Println("Diff for", cFmt(t), ":", diff)
-		if diff > 0 && diff < minDiff {
-			minDiff = diff
-			minEvent = e
-			//fmt.Println("NEW SMALLEST DIFF RIGHT AFTER", cFmt(now), cFmt(t), minDiff)
+		today := time.Date(now.Year(), now.Month(), now.Day(), t.Hour(), t.Minute(), 0, 0, now.Location())
+		tomorrow := today.AddDate(0, 0, 1)
+		allTimes[today] = e
+		allTimes[tomorrow] = e
+	}
+
+	// Now we have all possible start times, now to find the ones that are both positive and smallest
+	mindiff := h24
+	when := now
+	var eventHappening interface{}
+	for t, e := range allTimes {
+		if eventHappening == nil {
+			eventHappening = e
+		}
+		diff := t.Sub(et)
+		if diff > 0 && diff < mindiff {
+			mindiff = diff
+			when = t
+			eventHappening = e
 		}
 	}
-	return minEvent, nil
+
+	return eventHappening, when, nil
 }
 
 // PrevEvent finds the previous event, given a timestamp.
 // Returns an interface{} that is either a static or transition event.
-func (stw *Wallpaper) PrevEvent(now time.Time) (interface{}, error) {
+func (stw *Wallpaper) PrevEvent(et time.Time) (interface{}, time.Time, error) {
+
 	// Create a map, from timestamps to wallpaper events
 	events := make(map[time.Time]interface{})
 	for _, t := range stw.Transitions {
@@ -81,59 +111,73 @@ func (stw *Wallpaper) PrevEvent(now time.Time) (interface{}, error) {
 		events[s.At] = s
 	}
 	if len(events) == 0 {
-		return nil, errors.New("can not find previous event: got no events")
+		return nil, et, errors.New("can not find next event: got no events")
 	}
-	// Go though all the event time stamps, and find the one that has the smallest (now time - event time)
-	minDiff := h24
-	var minEvent interface{}
+	// Using all the collected hours&minutes, create a list of times both today and tomorrow that uses those hours&minutes
+	var allTimes = make(map[time.Time]interface{})
+	now := time.Now()
 	for t, e := range events {
-		if minEvent == nil {
-			minEvent = e
-		}
-		//fmt.Printf("now is: %v (%T)\n", now, now)
-		//fmt.Printf("t is: %v (%T)\n", t, t)
-		diff1 := event.ToToday(now).Sub(event.ToToday(t))
-		diff2 := event.ToTomorrow(now).Sub(event.ToToday(t))
-		//fmt.Println("Diff for", cFmt(t), ":", diff)
-		if diff1 > 0 && diff1 < minDiff {
-			minDiff = diff1
-			minEvent = e
-			//fmt.Println("NEW SMALLEST DIFF RIGHT BEFORE", cFmt(now), cFmt(t), minDiff)
-		}
-		if diff2 > 0 && diff2 < minDiff {
-			minDiff = diff2
-			minEvent = e
-			//fmt.Println("NEW SMALLEST DIFF RIGHT BEFORE", cFmt(now), cFmt(t), minDiff)
-		}
-
+		today := time.Date(now.Year(), now.Month(), now.Day(), t.Hour(), t.Minute(), 0, 0, now.Location())
+		tomorrow := today.AddDate(0, 0, 1)
+		allTimes[today] = e
+		allTimes[tomorrow] = e
 	}
-	return minEvent, nil
+
+	// Now we have all possible start times, find the ones that are are below the given et,
+	// but as small as possible.
+
+	mindiff := h24
+	when := now
+	var eventHappening interface{}
+	for t, e := range allTimes {
+		if eventHappening == nil {
+			eventHappening = e
+		}
+		diff := et.Sub(t) // reverse subtraction, to find the time comparison back in time
+		if diff > 0 && diff < mindiff {
+			mindiff = diff
+			when = t
+			eventHappening = e
+		}
+	}
+
+	return eventHappening, when, nil
 }
 
 // SetInitialWallpaper will set the first wallpaper, before starting the event loop
 func (stw *Wallpaper) SetInitialWallpaper(verbose bool, setWallpaperFunc func(string) error, tempImageFilename string) error {
-	e, err := stw.PrevEvent(time.Now())
+	now := time.Now()
+	e, whenPrev, err := stw.PrevEvent(now)
 	if err != nil {
 		return err
 	}
+	_, whenNext, err := stw.NextEvent(now)
+	if err != nil {
+		return err
+	}
+
+	// the length of the currently ongoing event
+	eventLength := whenNext.Sub(whenPrev)
+
 	switch v := e.(type) {
 	case *Static:
 		s := v
 
 		// Place values into variables, before enclosing it in the function below.
-		from := s.At
-		//elapsed := time.Now().Sub(s.At)
-		elapsed := event.ToToday(time.Now()).Sub(event.ToToday(s.At))
-		if elapsed < 0 {
-			elapsed *= -1
-		}
-		window := mod24(stw.UntilNext(s.At) - elapsed) // duration until next event start, minus time elapsed
-		cooldown := window
+		//from := s.At
+		//elapsed := time.Now().Sub(when) // now - when the previous event was set to trigger
+		//durationUntilNext, nextTime := stw.UntilNext(s.At)
+		//window := mod24(durationUntilNext - elapsed) // duration until next event start, minus time elapsed
+		// Duration until next event start, from now
+		//window := time.Now().Sub(when)
+
+		window := eventLength
+		cooldown := eventLength
 
 		imageFilename := s.Filename
 
 		if verbose {
-			fmt.Printf("Initial static wallpaper event at %s\n", cFmt(from))
+			fmt.Printf("Attaching to ongoing static wallpaper event that started at %s\n", cFmt(whenPrev))
 			fmt.Println("Window:", dFmt(window))
 			fmt.Println("Cooldown:", dFmt(cooldown))
 			fmt.Println("Filename:", imageFilename)
@@ -159,37 +203,31 @@ func (stw *Wallpaper) SetInitialWallpaper(verbose bool, setWallpaperFunc func(st
 		}
 
 		// Just sleep for half the cooldown, to have some time to register events too
-		if verbose {
-			fmt.Println("Activating events in", dFmt(cooldown/2))
-		}
-		time.Sleep(cooldown / 2)
+		//if verbose {
+		//fmt.Println("Activating events in", dFmt(cooldown/2))
+		//}
+		//time.Sleep(cooldown / 2)
 	case *Transition:
 		t := v
 
-		now := time.Now()
-		window := t.Duration()
-		progress := mod24(window - event.ToToday(t.UpTo).Sub(event.ToToday(now)))
-		ratio := float64(progress) / float64(window)
-		from := t.From
-		steps := 10
-		cooldown := window / time.Duration(steps)
-		upTo := from.Add(window)
+		elapsed := now.Sub(whenPrev)
+		ratio := float64(elapsed) / float64(eventLength)
+
+		from := whenPrev
+		upTo := whenNext
+
 		tType := t.Type
 		tFromFilename := t.FromFilename
-		tToFilename := t.ToFilename
 		loopWait := stw.LoopWait
-		var err error
 
 		if verbose {
 			fmt.Printf("Initial transition event at %s (%d%% complete)\n", cFmt(from), int(ratio*100))
-			fmt.Println("Progress:", dFmt(progress))
+			fmt.Println("Progress:", dFmt(elapsed))
 			fmt.Println("Up to:", cFmt(upTo))
-			fmt.Println("Window:", dFmt(window))
-			fmt.Println("Cooldown:", dFmt(cooldown))
+			fmt.Println("Window:", dFmt(eventLength))
 			fmt.Println("Loop wait:", dFmt(loopWait))
 			fmt.Println("Transition type:", tType)
-			fmt.Println("From filename", tFromFilename)
-			fmt.Println("To filename", tToFilename)
+			fmt.Println("Using filename", tFromFilename)
 		}
 
 		// Set the "from" image before crossfading, so that something happens immediately
@@ -202,51 +240,6 @@ func (stw *Wallpaper) SetInitialWallpaper(verbose bool, setWallpaperFunc func(st
 			return fmt.Errorf("could not set wallpaper: %v", err)
 		}
 
-		if verbose {
-			fmt.Println("Crossfading between images.")
-		}
-
-		tFromImg, err := imgio.Open(tFromFilename)
-		if err != nil {
-			return err
-		}
-
-		tToImg, err := imgio.Open(tToFilename)
-		if err != nil {
-			return err
-		}
-
-		// Crossfade and write the new image to the temporary directory
-		setmut.Lock()
-		blendedImage := blend.Opacity(tFromImg, tToImg, ratio)
-		err = imgio.Save(tempImageFilename, blendedImage, imgio.JPEGEncoder(100))
-		if err != nil {
-			setmut.Unlock()
-			return fmt.Errorf("could not crossfade images in transition: %v", err)
-		}
-		setmut.Unlock()
-
-		// Double check that the generated file exists
-		if _, err := os.Stat(tempImageFilename); os.IsNotExist(err) {
-			return fmt.Errorf("file does not exist: %s", tempImageFilename)
-		}
-
-		// Set the desktop wallpaper, if possible
-		if verbose {
-			fmt.Printf("Setting %s.\n", tempImageFilename)
-		}
-		setmut.Lock()
-		if err := setWallpaperFunc(tempImageFilename); err != nil {
-			setmut.Unlock()
-			return fmt.Errorf("could not set wallpaper: %v", err)
-		}
-		setmut.Unlock()
-
-		// Just sleep for half the cooldown, to have some time to register events too
-		if verbose {
-			fmt.Println("Activating events in", dFmt(cooldown/2))
-		}
-		time.Sleep(cooldown / 2)
 	default:
 		return errors.New("could not set initial wallpaper: no previous event")
 	}
@@ -287,21 +280,24 @@ func (stw *Wallpaper) EventLoop(verbose bool, setWallpaperFunc func(string) erro
 	}
 	setmut.Unlock()
 
-	eventloop := event.NewLoop()
+	eventloop := event.NewSystem(stw.LoopWait)
 
 	for _, s := range stw.Statics {
 		if verbose {
-			fmt.Printf("Registering static event at %s for setting %s\n", cFmt(s.At), s.Filename)
+			fmt.Printf("Event at %s for setting %s\n", cFmt(s.At), s.Filename)
 		}
 
 		// Place values into variables, before enclosing it in the function below.
 		from := s.At
-		window := mod24(stw.UntilNext(s.At)) // duration until next event start
+
+		nextEventDuration, _ := stw.UntilNext(s.At)
+
+		window := mod24(nextEventDuration) // duration until next event start
 		cooldown := window
 		imageFilename := s.Filename
 
 		// Register a static event
-		eventloop.Add(event.New(from, window, cooldown, func() {
+		eventloop.ClockEvent(from.Hour(), from.Minute(), func() error {
 			if verbose {
 				fmt.Printf("Triggered static wallpaper event at %s\n", cFmt(from))
 				fmt.Println("Window:", dFmt(window))
@@ -318,7 +314,7 @@ func (stw *Wallpaper) EventLoop(verbose bool, setWallpaperFunc func(string) erro
 			// Check that the file exists
 			if _, err := os.Stat(imageFilename); os.IsNotExist(err) {
 				fmt.Fprintf(os.Stderr, "File does not exist: %s\n", imageFilename)
-				return // return from anon func
+				return err // return from anon func
 			}
 
 			// Set the desktop wallpaper, if possible
@@ -327,80 +323,39 @@ func (stw *Wallpaper) EventLoop(verbose bool, setWallpaperFunc func(string) erro
 			}
 			if err := setWallpaperFunc(imageFilename); err != nil {
 				fmt.Fprintf(os.Stderr, "Could not set wallpaper: %v\n", err)
-				return // return from anon func
+				return err // return from anon func
 			}
-		}))
+			return nil
+		})
 	}
 	for _, t := range stw.Transitions {
 		if verbose {
-			fmt.Printf("Registering transition at %s for transitioning from %s to %s.\n", cFmt(t.From), t.FromFilename, t.ToFilename)
+			fmt.Printf("Transition at %s from %s to %s.\n", cFmt(t.From), t.FromFilename, t.ToFilename)
 		}
 
-		// cross fade steps
-		steps := 10
-
-		// Set variables
 		from := t.From
 		window := t.Duration()
-		cooldown := window / time.Duration(steps)
 		upTo := from.Add(window)
 		tType := t.Type
 		tFromFilename := t.FromFilename
 		tToFilename := t.ToFilename
 		loopWait := stw.LoopWait
+		halfway := from.Add(window / 2)
 
-		// Register a transition event
-		//eventloop.Add(event.New(from, window, cooldown, event.ProgressWrapperInterval(from, upTo, loopWait, func(ratio float64) {
-		eventloop.Add(event.New(from, window, cooldown, func() {
-			progress := mod24(window - event.ToToday(upTo).Sub(event.ToToday(time.Now())))
+		// Register the start of a transition event
+		eventloop.ClockEvent(from.Hour(), from.Minute(), func() error {
+			progress := time.Now().Sub(from)
 			ratio := float64(progress) / float64(window)
-
 			if verbose {
 				fmt.Printf("Triggered transition event at %s (%d%% complete)\n", cFmt(from), int(ratio*100))
 				fmt.Println("Progress:", dFmt(progress))
 				fmt.Println("Up to:", cFmt(upTo))
 				fmt.Println("Window:", dFmt(window))
-				fmt.Println("Cooldown:", dFmt(cooldown))
 				fmt.Println("Loop wait:", dFmt(loopWait))
 				fmt.Println("Transition type:", tType)
-				fmt.Println("From filename", tFromFilename)
-				fmt.Println("To filename", tToFilename)
+				fmt.Println("Using filename", tFromFilename)
 			}
-
-			if verbose {
-				fmt.Println("Crossfading between images.")
-			}
-
-			// Crossfade and write the new image to the temporary directory
-			tFromImg, err := imgio.Open(tFromFilename)
-			if err != nil {
-				fmt.Fprintln(os.Stderr, err)
-				return
-			}
-
-			tToImg, err := imgio.Open(tToFilename)
-			if err != nil {
-				fmt.Fprintln(os.Stderr, err)
-				return
-			}
-
-			// Crossfade and write the new image to the temporary directory
-			setmut.Lock()
-			blendedImage := blend.Opacity(tFromImg, tToImg, ratio)
-			err = imgio.Save(tempImageFilename, blendedImage, imgio.JPEGEncoder(100))
-			if err != nil {
-				fmt.Fprintf(os.Stderr, "Could not crossfade images in transition: %v\n", err)
-				setmut.Unlock()
-				return
-			}
-			setmut.Unlock()
-
-			// Double check that the generated file exists
-			if _, err := os.Stat(tempImageFilename); os.IsNotExist(err) {
-				fmt.Fprintf(os.Stderr, "File does not exist: %s\n", tempImageFilename)
-				return // return from anon func
-			}
-
+			tempImageFilename := tFromFilename
 			// Set the desktop wallpaper, if possible
 			if verbose {
 				fmt.Printf("Setting %s.\n", tempImageFilename)
@@ -409,13 +364,78 @@ func (stw *Wallpaper) EventLoop(verbose bool, setWallpaperFunc func(string) erro
 			if err := setWallpaperFunc(tempImageFilename); err != nil {
 				setmut.Unlock()
 				fmt.Fprintf(os.Stderr, "Could not set wallpaper: %v\n", err)
-				return // return from anon func
+				return err // return from anon func
 			}
 			setmut.Unlock()
-		}))
+			return nil
+		})
+
+		// Register a halfway transition event
+		eventloop.ClockEvent(halfway.Hour(), halfway.Minute(), func() error {
+			progress := time.Now().Sub(from)
+			//progress := mod24(window - event.ToToday(upTo).Sub(event.ToToday(time.Now())))
+			ratio := float64(progress) / float64(window)
+			if verbose {
+				fmt.Printf("Triggered transition event at %s (%d%% complete)\n", cFmt(from), int(ratio*100))
+				fmt.Println("Progress:", dFmt(progress))
+				fmt.Println("Up to:", cFmt(upTo))
+				fmt.Println("Window:", dFmt(window))
+				//fmt.Println("Cooldown:", dFmt(cooldown))
+				fmt.Println("Loop wait:", dFmt(loopWait))
+				fmt.Println("Transition type:", tType)
+				fmt.Println("From filename", tFromFilename)
+				fmt.Println("To filename", tToFilename)
+				fmt.Println("Crossfading between images.")
+			}
+			// Crossfade and write the new image to the temporary directory
+			tFromImg, err := imgio.Open(tFromFilename)
+			if err != nil {
+				fmt.Fprintln(os.Stderr, err)
+				return err
+			}
+			tToImg, err := imgio.Open(tToFilename)
+			if err != nil {
+				fmt.Fprintln(os.Stderr, err)
+				return err
+			}
+			// Crossfade and write the new image to the temporary directory
+			setmut.Lock()
+			blendedImage := blend.Opacity(tFromImg, tToImg, ratio)
+			err = imgio.Save(tempImageFilename, blendedImage, imgio.JPEGEncoder(100))
+			if err != nil {
+				fmt.Fprintf(os.Stderr, "Could not crossfade images in transition: %v\n", err)
+				setmut.Unlock()
+				return err
+			}
+			setmut.Unlock()
+			// Double check that the generated file exists
+			if _, err := os.Stat(tempImageFilename); os.IsNotExist(err) {
+				fmt.Fprintf(os.Stderr, "File does not exist: %s\n", tempImageFilename)
+				return err // return from anon func
+			}
+			// Set the desktop wallpaper, if possible
+			if verbose {
+				fmt.Printf("Setting %s.\n", tempImageFilename)
+			}
+			setmut.Lock()
+			if err := setWallpaperFunc(tempImageFilename); err != nil {
+				setmut.Unlock()
+				fmt.Fprintf(os.Stderr, "Could not set wallpaper: %v\n", err)
+				return err // return from anon func
+			}
+			setmut.Unlock()
+			return nil
+		})
+
 	}
 
 	// Endless loop! Will wait LoopWait duration between each event loop cycle.
-	eventloop.Go(stw.LoopWait)
+	eventloop.Run(verbose)
+
+	// eventloop.Run returns immediately, so start an endless loop
+	for {
+		time.Sleep(1 * time.Second)
+	}
+
 	return nil
 }
