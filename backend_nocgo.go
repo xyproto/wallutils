@@ -14,6 +14,7 @@ var WMs = []WM{
 	&Plasma{},
 	&Gnome3{},
 	&Gnome2{},
+	&Pekwm{},
 	&Weston{},
 	//xbg.New(), // X11
 	&Feh{}, // use feh for X11
