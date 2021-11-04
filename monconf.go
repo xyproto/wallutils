@@ -8,6 +8,8 @@ import (
 	"image"
 	"io/ioutil"
 	"strconv"
+
+	"github.com/xyproto/env"
 )
 
 // MonitorConfiguration is mainly a collection of MConfiguration + a Version field
@@ -62,7 +64,7 @@ func ParseMonitorFile(filename string) (*MonitorConfiguration, error) {
 // NewMonitorConfiguration returns a new MonitorConfiguration struct,
 // filled with the contents of ~/.config/monitors.xml.
 func NewMonitorConfiguration() (*MonitorConfiguration, error) {
-	return ParseMonitorFile(expandUser("~/.config/monitors.xml"))
+	return ParseMonitorFile(env.ExpandUser("~/.config/monitors.xml"))
 }
 
 // Overlapping can check if configurations in monitors.xml have overlapping areas.
@@ -109,7 +111,7 @@ func (mc *MonitorConfiguration) Overlapping() bool {
 // false is returned.
 func MonConfOverlap(filename string) bool {
 	// a leading ~ will be expanded to the home directory
-	if mc, err := ParseMonitorFile(expandUser(filename)); err != nil {
+	if mc, err := ParseMonitorFile(env.ExpandUser(filename)); err != nil {
 		return mc.Overlapping()
 	}
 	return false
