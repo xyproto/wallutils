@@ -5,19 +5,19 @@ PREFIX ?= /usr
 
 all:
 	go build
-	(cd cmd/getdpi; go build)
-	(cd cmd/lsmon; go build)
-	(cd cmd/setrandom; go build)
-	(cd cmd/setwallpaper; go build)
-	(cd cmd/wayinfo; go build)
-	(cd cmd/xinfo; go build)
-	(cd cmd/lscollection; go build)
-	(cd cmd/timedinfo; go build)
-	(cd cmd/lswallpaper; go build)
-	(cd cmd/setcollection; go build)
-	(cd cmd/lstimed; go build)
-	(cd cmd/settimed; go build)
-	(cd cmd/xml2stw; go build)
+	(cd cmd/getdpi; go build -mod=vendor)
+	(cd cmd/lsmon; go build -mod=vendor)
+	(cd cmd/setrandom; go build -mod=vendor)
+	(cd cmd/setwallpaper; go build -mod=vendor)
+	(cd cmd/wayinfo; go build -mod=vendor)
+	(cd cmd/xinfo; go build -mod=vendor)
+	(cd cmd/lscollection; go build -mod=vendor)
+	(cd cmd/timedinfo; go build -mod=vendor)
+	(cd cmd/lswallpaper; go build -mod=vendor)
+	(cd cmd/setcollection; go build -mod=vendor)
+	(cd cmd/lstimed; go build -mod=vendor)
+	(cd cmd/settimed; go build -mod=vendor)
+	(cd cmd/xml2stw; go build -mod=vendor)
 
 static:
 	CGO_ENABLED=0 go build -ldflags "-s" -a
