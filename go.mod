@@ -11,6 +11,7 @@ require (
 	github.com/stretchr/powerwalk v0.0.0-20151124150408-bceb9d014549
 	github.com/stretchr/testify v1.4.0 // indirect
 	github.com/urfave/cli v1.22.1
+	github.com/xyproto/env v1.7.0
 	github.com/xyproto/gnometimed v0.0.0-20190731101420-745a6701ce92
 	github.com/xyproto/simpletimed v0.0.0-20190731100742-17a9b15a6cbc
 	golang.org/x/image v0.0.0-20211028202545-6944b10bf410 // indirect
