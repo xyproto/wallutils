@@ -8,7 +8,7 @@ import (
 	"strings"
 )
 
-// Feh is a structure containing settings for running the "feh" executble
+// Feh is a structure containing settings for running the "feh" executable
 type Feh struct {
 	mode    string
 	verbose bool
