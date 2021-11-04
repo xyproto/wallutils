@@ -3,6 +3,8 @@ package wallutils
 import (
 	"errors"
 	"fmt"
+
+	"github.com/xyproto/env"
 )
 
 // Deepin windowmanager detector
@@ -32,7 +34,7 @@ func (d *Deepin) ExecutablesExists() bool {
 
 // Running examines environment variables to try to figure out if this backend is currently running
 func (d *Deepin) Running() bool {
-	return containsE("GDMSESSION", "deepin") || containsE("XDG_CURRENT_DESKTOP", "Deepin") || containsE("DESKTOP_SESSION", "xsessions/deepin")
+	return env.Contains("GDMSESSION", "deepin") || env.Contains("XDG_CURRENT_DESKTOP", "Deepin") || env.Contains("DESKTOP_SESSION", "xsessions/deepin")
 }
 
 // SetMode will set the current way to display the wallpaper (stretched, tiled etc)

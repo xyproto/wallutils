@@ -1,9 +1,12 @@
+//go:build cgo
 // +build cgo
 
 package wallutils
 
 import (
 	"fmt"
+
+	"github.com/xyproto/env"
 )
 
 // Sway windowmanager detector
@@ -24,7 +27,7 @@ func (s *Sway) ExecutablesExists() bool {
 
 // Running examines environment variables to try to figure out if this backend is currently running
 func (s *Sway) Running() bool {
-	return hasE("SWAYSOCK") || (containsE("GDMSESSION", "sway") || containsE("XDG_SESSION_DESKTOP", "sway") || containsE("XDG_CURRENT_DESKTOP", "sway"))
+	return env.Has("SWAYSOCK") || (env.Contains("GDMSESSION", "sway") || env.Contains("XDG_SESSION_DESKTOP", "sway") || env.Contains("XDG_CURRENT_DESKTOP", "sway"))
 }
 
 // SetMode will set the current way to display the wallpaper (stretched, tiled etc)

@@ -2,6 +2,8 @@ package wallutils
 
 import (
 	"fmt"
+
+	"github.com/xyproto/env"
 )
 
 // Plasma windowmanager detector
@@ -22,7 +24,7 @@ func (p *Plasma) ExecutablesExists() bool {
 
 // Running examines environment variables to try to figure out if this backend is currently running
 func (p *Plasma) Running() bool {
-	return containsE("GDMSESSION", "plasma") || containsE("XDG_SESSION_DESKTOP", "KDE") || containsE("XDG_CURRENT_DESKTOP", "KDE") || containsE("XDG_SESSION_DESKTOP", "plasma") || containsE("XDG_CURRENT_DESKTOP", "plasma")
+	return env.Contains("GDMSESSION", "plasma") || env.Contains("XDG_SESSION_DESKTOP", "KDE") || env.Contains("XDG_CURRENT_DESKTOP", "KDE") || env.Contains("XDG_SESSION_DESKTOP", "plasma") || env.Contains("XDG_CURRENT_DESKTOP", "plasma")
 }
 
 // SetMode will set the current way to display the wallpaper (stretched, tiled etc)

@@ -3,6 +3,8 @@ package wallutils
 import (
 	"errors"
 	"fmt"
+
+	"github.com/xyproto/env"
 )
 
 // Mate windowmanager detector
@@ -32,7 +34,7 @@ func (m *Mate) ExecutablesExists() bool {
 
 // Running examines environment variables to try to figure out if this backend is currently running
 func (m *Mate) Running() bool {
-	return containsE("GDMSESSION", "mate") || containsE("XDG_SESSION_DESKTOP", "MATE") || containsE("XDG_CURRENT_DESKTOP", "MATE") || containsE("DESKTOP_SESSION", "xsessions/mate")
+	return env.Contains("GDMSESSION", "mate") || env.Contains("XDG_SESSION_DESKTOP", "MATE") || env.Contains("XDG_CURRENT_DESKTOP", "MATE") || env.Contains("DESKTOP_SESSION", "xsessions/mate")
 }
 
 // SetMode will set the current way to display the wallpaper (stretched, tiled etc)

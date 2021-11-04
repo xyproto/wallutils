@@ -4,6 +4,8 @@ import (
 	"errors"
 	"fmt"
 	"strings"
+
+	"github.com/xyproto/env"
 )
 
 // Xfce4 windowmanager detector
@@ -24,7 +26,7 @@ func (x *Xfce4) ExecutablesExists() bool {
 
 // Running examines environment variables to try to figure out if this backend is currently running
 func (x *Xfce4) Running() bool {
-	return (containsE("GDMSESSION", "xfce") || containsE("XDG_SESSION_DESKTOP", "xfce") || containsE("DESKTOP_SESSION", "xfce"))
+	return (env.Contains("GDMSESSION", "xfce") || env.Contains("XDG_SESSION_DESKTOP", "xfce") || env.Contains("DESKTOP_SESSION", "xfce"))
 }
 
 // SetMode will set the current way to display the wallpaper (stretched, tiled etc)

@@ -118,14 +118,6 @@ func outputShell(shellCommand string, verbose bool) string {
 	return string(stdoutStderr)
 }
 
-func containsE(envVar, subString string) bool {
-	return strings.Contains(os.Getenv(envVar), subString)
-}
-
-func hasE(envVar string) bool {
-	return os.Getenv(envVar) != ""
-}
-
 // CommonPrefix will find the longest common prefix in a slice of strings
 func CommonPrefix(sl []string) string {
 	if len(sl) == 0 {

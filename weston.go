@@ -4,6 +4,8 @@ import (
 	"errors"
 	"fmt"
 	"os"
+
+	"github.com/xyproto/env"
 )
 
 // Weston windowmanager detector
@@ -24,7 +26,7 @@ func (w *Weston) ExecutablesExists() bool {
 
 // Running examines environment variables to try to figure out if this backend is currently running
 func (w *Weston) Running() bool {
-	return containsE("GDMSESSION", "weston") || containsE("XDG_SESSION_DESKTOP", "weston") || containsE("XDG_CURRENT_DESKTOP", "weston")
+	return env.Contains("GDMSESSION", "weston") || env.Contains("XDG_SESSION_DESKTOP", "weston") || env.Contains("XDG_CURRENT_DESKTOP", "weston")
 }
 
 // SetMode will set the current way to display the wallpaper (stretched, tiled etc)

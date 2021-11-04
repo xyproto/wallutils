@@ -3,6 +3,8 @@ package wallutils
 import (
 	"errors"
 	"fmt"
+
+	"github.com/xyproto/env"
 )
 
 // Cinnamon windowmanager detector
@@ -32,7 +34,7 @@ func (c *Cinnamon) ExecutablesExists() bool {
 
 // Running examines environment variables to try to figure out if this backend is currently running
 func (c *Cinnamon) Running() bool {
-	return (containsE("XDG_CURRENT_DESKTOP", "X-Cinnamon") || containsE("GDMSESSION", "cinnamon") || containsE("DESKTOP_SESSION", "xsessions/cinnamon"))
+	return (env.Contains("XDG_CURRENT_DESKTOP", "X-Cinnamon") || env.Contains("GDMSESSION", "cinnamon") || env.Contains("DESKTOP_SESSION", "xsessions/cinnamon"))
 }
 
 // SetMode will set the current way to display the wallpaper (stretched, tiled etc)

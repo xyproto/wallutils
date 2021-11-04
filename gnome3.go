@@ -3,6 +3,8 @@ package wallutils
 import (
 	"errors"
 	"fmt"
+
+	"github.com/xyproto/env"
 )
 
 // Gnome3 windowmanager detector
@@ -32,7 +34,7 @@ func (g3 *Gnome3) ExecutablesExists() bool {
 
 // Running examines environment variables to try to figure out if this backend is currently running
 func (g3 *Gnome3) Running() bool {
-	return (containsE("GDMSESSION", "gnome") || containsE("XDG_SESSION_DESKTOP", "gnome"))
+	return (env.Contains("GDMSESSION", "gnome") || env.Contains("XDG_SESSION_DESKTOP", "gnome"))
 }
 
 // SetMode will set the current way to display the wallpaper (stretched, tiled etc)
