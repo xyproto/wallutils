@@ -74,9 +74,9 @@ Then install the required dependencies, clone the repository and install walluti
 
 ## Installing a single utility
 
-Using Go 1.11 or later, installing the `settimed` utility:
+Using Go 1.17 or later, installing the `getdpi` utility:
 
-    go get -u github.com/xyproto/wallutils/cmd/settimed
+    go install github.com/xyproto/wallutils/cmd/getdpi@latest
 
 ## Wayland or X only
 
