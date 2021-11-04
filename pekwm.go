@@ -71,8 +71,8 @@ func (f *Pekwm) SetWallpaper(imageFilename string) error {
 	}
 
 	// set the wallpaper with pekwm_bg
-	if err := run("pekwm_bg", []string{"Image", imageFilename + tag}, f.verbose); err != nil {
-		return errors.New("pekwm_bg Image \"" + imageFilename + tag + "\" failed to run")
+	if err := run("pekwm_bg", []string{"-D", "Image", imageFilename + tag}, f.verbose); err != nil {
+		return errors.New("pekwm_bg -D Image \"" + imageFilename + tag + "\" failed to run")
 	}
 	return nil
 }
