@@ -140,7 +140,7 @@ func (gtw *Wallpaper) EventLoop(verbose bool, setWallpaperFunc func(string) erro
 
 			// Register the start of a transition event
 			eventloop.ClockEvent(start.Hour(), start.Minute(), func() error {
-				progress := time.Now().Sub(from)
+				progress := mod24(window - event.ToToday(upTo).Sub(event.ToToday(time.Now())))
 				ratio := float64(progress) / float64(window)
 				if verbose {
 					fmt.Printf("Triggered transition event at %s (%d%% complete)\n", cFmt(from), int(ratio*100))
@@ -165,7 +165,7 @@ func (gtw *Wallpaper) EventLoop(verbose bool, setWallpaperFunc func(string) erro
 
 			// Register a half way event
 			eventloop.ClockEvent(halfway.Hour(), halfway.Minute(), func() error {
-				progress := time.Now().Sub(from)
+				progress := mod24(window - event.ToToday(upTo).Sub(event.ToToday(time.Now())))
 				ratio := float64(progress) / float64(window)
 				if verbose {
 					fmt.Printf("Triggered transition event at %s (%d%% complete)\n", cFmt(from), int(ratio*100))

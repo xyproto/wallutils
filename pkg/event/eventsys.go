@@ -70,7 +70,7 @@ func (sys *EventSys) eventLoop(verbose bool) error {
 			for _, coolOffEvent := range coolOff {
 				if coolOffEvent == event {
 					//if verbose {
-						//log.Println("Skipping event that is in the cool-off period")
+					//log.Println("Skipping event that is in the cool-off period")
 					//}
 					continue NEXT_EVENT
 				}
