@@ -6,8 +6,8 @@ import (
 	"os"
 
 	"github.com/urfave/cli"
-	"github.com/xyproto/wallutils/pkg/gnometimed"
 	"github.com/xyproto/wallutils"
+	"github.com/xyproto/wallutils/pkg/gnometimed"
 )
 
 func conversionAction(c *cli.Context) error {
