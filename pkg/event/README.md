@@ -1,8 +1,6 @@
-# Event II
+# Event
 
-[![Build Status](https://travis-ci.com/xyproto/event2.svg?branch=master)](https://travis-ci.com/xyproto/event2) [![GoDoc](https://godoc.org/github.com/xyproto/event2?status.svg)](https://godoc.org/github.com/xyproto/event2) [![License](https://img.shields.io/badge/license-MIT-green.svg?style=flat)](https://raw.githubusercontent.com/xyproto/event2/master/LICENSE) [![Go Report Card](https://goreportcard.com/badge/github.com/xyproto/event2)](https://goreportcard.com/report/github.com/xyproto/event2)
-
-A simple event system, for triggering events at certain times. This is the successor of [event](https://github.com/xyproto/event), which was needlessly complex.
+A simple event system, for triggering events at certain times.
 
 ## Example use
 
@@ -13,15 +11,14 @@ package main
 
 import (
 	"fmt"
-	"sync"
 	"time"
 
-	"github.com/xyproto/event2"
+	"github.com/xyproto/wallutils/pkg/event"
 )
 
 func main() {
 	// Create a new event system, with a loop iteration delay of 1 second
-	eventSys := event2.NewSystem(1 * time.Second)
+	eventSys := event.NewSystem(1 * time.Second)
 	// Add an event that will trigger every day at 13:37
 	eventSys.ClockEvent(13, 37, func() error {
 		fmt.Println("It's leet o'clock")
@@ -29,10 +26,6 @@ func main() {
 	})
 	// Run the event system (not verbose)
 	eventSys.Run(false)
-	// Wait endlessly
-	var wg sync.WaitGroup
-	wg.Add(1)
-	wg.Wait()
 }
 ```
 
@@ -45,11 +38,11 @@ import (
 	"fmt"
 	"time"
 
-	"github.com/xyproto/event2"
+	"github.com/xyproto/wallutils/pkg/event"
 )
 
-func clockSystem() *event2.EventSys {
-	sys := event2.NewSystem(1 * time.Second)
+func clockSystem() *event.EventSys {
+	sys := event.NewSystem(1 * time.Second)
 	for hour := 0; hour < 24; hour++ {
 		for minute := 0; minute < 60; minute++ {
 			// Create new variables that can be closed over by the new function below
@@ -67,7 +60,7 @@ func clockSystem() *event2.EventSys {
 
 func main() {
 	// Start the event system that will trigger an event at every minute
-	clockSystem().Run(false)
+	clockSystem().RunBackground(false)
 	// Wait endlessly while saying "tick" and "tock" every second
 	for {
 		fmt.Println("tick")
@@ -77,9 +70,3 @@ func main() {
 	}
 }
 ```
-
-## General info
-
-* Version: 0.0.1
-* License: MIT
-* Author: Alexander F. Rødseth &lt;xyproto@archlinux.org&gt;
