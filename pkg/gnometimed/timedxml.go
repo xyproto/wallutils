@@ -58,7 +58,7 @@ func (t *GTransition) Duration() time.Duration {
 	return time.Duration(t.Seconds) * time.Second
 }
 
-// Parse a Gnome XML file to a Wallpaper struct
+// ParseXML will try to parse a Gnome XML file into a Wallpaper struct
 func ParseXML(filename string) (*Wallpaper, error) {
 	data, err := ioutil.ReadFile(filename)
 	if err != nil {
