@@ -1,6 +1,6 @@
 package wallutils
 
-// This is the fallback if no specific windowmanager has been detected
+// This is for Pekwm 0.2.0 or later
 
 import (
 	"errors"
