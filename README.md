@@ -86,7 +86,7 @@ Using Go 1.17 or later, installing the `getdpi` utility:
 
 ## Wayland or X only
 
-The packages related to X can be removed after building if only wish to keep the Wayland-related functionality. And likewise for X.
+The packages related to X can be removed after building if you only wish to keep the Wayland-related functionality. And the same for X.
 
 ## Example use of `settimed`
 
