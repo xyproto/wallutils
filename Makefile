@@ -18,7 +18,7 @@ all:
 	(cd cmd/lstimed; go build)
 	(cd cmd/settimed; go build)
 	(cd cmd/xml2stw; go build)
-	(cd cmd/heic2stw; go build)
+	-(cd cmd/heic2stw; go build)
 
 static:
 	CGO_ENABLED=0 go build -ldflags "-s" -a
