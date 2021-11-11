@@ -54,7 +54,7 @@ $ lsmon
 Until an official package is available:
 
     sudo dnf update
-    sudo dnf install git golang libXcursor-devel libXmu-devel xorg-x11-xbitmaps
+    sudo dnf install git golang libXcursor-devel libXmu-devel xorg-x11-xbitmaps libheif-devel
     git clone https://github.com/xyproto/wallutils
     cd wallutils
     make
@@ -72,7 +72,7 @@ Go 1.11 or later is required, [here's an easy way to install Go 1.12](https://gi
 
 Then install the required dependencies, clone the repository and install wallutils:
 
-    sudo apt-get install git libx11-dev libxcursor-dev libxmu-dev libwayland-dev libxpm-dev xbitmaps libxmu-headers
+    sudo apt-get install git libx11-dev libxcursor-dev libxmu-dev libwayland-dev libxpm-dev xbitmaps libxmu-headers libheif-dev
     git clone https://github.com/xyproto/wallutils
     cd wallutils
     make
