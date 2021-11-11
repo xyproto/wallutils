@@ -28,6 +28,11 @@ The [Mojave timed wallpaper](https://github.com/japamax/gnome-mojave-timed-wallp
   * `wayinfo` shows detailed information about the connected monitors, via Wayland.
   * `xinfo` shows detailed information about the current X setup.
   * `xml2stw` for converting GNOME timed wallpapers to the Simple Timed Wallpaper format.
+  * `heic2stw` for extracting the timing information from macOS dynamic wallpapers (`.heic` files) to the Simple Timed Wallpaper format.
+
+## Included scripts
+
+  * `heic-install` for installing a macOS dynamic wallpaper to `/usr/share/backgrounds` using both ImageMagick `convert` and `heic2stw`.
 
 ## Example use of the `lsmon` utility
 
