@@ -1,7 +1,7 @@
 package wallutils
 
 // #cgo LDFLAGS: -lwayland-client
-//#include "wayinfo.h"
+//#include "include/wayinfo.h"
 import "C"
 import (
 	"errors"
