@@ -139,14 +139,16 @@ if err := wallutils.SetWallpaper(imageFilename); err != nil {
 
 ## Build requirements
 
-* Go 1.11 or later.
+* Go 1.11 or later. 1.17 or later is recommended.
 * A working C compiler (tested with GCC 8.2.1).
 * Header files for Wayland and X.
+* `libheif 1.12.0` for `heic2stw` and `heic-install`.
 
 ## Runtime requirements
 
 * `libwayland-client.so`, for Wayland support.
 * `libX11.so`, for X support.
+* `libheif.so` for HEIF/`.heic` image support.
 
 It is also possible to build with `make static`, to only build the utilities that does not depend on any of the above `.so` files, as statically compiled ELF executables.
 
