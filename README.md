@@ -2,7 +2,7 @@
 
 * Detect monitor resolutions and set the desktop wallpaper, for any window manager (please file an issue if your window manager is not supported yet).
 * Supports GNOME timed wallpapers, and includes a utility that can run an event loop for changing them (also supports cross fading).
-* Introduces a new file format for timed wallpapers: The **Simple Timed Wallpaper** format: [Package](https://github.com/xyproto/wallutils/tree/main/pkg/simpletimed) | [Markdown](https://github.com/xyproto/wallutils/blob/main/pkg/simpletimed/stw-1.0.0.md) | [PDF](https://raw.githubusercontent.com/xyproto/wallutils/main/pkg/simpletimed/stw-1.0.0.pdf).
+* Introduces a new file format for timed wallpapers: The **Simple Timed Wallpaper** format: [Markdown](https://github.com/xyproto/wallutils/blob/main/pkg/simpletimed/stw-1.0.0.md) | [PDF](https://raw.githubusercontent.com/xyproto/wallutils/main/pkg/simpletimed/stw-1.0.0.pdf).
 * GNOME timed wallpapers can be converted to the Simple Timed Wallpaper format with the `xml2stw` utility.
 
 [![Packaging status](https://repology.org/badge/vertical-allrepos/wallutils.svg)](https://repology.org/project/wallutils/versions)
@@ -11,7 +11,7 @@
 
 The [Mojave timed wallpaper](https://github.com/japamax/gnome-mojave-timed-wallpaper) and other timed wallpapers can be set with the `settimed` command, and will cross fade from image to image as the day progresses:
 
-![](https://i.redd.it/z5zx32pe3l311.gif)
+<img alt="Dynamic wallpaper example" src="https://i.redd.it/z5zx32pe3l311.gif" width=320>
 
 ## Included utilities
 
