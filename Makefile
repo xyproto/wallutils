@@ -18,6 +18,7 @@ all:
 	(cd cmd/lstimed; go build)
 	(cd cmd/settimed; go build)
 	(cd cmd/xml2stw; go build)
+	(cd cmd/heic2stw; go build)
 
 static:
 	CGO_ENABLED=0 go build -ldflags "-s" -a
@@ -34,6 +35,7 @@ static:
 	(cd cmd/lstimed; CGO_ENABLED=0 go build -ldflags "-s" -a)
 	(cd cmd/settimed; CGO_ENABLED=0 go build -ldflags "-s" -a)
 	(cd cmd/xml2stw; CGO_ENABLED=0 go build -ldflags "-s" -a)
+	@#(cd cmd/heic2stw; CGO_ENABLED=0 go build -ldflags "-s" -a)
 
 install:
 	-install -Dm755 -t "$(DESTDIR)$(PREFIX)/bin" cmd/getdpi/getdpi
@@ -49,6 +51,8 @@ install:
 	install -Dm755 -t "$(DESTDIR)$(PREFIX)/bin" cmd/settimed/settimed
 	install -Dm755 -t "$(DESTDIR)$(PREFIX)/bin" cmd/lstimed/lstimed
 	install -Dm755 -t "$(DESTDIR)$(PREFIX)/bin" cmd/xml2stw/xml2stw
+	-install -Dm755 -t "$(DESTDIR)$(PREFIX)/bin" cmd/heic2stw/heic2stw && \
+	  install -Dm755 -t "$(DESTDIR)$(PREFIX)/bin" cmd/heic2stw/heic-install
 
 clean:
 	(cd cmd/getdpi; go clean)
@@ -64,4 +68,5 @@ clean:
 	(cd cmd/lstimed; go clean)
 	(cd cmd/settimed; go clean)
 	(cd cmd/xml2stw; go clean)
+	(cd cmd/heic2stw; go clean)
 	go clean

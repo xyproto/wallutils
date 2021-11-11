@@ -53,9 +53,13 @@ func Convert(filename string) (string, error) {
 
 	}
 
-	baseFilename := strings.TrimSuffix(filepath.Base(filename), filepath.Ext(filename))
-	s := fmt.Sprintf("stw: 1.0\nname: %s\n", baseFilename)
-	s += fmt.Sprintf("format: /usr/share/backgrounds/%s/%s_%%s.jpg\n", baseFilename, baseFilename)
+	name := strings.TrimSuffix(filepath.Base(filename), filepath.Ext(filename))
+	if len(name) == 0 {
+		return "", errors.New("image name is empty")
+	}
+
+	s := fmt.Sprintf("stw: 1.0\nname: %s\n", name)
+	s += fmt.Sprintf("format: /usr/share/backgrounds/%s/%%s.jpg\n", name)
 
 	var lines []string
 	for i, t := range timeTable {
