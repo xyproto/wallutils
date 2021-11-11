@@ -1,3 +1,7 @@
+# github.com/antchfx/xmlquery v1.3.8
+github.com/antchfx/xmlquery
+# github.com/antchfx/xpath v1.2.0
+github.com/antchfx/xpath
 # github.com/anthonynsimon/bild v0.13.0
 github.com/anthonynsimon/bild/blend
 github.com/anthonynsimon/bild/clone
@@ -9,6 +13,8 @@ github.com/anthonynsimon/bild/parallel
 github.com/cpuguy83/go-md2man/v2/md2man
 # github.com/fatih/color v1.13.0
 github.com/fatih/color
+# github.com/golang/groupcache v0.0.0-20210331224755-41bb18bfe9da
+github.com/golang/groupcache/lru
 # github.com/mattn/go-colorable v0.1.11
 github.com/mattn/go-colorable
 # github.com/mattn/go-isatty v0.0.14
@@ -23,8 +29,34 @@ github.com/stretchr/powerwalk
 github.com/urfave/cli
 # github.com/xyproto/env v1.7.0
 github.com/xyproto/env
+# github.com/xyproto/heic v1.0.0
+github.com/xyproto/heic
 # golang.org/x/image v0.0.0-20211028202545-6944b10bf410
 golang.org/x/image/bmp
+# golang.org/x/net v0.0.0-20211111160137-58aab5ef257a
+golang.org/x/net/html
+golang.org/x/net/html/atom
+golang.org/x/net/html/charset
 # golang.org/x/sys v0.0.0-20211110154304-99a53858aa08
 golang.org/x/sys/internal/unsafeheader
 golang.org/x/sys/unix
+# golang.org/x/text v0.3.7
+golang.org/x/text/encoding
+golang.org/x/text/encoding/charmap
+golang.org/x/text/encoding/htmlindex
+golang.org/x/text/encoding/internal
+golang.org/x/text/encoding/internal/identifier
+golang.org/x/text/encoding/japanese
+golang.org/x/text/encoding/korean
+golang.org/x/text/encoding/simplifiedchinese
+golang.org/x/text/encoding/traditionalchinese
+golang.org/x/text/encoding/unicode
+golang.org/x/text/internal/language
+golang.org/x/text/internal/language/compact
+golang.org/x/text/internal/tag
+golang.org/x/text/internal/utf8internal
+golang.org/x/text/language
+golang.org/x/text/runes
+golang.org/x/text/transform
+# howett.net/plist v0.0.0-20201203080718-1454fab16a06
+howett.net/plist
