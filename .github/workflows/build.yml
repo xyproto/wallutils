@@ -18,5 +18,8 @@ jobs:
       uses: actions/checkout@v2
     - name: Test
       run: |
-        sudo apt-get install -y libx11-dev libxcursor-dev libxmu-dev libwayland-dev libxpm-dev xbitmaps libxmu-headers libheif-dev
+        sudo add-apt-repository ppa:strukturag/libde265
+        sudo apt update
+        sudo apt upgrade
+        sudo apt-get install -y libx11-dev libxcursor-dev libxmu-dev libwayland-dev libxpm-dev xbitmaps libxmu-headers libheif-dev heif-thumbnailer
         make
