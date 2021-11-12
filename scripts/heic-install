@@ -1,0 +1,50 @@
+#!/bin/bash -e
+filename="$1"
+
+if [[ "$1" == "" ]]; then
+  echo 'Usage: heic-install image.heic'
+  exit 1
+fi
+
+# pkgdir is optional
+pkgdir="$2"
+
+# use colors, if $NO_COLOR != 1
+if [[ "$NO_COLOR" != "1" ]]; then
+  RED="\033[1;31m"
+  BLUE="\033[1;34m"
+  BOLD="\033[;1m"
+  OFF="\033[0m"
+else
+  RED=""
+  BLUE=""
+  BOLD=""
+  OFF=""
+fi
+
+baseName=$(basename "$filename")
+name=${baseName%.*}
+
+if [[ "$name" == "" ]]; then
+  echo 'The image name is empty'
+  exit 1
+fi
+
+# check if we have access to /usr/share/backgrounds (since -e is used)
+install -d "$pkgdir/usr/share/backgrounds/$name" 2>/dev/null || \
+  (printf "${RED}error: heic-install needs permissions to write to /usr/share/backgrounds${OFF}\n${BLUE}try: ${BOLD}sudo %s %q${OFF}\n" "$(basename $0)" "$*"; exit 1)
+
+# extract the metadata
+echo -e -n "  ${BLUE}-> ${BOLD}Extracting metadata from $baseName... $OFF"
+heic2stw -- "$filename" > "$pkgdir/usr/share/backgrounds/$name/$name.stw" && echo -e "${BOLD}DONE${OFF}" || exit 1
+
+# convert the images
+echo -e -n "  ${BLUE}-> ${BOLD}Converting images from HEIC to JPEG...$OFF"
+convert -verbose -- "$filename" "$pkgdir/usr/share/backgrounds/$name/%02d.jpg" && echo -e "  ${BLUE}-> ${BOLD}DONE$OFF" || exit 1
+
+# set permissions
+chmod 0755 "$pkgdir/usr/share/backgrounds/$name"
+chmod 0644 "$pkgdir/usr/share/backgrounds/$name/"*
+
+# check if it shows up with lstimed
+lstimed | grep -q "$name" && echo -e "  ${BLUE}-> ${BOLD}Success, ${BLUE}$name ${BOLD}was installed${OFF}" || (echo -e "${RED}Error, ${BLUE}$name ${RED}was not installed correctly${OFF}"; exit 1)
