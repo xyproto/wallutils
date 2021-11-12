@@ -12,4 +12,4 @@ And then extract a simple timed wallpaper file like this:
 
 Then copy `image.stw` and `image_*.jpg` to `/usr/share/backgrounds/image/`.
 
-The included `heic-install` script does all of the above.
+The included `heic-install` script in the `scripts` directory in the project root does all of the above.
