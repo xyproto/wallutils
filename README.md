@@ -23,7 +23,7 @@ The [Mojave timed wallpaper](https://github.com/japamax/gnome-mojave-timed-wallp
   * `lswallpaper`, for listing all installed wallpapers (use `-l` and `-s` to list more information).
   * `setcollection`, for setting a suitable (in terms of resolution) wallpaper from a wallpaper collection.
   * `setrandom`, for setting a random wallpaper.
-  * `settimed`, for setting timed wallpapers (will continue to run, to handle time events).
+  * `settimed`, for setting timed wallpapers (will continue to run, to handle time events). (This utility has recently been refactored and needs more testing).
   * `setwallpaper` can be used for setting a wallpaper (works both over X and the Wayland protocol).
   * `wayinfo` shows detailed information about the connected monitors, via Wayland.
   * `xinfo` shows detailed information about the current X setup.
