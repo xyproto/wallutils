@@ -50,7 +50,6 @@ func Convert(filename string) (string, error) {
 	timeTable, err := handle.ImageTimes(firstMetadataID)
 	if err != nil {
 		return "", err
-
 	}
 
 	name := strings.TrimSuffix(filepath.Base(filename), filepath.Ext(filename))
@@ -99,13 +98,6 @@ func main() {
 	cli.VersionFlag = cli.BoolFlag{
 		Name:  "version, V",
 		Usage: "output version information",
-	}
-
-	app.Flags = []cli.Flag{
-		cli.BoolFlag{
-			Name:  "verbose, v",
-			Usage: "verbose output",
-		},
 	}
 
 	app.Action = conversionAction
