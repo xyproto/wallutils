@@ -80,7 +80,7 @@ func (c *Cinnamon) SetWallpaper(imageFilename string) error {
 		mode = "wallpaper"
 	default:
 		// Invalid and unrecognized desktop wallpaper mode
-		return fmt.Errorf("invalid desktop wallpaper mode for MATE: %s", mode)
+		return fmt.Errorf("invalid desktop wallpaper mode for Cinnamon: %s", mode)
 	}
 
 	if !c.hasGsettings {
