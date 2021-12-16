@@ -143,7 +143,7 @@ if err := wallutils.SetWallpaper(imageFilename); err != nil {
 * Go 1.11 or later. 1.17 or later is recommended.
 * A working C compiler (tested with GCC 8.2.1).
 * Header files for Wayland and X.
-* `libheif 1.12.0` for `heic2stw` and `heic-install`.
+* `libheif` for `heic2stw` and `heic-install`.
 
 ## Runtime requirements
 
@@ -155,7 +155,7 @@ It is also possible to build with `make static`, to only build the utilities tha
 
 ## Wallpaper collections
 
-The XML format from GNOME for specifying wallpaper collections is not yet supported (and I'm not sure if it's needed). Creating a directory with images where the filename of the images specify the resolution (like `wallpaper_5639x3561.jpg`) is enough for `lscollection` to recognize it as a collection (if the directory is placed in `/usr/share/backgrounds` or `/usr/share/wallpapers`).
+The XML format from GNOME for specifying wallpaper **collections** is not yet supported (and I'm not sure if it's needed). Creating a directory with images where the filename of the images specify the resolution (like `wallpaper_5639x3561.jpg`) is enough for `lscollection` to recognize it as a collection (if the directory is placed in `/usr/share/backgrounds` or `/usr/share/wallpapers`).
 
 ## Refreshing the wallpaper after waking from sleep
 
