@@ -66,5 +66,5 @@ func (s *Sway) SetWallpaper(imageFilename string) error {
 		return fmt.Errorf("invalid desktop wallpaper mode for Sway: %s", mode)
 	}
 
-	return run("swaymsg", []string{"output * bg " + imageFilename + " " + mode}, s.verbose)
+	return run("swaymsg", []string{"output * bg \"'" + imageFilename + "'\" " + mode}, s.verbose)
 }
