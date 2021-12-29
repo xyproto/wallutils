@@ -39,7 +39,7 @@ echo -e -n "  ${BLUE}-> ${BOLD}Extracting metadata from $baseName... $OFF"
 heic2stw -- "$filename" > "$pkgdir/usr/share/backgrounds/$name/$name.stw" && echo -e "${BOLD}DONE${OFF}" || exit 1
 
 # convert the images
-echo -e -n "  ${BLUE}-> ${BOLD}Converting images from HEIC to JPEG...$OFF"
+echo -e "  ${BLUE}-> ${BOLD}Converting images from HEIC to JPEG...$OFF"
 convert -verbose -- "$filename" "$pkgdir/usr/share/backgrounds/$name/%02d.jpg" && echo -e "  ${BLUE}-> ${BOLD}DONE$OFF" || exit 1
 
 # set permissions
