@@ -55,7 +55,7 @@ $ lsmon
 Until an official package is available:
 
     sudo dnf update
-    sudo dnf install git golang libXcursor-devel libXmu-devel xorg-x11-xbitmaps libheif-devel
+    sudo dnf install git golang imagemagick libXcursor-devel libXmu-devel xorg-x11-xbitmaps libheif-devel
     git clone https://github.com/xyproto/wallutils
     cd wallutils
     make
@@ -65,7 +65,7 @@ Until an official package is available:
 
 With sudo, or as root, install the required dependencies:
 
-    apt install git golang libx11-dev libxcursor-dev libxmu-dev libwayland-dev libxpm-dev xbitmaps libxmu-headers libheif-dev make
+    apt install git golang imagemagick libx11-dev libxcursor-dev libxmu-dev libwayland-dev libxpm-dev xbitmaps libxmu-headers libheif-dev make
 
 As a user, clone the repository and build the utilities:
 
