@@ -61,22 +61,20 @@ Until an official package is available:
     make
     sudo make PREFIX=/usr/local install
 
-### Ubuntu
+### Debian 11
 
-Until an official package is available:
+With sudo, or as root, install the required dependencies:
 
-Go 1.11 or later is required, [here's an easy way to install Go 1.12](https://github.com/golang/go/wiki/Ubuntu):
+    apt install git golang libx11-dev libxcursor-dev libxmu-dev libwayland-dev libxpm-dev xbitmaps libxmu-headers libheif-dev make
 
-    sudo add-apt-repository ppa:longsleep/golang-backports
-    sudo apt-get update
-    sudo apt-get install golang-go
+As a user, clone the repository and build the utilities:
 
-Then install the required dependencies, clone the repository and install wallutils:
-
-    sudo apt-get install git libx11-dev libxcursor-dev libxmu-dev libwayland-dev libxpm-dev xbitmaps libxmu-headers libheif-dev
     git clone https://github.com/xyproto/wallutils
     cd wallutils
     make
+
+Then with sudo, or as root, again, install wallutils:
+
     sudo make PREFIX=/usr/local install
 
 ## Installing a single utility
