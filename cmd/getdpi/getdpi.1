@@ -1,0 +1,32 @@
+.\"             -*-Nroff-*-
+.\"
+.TH "getdpi" 1 "10 Feb 2022" "getdpi" "User Commands"
+.SH NAME
+getdpi \- get the DPI for the current monitor setup
+.SH SYNOPSIS
+.B getdpi
+Display the average DPI of all connected monitors.
+.sp
+.SH DESCRIPTION
+getdpi can fetch information about all connected monitors, for X or Wayland, and return the average DPI (dots per inch).
+.sp
+.SH OPTIONS
+.sp
+.TP
+.B \-a or \-\-all
+Output DPI information for all available monitors.
+.TP
+.B \-b or \-\-both
+Output both the horizontal and vertical average DPI.
+.TP
+.B \-h or \-\-help
+Show usage information.
+.TP
+.B \-V or \-\-version
+Show the current version.
+.PP
+.SH VERSION
+5.10.0
+.SH AUTHOR
+.B o
+was written by Alexander F. Rødseth <xyproto@archlinux.org>
