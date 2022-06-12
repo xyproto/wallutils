@@ -31,13 +31,13 @@ github.com/urfave/cli
 github.com/xyproto/env
 # github.com/xyproto/heic v1.0.0
 github.com/xyproto/heic
-# golang.org/x/image v0.0.0-20211028202545-6944b10bf410
+# golang.org/x/image v0.0.0-20220601225756-64ec528b34cd
 golang.org/x/image/bmp
 # golang.org/x/net v0.0.0-20211111160137-58aab5ef257a
 golang.org/x/net/html
 golang.org/x/net/html/atom
 golang.org/x/net/html/charset
-# golang.org/x/sys v0.0.0-20220128215802-99c3d69c2c27
+# golang.org/x/sys v0.0.0-20220610221304-9f5ed59c137d
 golang.org/x/sys/internal/unsafeheader
 golang.org/x/sys/unix
 # golang.org/x/text v0.3.7
