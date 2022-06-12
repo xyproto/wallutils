@@ -71,6 +71,21 @@ func run(executable string, arguments []string, verbose bool) error {
 	return nil
 }
 
+// runbg executes the given executable and returns an error if the exit code is
+// non-zero. If verbose is true, the command will be printed before running.
+// runs the executable in the background
+func runbg(executable string, arguments []string, verbose bool) (int, error) {
+	if verbose {
+		fmt.Println(executable + " " + strings.Join(arguments, " "))
+	}
+	cmd := exec.Command(executable, arguments...)
+	if err := cmd.Start(); err != nil {
+		return 0, err
+	}
+	pid := cmd.Process.Pid
+	return pid, nil
+}
+
 // output returns the output after running a given executable
 // if verbose is true, the command will be printed before running
 func output(executable string, arguments []string, verbose bool) string {
