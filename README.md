@@ -151,6 +151,8 @@ if err := wallutils.SetWallpaper(imageFilename); err != nil {
 
 It is also possible to build with `make static`, to only build the utilities that does not depend on any of the above `.so` files, as statically compiled ELF executables.
 
+* `swaybg` and `pkill` for Wayland-based window managers like `Labwc`.
+
 ## Wallpaper collections
 
 The XML format from GNOME for specifying wallpaper **collections** is not yet supported (and I'm not sure if it's needed). Creating a directory with images where the filename of the images specify the resolution (like `wallpaper_5639x3561.jpg`) is enough for `lscollection` to recognize it as a collection (if the directory is placed in `/usr/share/backgrounds` or `/usr/share/wallpapers`).
