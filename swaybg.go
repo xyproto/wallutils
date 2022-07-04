@@ -67,10 +67,8 @@ func (sb *SwayBG) SetWallpaper(imageFilename string) error {
 		return fmt.Errorf("invalid desktop wallpaper mode for swaybg: %s", mode)
 	}
 
-	// first stop swaybg, if it`s already running
-	if err := run("pkill", []string{"swaybg"}, sb.verbose); err != nil {
-		return err
-	}
+	// first stop swaybg, if it`s already running (and ignore errors, if it can't be killed)
+	run("pkill", []string{"swaybg"}, sb.verbose)
 
 	// start a new instance
 	pid, err := runbg("swaybg", []string{"-i", imageFilename, "-m", mode, "-o", "*"}, sb.verbose)
