@@ -195,7 +195,7 @@ void sprint_output_info(void* data)
     sprintf(BUF, "\tphysical_width: %d mm, physical_height: %d mm,\n",
         output->geometry.physical_width, output->geometry.physical_height);
     sprintf(BUF, "\tmake: '%s', model: '%s',\n", output->geometry.make, output->geometry.model);
-    sprintf(BUF, "\tsubpixel_orientation: %s, output_tranform: %s,\n", subpixel_orientation,
+    sprintf(BUF, "\tsubpixel_orientation: %s, output_transform: %s,\n", subpixel_orientation,
         transform);
 
     wl_list_for_each(mode, &output->modes, link)
