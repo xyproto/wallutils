@@ -81,6 +81,7 @@ func collectLSPCI(gpus *[]GPU) error {
 		lines := strings.Split(output(lspciPath, []string{"-v"}, false), "\n")
 		gpu := new(GPU)
 		var lookForMemory bool
+		var alreadyThere bool
 		for _, line := range lines {
 			trimmedLine := strings.TrimSpace(line)
 			if strings.Contains(trimmedLine, " VGA ") {
@@ -96,8 +97,9 @@ func collectLSPCI(gpus *[]GPU) error {
 					description = strings.TrimSpace(fields[0])
 				}
 				gpu.Name = description
+				alreadyThere = nameIndex(gpus, gpu.Name) != -1
 				lookForMemory = true
-			} else if lookForMemory && strings.HasPrefix(trimmedLine, "Memory at") {
+			} else if lookForMemory && strings.HasPrefix(trimmedLine, "Memory at") && !alreadyThere {
 				if strings.Contains(trimmedLine, "size=") && !strings.Contains(trimmedLine, "disabled") {
 					fields := strings.SplitN(trimmedLine, "size=", 2)
 					fields = strings.SplitN(fields[1], "]", 2)
