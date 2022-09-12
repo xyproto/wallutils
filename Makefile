@@ -30,6 +30,7 @@ all:
 	(cd cmd/wayinfo; go build ${BUILDFLAGS})
 	(cd cmd/xinfo; go build ${BUILDFLAGS})
 	(cd cmd/xml2stw; go build ${BUILDFLAGS})
+	(cd cmd/vram; go build ${BUILDFLAGS})
 
 # utilities that depend on dynamic libraries are commented out
 static:
@@ -48,6 +49,7 @@ static:
 	@#(cd cmd/wayinfo; CGO_ENABLED=0 go build ${BUILDFLAGS} -ldflags "-s" -a)
 	@#(cd cmd/xinfo; CGO_ENABLED=0 go build ${BUILDFLAGS} -ldflags "-s" -a)
 	(cd cmd/xml2stw; CGO_ENABLED=0 go build ${BUILDFLAGS} -ldflags "-s" -a)
+	(cd cmd/vram; CGO_ENABLED=0 go build ${BUILDFLAGS} -ldflags "-s" -a)
 
 # install all utilities, but let the ones that depend on dynamic libraries be optional
 install:
@@ -66,6 +68,7 @@ install:
 	-install -Dm755 -t "$(DESTDIR)$(PREFIX)/bin" cmd/wayinfo/wayinfo
 	-install -Dm755 -t "$(DESTDIR)$(PREFIX)/bin" cmd/xinfo/xinfo
 	install -Dm755 -t "$(DESTDIR)$(PREFIX)/bin" cmd/xml2stw/xml2stw
+	install -Dm755 -t "$(DESTDIR)$(PREFIX)/bin" cmd/vram/vram
 
 # remove all utility executables
 clean:
@@ -83,4 +86,5 @@ clean:
 	(cd cmd/wayinfo; go clean)
 	(cd cmd/xinfo; go clean)
 	(cd cmd/xml2stw; go clean)
+	(cd cmd/vram; go clean)
 	go clean
