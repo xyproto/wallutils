@@ -3,7 +3,7 @@ package main
 import (
 	"errors"
 	"fmt"
-	"io/ioutil"
+	"io"
 	"net/http"
 	"net/url"
 	"os"
@@ -41,12 +41,12 @@ func download(url, filename string, verbose, redownload bool) error {
 		}
 	}
 	// Download the file
-	b, err := ioutil.ReadAll(resp.Body)
+	b, err := io.ReadAll(resp.Body)
 	if err != nil {
 		return err
 	}
 	// Write the file
-	return ioutil.WriteFile(filename, b, 0644)
+	return os.WriteFile(filename, b, 0644)
 }
 
 func setWallpaperAction(c *cli.Context) error {
@@ -111,7 +111,7 @@ func downloadDirectory() string {
 		return path
 	}
 	// Check if XDG_DOWNLOAD_DIR is defined in ~/.config/user-dirs.dirs
-	dirfileContents, err := ioutil.ReadFile(expanduser("~/.config/user-dirs.dirs"))
+	dirfileContents, err := os.ReadFile(expanduser("~/.config/user-dirs.dirs"))
 	if err == nil {
 		for _, line := range strings.Split(string(dirfileContents), "\n") {
 			if strings.HasPrefix(line, "XDG_DOWNLOAD_DIR") {

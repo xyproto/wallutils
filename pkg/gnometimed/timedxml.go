@@ -5,7 +5,7 @@ import (
 	"encoding/xml"
 	"errors"
 	"fmt"
-	"io/ioutil"
+	"os"
 	"path/filepath"
 	"time"
 )
@@ -60,7 +60,7 @@ func (t *GTransition) Duration() time.Duration {
 
 // ParseXML will try to parse a Gnome XML file into a Wallpaper struct
 func ParseXML(filename string) (*Wallpaper, error) {
-	data, err := ioutil.ReadFile(filename)
+	data, err := os.ReadFile(filename)
 	if err != nil {
 		return nil, err
 	}

@@ -6,7 +6,7 @@ import (
 	"encoding/xml"
 	"fmt"
 	"image"
-	"io/ioutil"
+	"os"
 	"strconv"
 
 	"github.com/xyproto/env"
@@ -48,7 +48,7 @@ type MOutput struct {
 // ParseMonitorFile can parse monitor XML files,
 // like the one that typically exists in ~/.config/monitors.xml
 func ParseMonitorFile(filename string) (*MonitorConfiguration, error) {
-	data, err := ioutil.ReadFile(filename)
+	data, err := os.ReadFile(filename)
 	if err != nil {
 		return nil, err
 	}

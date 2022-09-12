@@ -3,7 +3,7 @@ package simpletimed
 import (
 	"bytes"
 	"fmt"
-	"io/ioutil"
+	"os"
 	"sort"
 	"strings"
 	"time"
@@ -118,7 +118,7 @@ func (stw *Wallpaper) AddTransition(from, upto time.Time, fromFilename, toFilena
 }
 
 func ParseSTW(filename string) (*Wallpaper, error) {
-	data, err := ioutil.ReadFile(filename)
+	data, err := os.ReadFile(filename)
 	if err != nil {
 		return nil, err
 	}
