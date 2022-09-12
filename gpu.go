@@ -91,8 +91,8 @@ func collectLSPCI(gpus *[]GPU) error {
 				}
 				fields = strings.SplitN(fields[1], ":", 2)
 				description := strings.TrimSpace(fields[1])
-				if strings.Contains(description, "[") {
-					fields = strings.SplitN(description, "[", 2)
+				if strings.Contains(description, "(") {
+					fields = strings.SplitN(description, "(", 2)
 					description = strings.TrimSpace(fields[0])
 				}
 				gpu.Name = description
