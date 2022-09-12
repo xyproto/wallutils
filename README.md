@@ -154,7 +154,7 @@ It is also possible to build with `make static`, to only build the utilities tha
 
 * `swaybg` and `pkill` for Wayland-based window managers like `Labwc`.
 
-The `vram` utility depends on `lspci` and also `nvidia-smi` for NVIDIA GPUs.
+The `vram` utility depends on `lspci` (from `pciutils`) and also `nvidia-smi` for NVIDIA GPUs.
 
 ## Wallpaper collections
 
