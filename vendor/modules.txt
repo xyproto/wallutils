@@ -1,8 +1,11 @@
 # github.com/antchfx/xmlquery v1.3.8
+## explicit; go 1.14
 github.com/antchfx/xmlquery
 # github.com/antchfx/xpath v1.2.0
+## explicit; go 1.14
 github.com/antchfx/xpath
 # github.com/anthonynsimon/bild v0.13.0
+## explicit; go 1.12
 github.com/anthonynsimon/bild/blend
 github.com/anthonynsimon/bild/clone
 github.com/anthonynsimon/bild/fcolor
@@ -10,36 +13,53 @@ github.com/anthonynsimon/bild/imgio
 github.com/anthonynsimon/bild/math/f64
 github.com/anthonynsimon/bild/parallel
 # github.com/cpuguy83/go-md2man/v2 v2.0.0
+## explicit; go 1.12
 github.com/cpuguy83/go-md2man/v2/md2man
 # github.com/fatih/color v1.13.0
+## explicit; go 1.13
 github.com/fatih/color
 # github.com/golang/groupcache v0.0.0-20210331224755-41bb18bfe9da
+## explicit
 github.com/golang/groupcache/lru
 # github.com/mattn/go-colorable v0.1.13
+## explicit; go 1.15
 github.com/mattn/go-colorable
 # github.com/mattn/go-isatty v0.0.16
+## explicit; go 1.15
 github.com/mattn/go-isatty
 # github.com/russross/blackfriday/v2 v2.0.1
+## explicit
 github.com/russross/blackfriday/v2
 # github.com/shurcooL/sanitized_anchor_name v1.0.0
+## explicit
 github.com/shurcooL/sanitized_anchor_name
 # github.com/stretchr/powerwalk v0.0.0-20151124150408-bceb9d014549
+## explicit
 github.com/stretchr/powerwalk
+# github.com/stretchr/testify v1.4.0
+## explicit
 # github.com/urfave/cli v1.22.5
+## explicit; go 1.11
 github.com/urfave/cli
 # github.com/xyproto/env v1.7.0
+## explicit; go 1.15
 github.com/xyproto/env
 # github.com/xyproto/heic v1.0.0
+## explicit; go 1.17
 github.com/xyproto/heic
 # golang.org/x/image v0.0.0-20220902085622-e7cb96979f69
+## explicit; go 1.12
 golang.org/x/image/bmp
 # golang.org/x/net v0.0.0-20211111160137-58aab5ef257a
+## explicit; go 1.17
 golang.org/x/net/html
 golang.org/x/net/html/atom
 golang.org/x/net/html/charset
 # golang.org/x/sys v0.0.0-20220909162455-aba9fc2a8ff2
+## explicit; go 1.17
 golang.org/x/sys/unix
 # golang.org/x/text v0.3.7
+## explicit; go 1.17
 golang.org/x/text/encoding
 golang.org/x/text/encoding/charmap
 golang.org/x/text/encoding/htmlindex
@@ -57,5 +77,8 @@ golang.org/x/text/internal/utf8internal
 golang.org/x/text/language
 golang.org/x/text/runes
 golang.org/x/text/transform
+# gopkg.in/yaml.v2 v2.4.0
+## explicit; go 1.15
 # howett.net/plist v0.0.0-20201203080718-1454fab16a06
+## explicit
 howett.net/plist
