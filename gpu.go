@@ -147,8 +147,15 @@ func collectLSPCI(gpus *[]GPU) error {
 }
 
 func collectSYSDEV(gpus *[]GPU) error {
+	const sysDevPath = "/sys/devices"
+
+	// Skip the rest of this function for systems that does not have /sys/devices
+	if fi, err := os.Stat(sysDevPath); err != nil || !fi.IsDir() {
+		return nil
+	}
+
 	gpu := new(GPU)
-	filepath.Walk("/sys/devices", func(path string, fi os.FileInfo, err error) error {
+	filepath.Walk(sysDevPath, func(path string, fi os.FileInfo, err error) error {
 		if err != nil {
 			return err
 		}
