@@ -33,7 +33,12 @@ func collectNVIDIA(gpus *[]GPU) error {
 			} else if lookForTotal && strings.HasPrefix(trimmedLine, "Total") {
 				fields := strings.SplitN(trimmedLine, ":", 2)
 				amount := strings.TrimSpace(fields[1])
-				if strings.HasSuffix(amount, "MiB") {
+				if strings.HasSuffix(amount, "KiB") {
+					fields = strings.SplitN(amount, " ", 2)
+					if amountInt, err := strconv.Atoi(fields[0]); err == nil { // success
+						gpu.VRAM = uint(math.Round(float64(amountInt) / 1024.0))
+					}
+				} else if strings.HasSuffix(amount, "MiB") {
 					fields = strings.SplitN(amount, " ", 2)
 					if amountInt, err := strconv.Atoi(fields[0]); err == nil { // success
 						gpu.VRAM = uint(amountInt)
@@ -42,11 +47,6 @@ func collectNVIDIA(gpus *[]GPU) error {
 					fields = strings.SplitN(amount, " ", 2)
 					if amountInt, err := strconv.Atoi(fields[0]); err == nil { // success
 						gpu.VRAM = uint(amountInt * 1024)
-					}
-				} else if strings.HasSuffix(amount, "KiB") {
-					fields = strings.SplitN(amount, " ", 2)
-					if amountInt, err := strconv.Atoi(fields[0]); err == nil { // success
-						gpu.VRAM = uint(math.Round(float64(amountInt) / 1024.0))
 					}
 				} else {
 					return fmt.Errorf("unrecognized amount of memory: %s", amount)
@@ -104,15 +104,20 @@ func collectLSPCI(gpus *[]GPU) error {
 					fields := strings.SplitN(trimmedLine, "size=", 2)
 					fields = strings.SplitN(fields[1], "]", 2)
 					amount := fields[0]
-					if strings.HasSuffix(amount, "M") {
+					if strings.HasSuffix(amount, "K") {
+						fields = strings.SplitN(amount, "K", 2)
+						if amountInt, err := strconv.Atoi(fields[0]); err == nil { // success
+							gpu.VRAM += uint(math.Round(float64(amountInt) / 1024.0))
+						}
+					} else if strings.HasSuffix(amount, "M") {
 						fields = strings.SplitN(amount, "M", 2)
 						if amountInt, err := strconv.Atoi(fields[0]); err == nil { // success
 							gpu.VRAM += uint(amountInt)
 						}
-					} else if strings.HasSuffix(amount, "K") {
-						fields = strings.SplitN(amount, "K", 2)
+					} else if strings.HasSuffix(amount, "G") {
+						fields = strings.SplitN(amount, "G", 2)
 						if amountInt, err := strconv.Atoi(fields[0]); err == nil { // success
-							gpu.VRAM += uint(math.Round(float64(amountInt) / 1024.0))
+							gpu.VRAM += uint(amountInt * 1024)
 						}
 					} else {
 						return fmt.Errorf("unrecognized amount of memory: %s", amount)
