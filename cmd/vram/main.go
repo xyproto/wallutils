@@ -28,6 +28,14 @@ func getVRAMAction(c *cli.Context) error {
 		return err
 	}
 
+	if len(gpus) == 0 {
+		// Retrieve a slice of GPU structs, including integrated graphic cards
+		gpus, err = wallutils.GPUs(true)
+		if err != nil {
+			return err
+		}
+	}
+
 	// Output the average VRAM in MiB
 	VRAM := uint(0)
 	for _, gpu := range gpus {
