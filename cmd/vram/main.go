@@ -33,7 +33,10 @@ func getVRAMAction(c *cli.Context) error {
 	for _, gpu := range gpus {
 		VRAM += gpu.VRAM
 	}
-	VRAM /= uint(len(gpus))
+	l := uint(len(gpus))
+	if l > 0 {
+		VRAM /= l
+	}
 
 	// Output the average about of VRAM for all GPUs, in MiB
 	fmt.Printf("%d MiB\n", VRAM)
