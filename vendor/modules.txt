@@ -24,7 +24,7 @@ github.com/golang/groupcache/lru
 # github.com/mattn/go-colorable v0.1.13
 ## explicit; go 1.15
 github.com/mattn/go-colorable
-# github.com/mattn/go-isatty v0.0.16
+# github.com/mattn/go-isatty v0.0.17
 ## explicit; go 1.15
 github.com/mattn/go-isatty
 # github.com/russross/blackfriday/v2 v2.0.1
@@ -47,18 +47,18 @@ github.com/xyproto/env
 # github.com/xyproto/heic v1.0.0
 ## explicit; go 1.17
 github.com/xyproto/heic
-# golang.org/x/image v0.0.0-20220902085622-e7cb96979f69
+# golang.org/x/image v0.3.0
 ## explicit; go 1.12
 golang.org/x/image/bmp
-# golang.org/x/net v0.0.0-20211111160137-58aab5ef257a
+# golang.org/x/net v0.0.0-20220722155237-a158d28d115b
 ## explicit; go 1.17
 golang.org/x/net/html
 golang.org/x/net/html/atom
 golang.org/x/net/html/charset
-# golang.org/x/sys v0.0.0-20221006211917-84dc82d7e875
+# golang.org/x/sys v0.4.0
 ## explicit; go 1.17
 golang.org/x/sys/unix
-# golang.org/x/text v0.3.7
+# golang.org/x/text v0.6.0
 ## explicit; go 1.17
 golang.org/x/text/encoding
 golang.org/x/text/encoding/charmap
