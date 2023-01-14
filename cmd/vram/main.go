@@ -1,6 +1,7 @@
 package main
 
 import (
+	"errors"
 	"fmt"
 	"os"
 
@@ -22,18 +23,28 @@ func getVRAMAction(c *cli.Context) error {
 		return nil
 	}
 
-	// Retrieve a slice of GPU structs, or exit with an error, excluding integrated graphic cards ("VGA" in lspci output)
-	gpus, err := wallutils.GPUs(false)
+	includeIntegrated := c.IsSet("integrated")
+
+	// Retrieve a slice of GPU structs, or exit with an error, by default excluding integrated graphic cards ("VGA" in lspci output)
+	gpus, err := wallutils.GPUs(includeIntegrated)
 	if err != nil {
 		return err
 	}
 
 	if len(gpus) == 0 {
-		// Retrieve a slice of GPU structs, including integrated graphic cards
-		gpus, err = wallutils.GPUs(true)
+		if includeIntegrated {
+			fmt.Fprintln(os.Stderr, "Could not find any available GPUs.")
+			return errors.New("could not find any available GPUs")
+		}
+		allGpus, err := wallutils.GPUs(true)
 		if err != nil {
 			return err
 		}
+		nonIntegratedGpus, err := wallutils.GPUs(false)
+		if err != nil {
+			return err
+		}
+		fmt.Fprintf(os.Stderr, "Could not find any non-integrated GPUs, only %d (ALL), %d (NON-INTEGRATED) integrated ones.\n", len(allGpus), len(nonIntegratedGpus))
 	}
 
 	// Output the average VRAM in MiB
@@ -70,6 +81,10 @@ func main() {
 		cli.BoolFlag{
 			Name:  "list, l",
 			Usage: "list the VRAM information for all available GPUs",
+		},
+		cli.BoolFlag{
+			Name:  "integrated, i",
+			Usage: "include integrated GPUs in the calculations",
 		},
 	}
 

@@ -14,7 +14,8 @@ type GPU struct {
 	ID   uint   // GPU number, from 0 and up
 	Name string // GPU name
 	VRAM uint   // VRAM, in MiB
-	VGA  bool   // Shows up as "VGA" with lspci
+	VGA  bool   // Integrated / shows up as "VGA" with lspci
+	Bus  string // ie. 01:00.0
 }
 
 func collectNVIDIA(gpus *[]GPU) error {
@@ -28,6 +29,14 @@ func collectNVIDIA(gpus *[]GPU) error {
 				fields := strings.SplitN(trimmedLine, ":", 2)
 				gpu.Name = strings.TrimSpace(fields[1])
 				lookForTotal = false
+			} else if strings.HasPrefix(trimmedLine, "Bus Id") {
+				fields := strings.SplitN(trimmedLine, ":", 2)
+				bus := strings.TrimSpace(fields[1])
+				if strings.Count(bus, ":") == 2 {
+					busFields := strings.SplitN(bus, ":", 2)
+					bus = busFields[1]
+				}
+				gpu.Bus = bus
 			} else if strings.HasPrefix(trimmedLine, "FB Memory Usage") {
 				lookForTotal = true
 			} else if lookForTotal && strings.HasPrefix(trimmedLine, "Total") {
@@ -67,9 +76,9 @@ func collectNVIDIA(gpus *[]GPU) error {
 	return nil
 }
 
-func nameIndex(gpus *[]GPU, pciName string) int {
+func busIndex(gpus *[]GPU, bus string) int {
 	for index, gpu := range *gpus {
-		if gpu.Name == pciName {
+		if gpu.Bus == bus {
 			return index
 		}
 	}
@@ -87,8 +96,10 @@ func collectLSPCI(gpus *[]GPU) error {
 			if strings.Contains(trimmedLine, " VGA ") {
 				fields := strings.SplitN(trimmedLine, "VGA", 2)
 				pciName := strings.TrimSpace(fields[0])
-				if index := nameIndex(gpus, pciName); index != -1 {
+				gpu.Bus = pciName
+				if index := busIndex(gpus, pciName); index != -1 {
 					gpu = &((*gpus)[index])
+					gpu.VGA = true
 				}
 				fields = strings.SplitN(fields[1], ":", 2)
 				description := strings.TrimSpace(fields[1])
@@ -97,7 +108,7 @@ func collectLSPCI(gpus *[]GPU) error {
 					description = strings.TrimSpace(fields[0])
 				}
 				gpu.Name = description
-				alreadyThere = nameIndex(gpus, gpu.Name) != -1
+				alreadyThere = busIndex(gpus, gpu.Bus) != -1
 				lookForMemory = true
 			} else if lookForMemory && strings.HasPrefix(trimmedLine, "Memory at") && !alreadyThere {
 				if strings.Contains(trimmedLine, "size=") && !strings.Contains(trimmedLine, "disabled") {
@@ -134,7 +145,7 @@ func collectLSPCI(gpus *[]GPU) error {
 					}
 					gpu.ID = nextID
 
-					if nameIndex(gpus, gpu.Name) == -1 { // not already in the slice
+					if busIndex(gpus, gpu.Bus) == -1 { // not already in the slice
 						*gpus = append(*gpus, *gpu)
 					}
 					gpu = new(GPU)
@@ -185,6 +196,7 @@ func collectSYSDEV(gpus *[]GPU) error {
 			gpu.ID = nextID
 			gpu.Name = pciName
 			gpu.VRAM = foundVRAM
+			gpu.Bus = pciName
 
 			*gpus = append(*gpus, *gpu)
 			gpu = new(GPU)
@@ -195,26 +207,61 @@ func collectSYSDEV(gpus *[]GPU) error {
 	return nil
 }
 
+func onlyIntegrated(gpus *[]GPU) {
+	var igpus []GPU
+	for i := range *gpus {
+		if strings.Contains((*gpus)[i].Name, "UHD") {
+			(*gpus)[i].VGA = true
+		}
+		if (*gpus)[i].VGA {
+			igpus = append(igpus, (*gpus)[i])
+		}
+	}
+	*gpus = igpus
+}
+
+func notIntegrated(gpus *[]GPU) {
+	var igpus []GPU
+	for i := range *gpus {
+		if strings.Contains((*gpus)[i].Name, "UHD") {
+			(*gpus)[i].VGA = true
+		}
+		if !(*gpus)[i].VGA {
+			igpus = append(igpus, (*gpus)[i])
+		}
+	}
+	*gpus = igpus
+}
+
 // GPUs returns information about all available GPUs.
 // This function will run "nvidia-smi" or any needed utility in order to collect the information.
-// If alsoLSPCI is set to true, also integrated graphic cards will be detected (listed as "VGA" in the lspci output)
-func GPUs(alsoLSPCI bool) ([]GPU, error) {
+// If alsoIntegrated is set to true, also integrated graphic cards will be detected (listed as "VGA" in the lspci output, or contains the string "UHD")
+func GPUs(alsoIntegrated bool) ([]GPU, error) {
 	gpus := make([]GPU, 0)
 	if err := collectNVIDIA(&gpus); err != nil {
+		if !alsoIntegrated {
+			notIntegrated(&gpus)
+		}
 		return gpus, err
 	}
 	if err := collectSYSDEV(&gpus); err != nil {
+		if !alsoIntegrated {
+			notIntegrated(&gpus)
+		}
 		return gpus, err
 	}
-	if alsoLSPCI {
+	if alsoIntegrated {
 		if err := collectLSPCI(&gpus); err != nil {
 			return gpus, err
 		}
+	}
+	if !alsoIntegrated {
+		notIntegrated(&gpus)
 	}
 	return gpus, nil
 }
 
 // String returns a string with GPU ID and VRAM in MiB
 func (gpu GPU) String() string {
-	return fmt.Sprintf("[%d] %s, %d MiB VRAM", gpu.ID, gpu.Name, gpu.VRAM)
+	return fmt.Sprintf("[%d] %s, %d MiB VRAM, bus %s", gpu.ID, gpu.Name, gpu.VRAM, gpu.Bus)
 }
