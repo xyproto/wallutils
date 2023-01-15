@@ -66,7 +66,7 @@ func main() {
 	app := cli.NewApp()
 
 	app.Name = "vram"
-	app.Usage = "get the average VRAM for all available GPUs (excluding integrated GPUs, unless only integrated GPUs are found)"
+	app.Usage = "get the average VRAM for all available non-integrated GPUs.\n          If only integrated GPUs are available, the average VRAM of these are returned instead."
 	app.UsageText = "vram [options]"
 
 	app.Version = wallutils.VersionString
