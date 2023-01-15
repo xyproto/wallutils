@@ -33,7 +33,7 @@ func Convert(filename string) (string, error) {
 	}
 	handle, err := ctx.GetPrimaryImageHandle()
 	if err != nil {
-		return "", fmt.Errorf("Could not get primary image handle: %s", err)
+		return "", fmt.Errorf("could not get primary image handle: %s", err)
 	}
 	if !handle.IsPrimaryImage() {
 		return "", errors.New("primary image handle is not for the primary image")
