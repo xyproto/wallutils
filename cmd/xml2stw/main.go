@@ -12,7 +12,7 @@ import (
 
 func conversionAction(c *cli.Context) error {
 	if c.NArg() == 0 {
-		return errors.New("please give the path to a GNOME timed wallpaper XML file as the first argument")
+		return errors.New("please use a GNOME timed wallpaper XML file as the first argument")
 	}
 	filename := c.Args().Get(0)
 

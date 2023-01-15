@@ -71,7 +71,7 @@ func Convert(filename string) (string, error) {
 
 func conversionAction(c *cli.Context) error {
 	if c.NArg() == 0 {
-		return errors.New("please give the path to a HEIC dynamic wallpaper file as the first argument")
+		return errors.New("please use a HEIC dynamic wallpaper file as the first argument")
 	}
 	filename := c.Args().Get(0)
 
