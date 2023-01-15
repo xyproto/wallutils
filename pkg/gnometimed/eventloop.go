@@ -37,7 +37,7 @@ func (gtw *Wallpaper) EventLoop(verbose bool, setWallpaperFunc func(string) erro
 			// Wait for a signal of the type given to signal.Notify
 			sig := <-signals
 			// Refresh the wallpaper
-			fmt.Println("Received signal", sig)
+			fmt.Println("Received", sig)
 			go func() {
 				setmut.Lock()
 				if err := stw.SetInitialWallpaper(verbose, setWallpaperFunc, tempImageFilename); err != nil {
