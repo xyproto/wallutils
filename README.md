@@ -14,12 +14,14 @@ The [Mojave timed wallpaper](https://github.com/japamax/gnome-mojave-timed-wallp
 
 <img alt="Dynamic wallpaper example" src="https://i.redd.it/z5zx32pe3l311.gif" width=320>
 
+Note that some window managers makes it hard to achieve smooth switches of desktop backgrounds, while others makes it easy.
+
 ## Included utilities
 
   * `getdpi`, for retrieving the average DPI, for all monitors (use `-b` to see the DPI both horizontally and vertically).
   * `lscollection`, for listing installed wallpaper collections (use `-l` for also listing paths and collection names).
   * `timedinfo`, for showing more information about installed timed wallpapers.
-  * `lsmon` lists the connected monitors and resolutions (use `-d` for also listing DPI).
+  * `lsmon` lists the connected monitors and resolutions that are discovered by the current WM/DE (use `-d` for also listing DPI).
   * `lstimed` for listing installed timed wallpapers (use `-l` for also listing paths).
   * `lswallpaper`, for listing all installed wallpapers (use `-l` and `-s` to list more information).
   * `setcollection`, for setting a suitable (in terms of resolution) wallpaper from a wallpaper collection.
@@ -30,7 +32,7 @@ The [Mojave timed wallpaper](https://github.com/japamax/gnome-mojave-timed-wallp
   * `xinfo` shows detailed information about the current X setup.
   * `xml2stw` for converting GNOME timed wallpapers to the Simple Timed Wallpaper format.
   * `heic2stw` for extracting the timing information from macOS dynamic wallpapers (`.heic` files) to the Simple Timed Wallpaper format.
-  * `vram` for showing the average amount of VRAM that is available for non-integrated GPUs (use `-l` to list all GPUs on the system). (This utility is new and needs more testing on different systems).
+  * `vram` for showing the average amount of VRAM that is available for non-integrated GPUs (use `-l` to list all GPUs on the system).
 
 ## Included scripts
 
