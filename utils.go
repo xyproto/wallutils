@@ -100,32 +100,6 @@ func output(executable string, arguments []string, verbose bool) string {
 	return string(stdoutStderr)
 }
 
-// runShell is the same as the "run" function, but runs the commands in a shell.
-func runShell(shellCommand string, verbose bool) error {
-	if verbose {
-		fmt.Println(shellCommand)
-	}
-	cmd := exec.Command("sh", "-c", shellCommand)
-	if _, err := cmd.CombinedOutput(); err != nil {
-		return err
-	}
-	return nil
-}
-
-// outputShell is the same as the "output" function,
-// but runs the command in a shell
-func outputShell(shellCommand string, verbose bool) string {
-	if verbose {
-		fmt.Println(shellCommand)
-	}
-	cmd := exec.Command("sh", "-c", shellCommand)
-	stdoutStderr, err := cmd.CombinedOutput()
-	if err != nil {
-		return ""
-	}
-	return string(stdoutStderr)
-}
-
 // CommonPrefix will find the longest common prefix in a slice of strings
 func CommonPrefix(sl []string) string {
 	if len(sl) == 0 {

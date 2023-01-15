@@ -207,20 +207,7 @@ func collectSYSDEV(gpus *[]GPU) error {
 	return nil
 }
 
-func onlyIntegrated(gpus *[]GPU) {
-	var igpus []GPU
-	for i := range *gpus {
-		if strings.Contains((*gpus)[i].Name, "UHD") {
-			(*gpus)[i].VGA = true
-		}
-		if (*gpus)[i].VGA {
-			igpus = append(igpus, (*gpus)[i])
-		}
-	}
-	*gpus = igpus
-}
-
-func notIntegrated(gpus *[]GPU) {
+func nonIntegrated(gpus *[]GPU) {
 	var igpus []GPU
 	for i := range *gpus {
 		if strings.Contains((*gpus)[i].Name, "UHD") {
@@ -240,13 +227,13 @@ func GPUs(alsoIntegrated bool) ([]GPU, error) {
 	gpus := make([]GPU, 0)
 	if err := collectNVIDIA(&gpus); err != nil {
 		if !alsoIntegrated {
-			notIntegrated(&gpus)
+			nonIntegrated(&gpus)
 		}
 		return gpus, err
 	}
 	if err := collectSYSDEV(&gpus); err != nil {
 		if !alsoIntegrated {
-			notIntegrated(&gpus)
+			nonIntegrated(&gpus)
 		}
 		return gpus, err
 	}
@@ -256,7 +243,7 @@ func GPUs(alsoIntegrated bool) ([]GPU, error) {
 		}
 	}
 	if !alsoIntegrated {
-		notIntegrated(&gpus)
+		nonIntegrated(&gpus)
 	}
 	return gpus, nil
 }
