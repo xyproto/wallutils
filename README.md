@@ -58,7 +58,8 @@ $ lsmon
 Until an official package is available:
 
     sudo dnf update
-    sudo dnf install git golang imagemagick libXcursor-devel libXmu-devel xorg-x11-xbitmaps libheif-devel
+    sudo dnf install https://mirrors.rpmfusion.org/free/fedora/rpmfusion-free-release-$(rpm -E %fedora).noarch.rpm
+    sudo dnf install git golang ImageMagick libXcursor-devel libXmu-devel xorg-x11-xbitmaps libheif-devel wayland-devel
     git clone https://github.com/xyproto/wallutils
     cd wallutils
     make
