@@ -9,7 +9,7 @@ import (
 	"os"
 	"strconv"
 
-	"github.com/xyproto/env"
+	"github.com/xyproto/env/v2"
 )
 
 // MonitorConfiguration is mainly a collection of MConfiguration + a Version field

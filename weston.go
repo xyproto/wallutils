@@ -5,7 +5,7 @@ import (
 	"fmt"
 	"os"
 
-	"github.com/xyproto/env"
+	"github.com/xyproto/env/v2"
 )
 
 // Weston windowmanager detector

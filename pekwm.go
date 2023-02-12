@@ -6,7 +6,7 @@ import (
 	"errors"
 	"fmt"
 
-	"github.com/xyproto/env"
+	"github.com/xyproto/env/v2"
 )
 
 // Pekwm is a structure containing settings for running the "pekwm_bg" executable

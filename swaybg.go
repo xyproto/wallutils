@@ -6,7 +6,7 @@ package wallutils
 import (
 	"fmt"
 
-	"github.com/xyproto/env"
+	"github.com/xyproto/env/v2"
 )
 
 // SwayBG compatible windowmanager

@@ -5,7 +5,7 @@ import (
 	"fmt"
 	"strings"
 
-	"github.com/xyproto/env"
+	"github.com/xyproto/env/v2"
 )
 
 // Xfce4 windowmanager detector

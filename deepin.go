@@ -4,7 +4,7 @@ import (
 	"errors"
 	"fmt"
 
-	"github.com/xyproto/env"
+	"github.com/xyproto/env/v2"
 )
 
 // Deepin windowmanager detector
