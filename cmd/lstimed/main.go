@@ -2,10 +2,11 @@ package main
 
 import (
 	"fmt"
-	"github.com/urfave/cli"
-	"github.com/xyproto/wallutils"
 	"os"
 	"text/tabwriter"
+
+	"github.com/urfave/cli"
+	"github.com/xyproto/wallutils"
 )
 
 func listTimedWallpapersAction(c *cli.Context) error {

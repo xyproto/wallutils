@@ -2,9 +2,10 @@ package gnometimed
 
 import (
 	"fmt"
-	"github.com/xyproto/wallutils/pkg/simpletimed"
 	"strings"
 	"time"
+
+	"github.com/xyproto/wallutils/pkg/simpletimed"
 )
 
 const simpleTimedWallpaperFormatVersion = "1.0"
@@ -25,7 +26,7 @@ func GnomeToSimple(gtw *Wallpaper) (*simpletimed.Wallpaper, error) {
 // representing a Simple Timed Wallpaper. The Path field in the given
 // struct is not included in the output string.
 func GnomeToSimpleString(gtw *Wallpaper) (string, error) {
-	//filename := gtw.Path
+	// filename := gtw.Path
 	name := gtw.Name
 
 	var sb strings.Builder

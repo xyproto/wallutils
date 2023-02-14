@@ -45,8 +45,10 @@ type GTransition struct {
 	ToFilename   string   `xml:"to"`
 }
 
-type TransitionMap map[int]int
-type StaticMap map[int]int
+type (
+	TransitionMap map[int]int
+	StaticMap     map[int]int
+)
 
 // Duration returns how long a static wallpaper should last
 func (s *GStatic) Duration() time.Duration {
@@ -144,10 +146,10 @@ func findOrder(XMLData []byte) (StaticMap, TransitionMap, error) {
 	// Keep track of encountered <transition" strings
 	transitionCounter := 0
 
-	//staticIndex -> totalIndex
+	// staticIndex -> totalIndex
 	staticOrder := make(StaticMap, staticCount)
 
-	//transitionIndex -> totalIndex
+	// transitionIndex -> totalIndex
 	transitionOrder := make(TransitionMap, transitionCount)
 
 	// if there are no transitions, only static images,
@@ -168,7 +170,7 @@ func findOrder(XMLData []byte) (StaticMap, TransitionMap, error) {
 		if sPos < tPos && sPos != -1 {
 			// Found static tag
 			pos := offset + sPos
-			//log.Println("STATIC", pos, staticCounter, "->", count)
+			// log.Println("STATIC", pos, staticCounter, "->", count)
 			// Record the static index and the total transition/static index
 			staticOrder[staticCounter] = count
 			// Increase the static tag counter
@@ -177,7 +179,7 @@ func findOrder(XMLData []byte) (StaticMap, TransitionMap, error) {
 			offset = pos + len(staticTag)
 		} else if tPos != -1 {
 			pos := offset + tPos
-			//log.Println("TRANSITION", pos, transitionCounter, "->", count)
+			// log.Println("TRANSITION", pos, transitionCounter, "->", count)
 			// Record the transition index and the total transition/static index
 			transitionOrder[transitionCounter] = count
 			// Increase the transition tag counter

@@ -54,7 +54,7 @@ func ClosestByResolutionInFilename(filenames []string) (string, error) {
 			minDist = dist
 			minDistSet = true
 		}
-		//fmt.Printf("FILENAME %s HAS DISTANCE %d TO AVERAGE RESOLUTION %s\n", filename, dist, avgRes)
+		// fmt.Printf("FILENAME %s HAS DISTANCE %d TO AVERAGE RESOLUTION %s\n", filename, dist, avgRes)
 		d[dist] = filename
 	}
 	// ok, have a map, now find the filename of the smallest distance

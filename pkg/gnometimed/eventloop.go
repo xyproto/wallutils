@@ -215,7 +215,7 @@ func (gtw *Wallpaper) EventLoop(verbose bool, setWallpaperFunc func(string) erro
 			})
 
 			// Increase the variable that keeps track of the time
-			//eventTime = eventTime.Add(window)
+			// eventTime = eventTime.Add(window)
 		} else {
 			// This should never happen, it would be an implementation error
 			panic("got an element that is not a GStatic and not a GTransition")

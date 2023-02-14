@@ -19,7 +19,6 @@ var setmut = &sync.RWMutex{}
 
 // UntilNext finds the duration until the next event starts
 func (stw *Wallpaper) UntilNext(et time.Time) (time.Duration, time.Time) {
-
 	// Gather all start times from the list of transitions and list of static wallpaper commands
 	var startTimes []time.Time
 	for _, t := range stw.Transitions {
@@ -56,7 +55,6 @@ func (stw *Wallpaper) UntilNext(et time.Time) (time.Duration, time.Time) {
 // NextEvent finds the next event, given a timestamp.
 // Returns an interface{} that is either a static or transition event.
 func (stw *Wallpaper) NextEvent(et time.Time) (interface{}, time.Time, error) {
-
 	// Create a map, from timestamps to wallpaper events
 	events := make(map[time.Time]interface{})
 	for _, t := range stw.Transitions {
@@ -70,7 +68,7 @@ func (stw *Wallpaper) NextEvent(et time.Time) (interface{}, time.Time, error) {
 	}
 
 	// Using all the collected hours&minutes, create a list of times both today and tomorrow that uses those hours&minutes
-	var allTimes = make(map[time.Time]interface{})
+	allTimes := make(map[time.Time]interface{})
 	now := time.Now()
 	for t, e := range events {
 		today := time.Date(now.Year(), now.Month(), now.Day(), t.Hour(), t.Minute(), 0, 0, now.Location())
@@ -101,7 +99,6 @@ func (stw *Wallpaper) NextEvent(et time.Time) (interface{}, time.Time, error) {
 // PrevEvent finds the previous event, given a timestamp.
 // Returns an interface{} that is either a static or transition event.
 func (stw *Wallpaper) PrevEvent(et time.Time) (interface{}, time.Time, error) {
-
 	// Create a map, from timestamps to wallpaper events
 	events := make(map[time.Time]interface{})
 	for _, t := range stw.Transitions {
@@ -114,7 +111,7 @@ func (stw *Wallpaper) PrevEvent(et time.Time) (interface{}, time.Time, error) {
 		return nil, et, errors.New("can not find next event: got no events")
 	}
 	// Using all the collected hours&minutes, create a list of times both today and tomorrow that uses those hours&minutes
-	var allTimes = make(map[time.Time]interface{})
+	allTimes := make(map[time.Time]interface{})
 	now := time.Now()
 	for t, e := range events {
 		today := time.Date(now.Year(), now.Month(), now.Day(), t.Hour(), t.Minute(), 0, 0, now.Location())
@@ -164,12 +161,12 @@ func (stw *Wallpaper) SetInitialWallpaper(verbose bool, setWallpaperFunc func(st
 		s := v
 
 		// Place values into variables, before enclosing it in the function below.
-		//from := s.At
-		//elapsed := time.Now().Sub(when) // now - when the previous event was set to trigger
-		//durationUntilNext, nextTime := stw.UntilNext(s.At)
-		//window := mod24(durationUntilNext - elapsed) // duration until next event start, minus time elapsed
+		// from := s.At
+		// elapsed := time.Now().Sub(when) // now - when the previous event was set to trigger
+		// durationUntilNext, nextTime := stw.UntilNext(s.At)
+		// window := mod24(durationUntilNext - elapsed) // duration until next event start, minus time elapsed
 		// Duration until next event start, from now
-		//window := time.Now().Sub(when)
+		// window := time.Now().Sub(when)
 
 		window := eventLength
 		cooldown := eventLength
@@ -379,7 +376,7 @@ func (stw *Wallpaper) EventLoop(verbose bool, setWallpaperFunc func(string) erro
 				fmt.Println("Progress:", dFmt(progress))
 				fmt.Println("Up to:", cFmt(upTo))
 				fmt.Println("Window:", dFmt(window))
-				//fmt.Println("Cooldown:", dFmt(cooldown))
+				// fmt.Println("Cooldown:", dFmt(cooldown))
 				fmt.Println("Loop wait:", dFmt(loopWait))
 				fmt.Println("Transition type:", tType)
 				fmt.Println("From filename", tFromFilename)

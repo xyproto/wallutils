@@ -2,11 +2,12 @@ package main
 
 import (
 	"fmt"
-	"github.com/urfave/cli"
-	"github.com/xyproto/wallutils"
 	"os"
 	"path/filepath"
 	"text/tabwriter"
+
+	"github.com/urfave/cli"
+	"github.com/xyproto/wallutils"
 )
 
 // has checks if the given string slice contains the given string

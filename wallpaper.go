@@ -72,7 +72,6 @@ func SetWallpaperCustom(imageFilename, mode string, verbose bool) error {
 		return fmt.Errorf("found no working method for setting the desktop wallpaper:\n%v", lastErr)
 	}
 	return errors.New("found no working method for setting the desktop wallpaper")
-
 }
 
 // SetWallpaperVerbose will set the desktop wallpaper, for any supported

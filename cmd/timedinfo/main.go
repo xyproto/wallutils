@@ -2,12 +2,12 @@ package main
 
 import (
 	"fmt"
+	"os"
+	"strings"
+
 	"github.com/fatih/color"
 	"github.com/urfave/cli"
 	"github.com/xyproto/wallutils"
-	"strings"
-
-	"os"
 )
 
 // Indent all lines with the given prefix.

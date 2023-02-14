@@ -17,7 +17,7 @@ var WMs = []WM{
 	&Pekwm{},
 	&SwayBG{},
 	&Weston{},
-	//xbg.New(), // X11
+	// xbg.New(), // X11
 	&Feh{}, // use feh for X11, for now
 }
 
@@ -49,7 +49,7 @@ func Monitors() ([]Monitor, error) {
 		return []Monitor{}, errNoWaylandNoX
 	}
 	// Build and return a []Monitor slice
-	var monitors = []Monitor{}
+	monitors := []Monitor{}
 	for i, ID := range IDs {
 		monitors = append(monitors, Monitor{ID, widths[i], heights[i], wDPIs[i], hDPIs[i]})
 	}

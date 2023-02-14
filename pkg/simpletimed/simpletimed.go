@@ -135,10 +135,10 @@ func DataToSimple(path string, data []byte) (*Wallpaper, error) {
 	for lineCount, byteLine := range bytes.Split(data, []byte("\n")) {
 		trimmed := strings.TrimSpace(string(byteLine))
 		if strings.HasPrefix(trimmed, "#") {
-			//fmt.Fprintf(os.Stderr, trimmed[1:])
+			// fmt.Fprintf(os.Stderr, trimmed[1:])
 			continue
 		} else if strings.HasPrefix(trimmed, "//") {
-			//fmt.Fprintf(os.Stderr, trimmed[2:])
+			// fmt.Fprintf(os.Stderr, trimmed[2:])
 			continue
 		} else if len(trimmed) == 0 {
 			continue
@@ -168,7 +168,7 @@ func DataToSimple(path string, data []byte) (*Wallpaper, error) {
 					filename2 = strings.TrimSpace(fields[0])
 					transitionType = strings.TrimSpace(fields[1])
 				}
-				//fmt.Println("TRANSITION", time1, "|", time2, "|", filename1, "|", filename2, "|", transitionType)
+				// fmt.Println("TRANSITION", time1, "|", time2, "|", filename1, "|", filename2, "|", transitionType)
 				t1, err := time.Parse("15:04", time1)
 				if err != nil {
 					return nil, fmt.Errorf("could not parse %s (time), line %d: %s", path, lineCount, trimmed)
@@ -185,7 +185,7 @@ func DataToSimple(path string, data []byte) (*Wallpaper, error) {
 				fields := strings.SplitN(trimmed[1:], ":", 3)
 				time1 := strings.TrimSpace(fields[0] + ":" + fields[1])
 				filename := strings.TrimSpace(fields[2])
-				//fmt.Println("STATIC", time1, "|", filename)
+				// fmt.Println("STATIC", time1, "|", filename)
 				t1, err := time.Parse("15:04", time1)
 				if err != nil {
 					return nil, fmt.Errorf("could not parse %s (time), line %d: %s", path, lineCount, trimmed)
@@ -193,7 +193,7 @@ func DataToSimple(path string, data []byte) (*Wallpaper, error) {
 				ss = append(ss, &Static{t1, filename})
 			}
 		} else if strings.Contains(trimmed, ":") {
-			//fmt.Println("FIELD", trimmed)
+			// fmt.Println("FIELD", trimmed)
 			if strings.Count(trimmed, ":") < 1 {
 				return nil, fmt.Errorf("could not parse %s (missing colon), line %d: %s", path, lineCount, trimmed)
 			}
@@ -211,7 +211,7 @@ func DataToSimple(path string, data []byte) (*Wallpaper, error) {
 	}
 	name, _ := parsed["name"]     // optional
 	format, _ := parsed["format"] // optional
-	//pacman, _ := parsed["ILoveCandy"] // optional
+	// pacman, _ := parsed["ILoveCandy"] // optional
 
 	stw := NewWallpaper(version, name, format)
 	stw.Path = path
@@ -223,6 +223,6 @@ func DataToSimple(path string, data []byte) (*Wallpaper, error) {
 		// Adding static images in a way that make sure the format string is used when interpreting the filenames
 		stw.AddStatic(s.At, s.Filename)
 	}
-	//fmt.Println(stw)
+	// fmt.Println(stw)
 	return stw, nil
 }

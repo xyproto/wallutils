@@ -3,6 +3,7 @@ package wallutils
 // #cgo LDFLAGS: -lX11
 // #include "xinfo.h"
 import "C"
+
 import (
 	"errors"
 	"strconv"

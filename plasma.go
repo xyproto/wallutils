@@ -102,5 +102,6 @@ func (p *Plasma) SetWallpaper(imageFilename string) error {
 		"--type=method_call",
 		"/PlasmaShell",
 		"org.kde.PlasmaShell.evaluateScript",
-		dbusScript}, p.verbose)
+		dbusScript,
+	}, p.verbose)
 }

@@ -3,6 +3,7 @@ package wallutils
 // #cgo LDFLAGS: -lwayland-client
 //#include "include/wayinfo.h"
 import "C"
+
 import (
 	"errors"
 	"log"
@@ -71,7 +72,7 @@ func WaylandMonitors(IDs, widths, heights, wDPIs, hDPIs *[]uint) error {
 					wDPI = 96 // default DPI value, if no physical size is given
 					hDPI = 96 // default DPI value, if no physical size is given
 					log.Println("WARN: No physical monitor size detected!")
-					//return errors.New("no physical monitor size detected")
+					// return errors.New("no physical monitor size detected")
 				}
 				if physW > 0 && physH > 0 {
 					// Calculate DPI, from the monitor size (in mm) and the pixel size
@@ -103,7 +104,7 @@ func WaylandMonitors(IDs, widths, heights, wDPIs, hDPIs *[]uint) error {
 	}
 	if 0 < physCounter && physCounter < counter {
 		log.Println("WARN: Some monitors contains a physical size, but not all of them")
-		//return errors.New("some monitors contains a physical size, but not all of them")
+		// return errors.New("some monitors contains a physical size, but not all of them")
 	}
 	return nil
 }

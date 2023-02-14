@@ -46,7 +46,7 @@ func download(url, filename string, verbose, redownload bool) error {
 		return err
 	}
 	// Write the file
-	return os.WriteFile(filename, b, 0644)
+	return os.WriteFile(filename, b, 0o644)
 }
 
 func setWallpaperAction(c *cli.Context) error {

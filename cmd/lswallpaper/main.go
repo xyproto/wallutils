@@ -2,9 +2,10 @@ package main
 
 import (
 	"fmt"
+	"os"
+
 	"github.com/urfave/cli"
 	"github.com/xyproto/wallutils"
-	"os"
 )
 
 func listWallpapersAction(c *cli.Context) error {

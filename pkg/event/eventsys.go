@@ -7,11 +7,11 @@ import (
 )
 
 // EventSys represents an event system.
-// * granularity is how long it should wait at each loop in the main loop
-// * events is a map from Event to a margin of error on each side of the time
-//   when the event should kick in
-// * coolOffGranularity is how long the system should wait per cool-off
-//   loop iteration
+//   - granularity is how long it should wait at each loop in the main loop
+//   - events is a map from Event to a margin of error on each side of the time
+//     when the event should kick in
+//   - coolOffGranularity is how long the system should wait per cool-off
+//     loop iteration
 type EventSys struct {
 	events             []Event
 	granularity        time.Duration

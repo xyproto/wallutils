@@ -3,11 +3,12 @@ package wallutils
 import (
 	"errors"
 	"fmt"
-	"github.com/fatih/color"
 	"image"
 	"os"
 	"strconv"
 	"strings"
+
+	"github.com/fatih/color"
 )
 
 // XRandr can contain information that has been extracted by running the xrandr executable
