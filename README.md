@@ -55,21 +55,11 @@ $ lsmon
 
 ### Fedora
 
-Until an official package is available:
+With sudo, or as root, install the required dependencies:
 
     sudo dnf update
     sudo dnf install https://mirrors.rpmfusion.org/free/fedora/rpmfusion-free-release-$(rpm -E %fedora).noarch.rpm
     sudo dnf install git golang ImageMagick libXcursor-devel libXmu-devel xorg-x11-xbitmaps libheif-devel wayland-devel
-    git clone https://github.com/xyproto/wallutils
-    cd wallutils
-    make
-    sudo make PREFIX=/usr/local install
-
-### Debian 11
-
-With sudo, or as root, install the required dependencies:
-
-    apt install git golang imagemagick libx11-dev libxcursor-dev libxmu-dev libwayland-dev libxpm-dev xbitmaps libxmu-headers libheif-dev make
 
 As a user, clone the repository and build the utilities:
 
@@ -77,9 +67,27 @@ As a user, clone the repository and build the utilities:
     cd wallutils
     make
 
-Then with sudo, or as root, again, install wallutils:
+Then with sudo, or as root, install the utilities:
 
     sudo make PREFIX=/usr/local install
+
+### Debian 11
+
+With sudo, or as root, install the required dependencies:
+
+    sudo apt install git golang imagemagick libx11-dev libxcursor-dev libxmu-dev libwayland-dev libxpm-dev xbitmaps libxmu-headers libheif-dev make
+
+As a user, clone the repository and build the utilities:
+
+    git clone https://github.com/xyproto/wallutils
+    cd wallutils
+    make
+
+Then with sudo, or as root, install the utilities:
+
+    sudo make PREFIX=/usr/local install
+
+Hopefully an official package will become available in the future.
 
 ## Installing a single utility
 
