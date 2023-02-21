@@ -3,11 +3,16 @@
 
 package wallutils
 
+import "errors"
+
 // ClosestByResolution returns a wallpaper that is closest to the average
 // monitor resolution. If several wallpapers matches, a random one is returned.
 // The idea is that a slice of wallpapers in a wallpaper collection with several
 // available resolutions is given as input, and a suitable wallpaper is returned.
 func ClosestByResolution(wallpapers []*Wallpaper) (*Wallpaper, error) {
+	if len(wallpapers) == 0 {
+		return nil, errors.New("no wallpapers")
+	}
 	avgRes, err := AverageResolution()
 	if err != nil {
 		return nil, err
@@ -35,6 +40,9 @@ func ClosestByResolution(wallpapers []*Wallpaper) (*Wallpaper, error) {
 // The filename that is closest to the average monitor resolution is returned.
 // Any filenames not following the pattern will cause an error being returned.
 func ClosestByResolutionInFilename(filenames []string) (string, error) {
+	if len(filenames) == 0 {
+		return "", errors.New("no filenames")
+	}
 	avgRes, err := AverageResolution()
 	if err != nil {
 		return "", err
