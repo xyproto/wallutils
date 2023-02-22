@@ -33,7 +33,7 @@ func getVRAMAction(c *cli.Context) error {
 
 	if len(gpus) == 0 {
 		if includeIntegrated {
-			fmt.Fprintln(os.Stderr, "Could not find any available GPUs.")
+			fmt.Fprintln(os.Stderr, "error: could not find any available GPUs")
 			return errors.New("could not find any available GPUs")
 		}
 		allGpus, err := wallutils.GPUs(true)
@@ -44,7 +44,18 @@ func getVRAMAction(c *cli.Context) error {
 		if err != nil {
 			return err
 		}
-		fmt.Fprintf(os.Stderr, "Could not find any non-integrated GPUs, only %d (ALL), %d (NON-INTEGRATED) integrated ones.\n", len(allGpus), len(nonIntegratedGpus))
+		switch len(allGpus) {
+		case 0:
+			if len(nonIntegratedGpus) == 0 {
+				fmt.Fprintln(os.Stderr, "error: could not find any GPU")
+			} else {
+				fmt.Fprintf(os.Stderr, "error: found no GPUs while at the same time finding %d non-integrated GPUs\n", len(nonIntegratedGpus))
+			}
+		case 1:
+			fmt.Fprintf(os.Stderr, "error: found one GPUs, and %d of them are non-integrated\n", len(nonIntegratedGpus))
+		default:
+			fmt.Fprintf(os.Stderr, "error: found %d GPUs, where %d of them are non-integrated\n", len(allGpus), len(nonIntegratedGpus))
+		}
 	}
 
 	// Output the average VRAM in MiB
