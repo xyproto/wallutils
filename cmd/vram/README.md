@@ -8,7 +8,7 @@ Tool for retrieving the average amount of VRAM across all GPUs, or list all avai
 
 ## Usage
 
-Retreive the average VRAM as a number, followed by ` MiB`:
+Retrieve the average VRAM as a number, followed by ` MiB`:
 
     vram
 

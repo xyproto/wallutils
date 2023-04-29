@@ -12,7 +12,7 @@ const simpleTimedWallpaperFormatVersion = "1.0"
 
 // GnomeToSimple converts a Gnome Timed Wallpaper to a Simple Timed Wallpaper
 func GnomeToSimple(gtw *Wallpaper) (*simpletimed.Wallpaper, error) {
-	// TODO: Convert from struct to struct, without excercising the serializer and the parser
+	// TODO: Convert from struct to struct, without exercising the serializer and the parser
 
 	// Convert the given struct to the string contents of a simpletimed.Wallpaper file
 	s, err := GnomeToSimpleString(gtw)

@@ -8,11 +8,11 @@ Tool for retrieving the average DPI across all monitors, regardless of if X or W
 
 ## Usage
 
-Retreive the average DPI as a pair of numbers (ie. `96x96`):
+Retrieve the average DPI as a pair of numbers (ie. `96x96`):
 
     getdpi -b
 
-Retreive the average DPI as a single number (ie. `96`):
+Retrieve the average DPI as a single number (ie. `96`):
 
     getdpi
 
