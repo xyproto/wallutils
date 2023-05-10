@@ -70,7 +70,6 @@ install:
 	install -Dm755 -t "$(DESTDIR)$(PREFIX)/bin" cmd/xml2stw/xml2stw
 	install -Dm755 -t "$(DESTDIR)$(PREFIX)/bin" cmd/vram/vram
 
-# remove all utility executables
 clean:
 	(cd cmd/getdpi; go clean)
 	(cd cmd/heic2stw; go clean)
