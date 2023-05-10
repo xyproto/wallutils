@@ -40,7 +40,7 @@ func setRandomWallpaperAction(c *cli.Context) error {
 			fmt.Printf("Searching %s recursively: ", dir)
 		}
 		// onlyLarge means >= 640x480
-		matches, err = wallutils.FindImagesAt(dir, []string{".png", ".jpg", ".jpeg"}, onlyLarge)
+		matches, err = wallutils.FindImagesAt(dir, onlyLarge)
 		if err != nil {
 			fmt.Printf("error: %v\n", err)
 			return err

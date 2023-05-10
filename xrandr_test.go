@@ -4,6 +4,6 @@ import (
 	"testing"
 )
 
-func TestXrandrOverlap(t *testing.T) {
+func TestXrandrOverlap(_ *testing.T) {
 	NoXRandrOverlapOrExit(true)
 }

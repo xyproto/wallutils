@@ -5,7 +5,7 @@ import (
 	"testing"
 )
 
-func TestParseMonitorConfiguration(t *testing.T) {
+func TestParseMonitorConfiguration(_ *testing.T) {
 	mc, err := NewMonitorConfiguration()
 	if err != nil {
 		// Ignore this test if ~/.config/monitor.xml does not exist

@@ -112,7 +112,7 @@ func largeEnough(width, height uint) bool {
 }
 
 // visit is called per file that is found, and will be called concurrently by powerwalk.WalkLimit
-func (sr *SearchResults) visit(path string, f os.FileInfo, err error) error {
+func (sr *SearchResults) visit(path string, _ os.FileInfo, _ error) error {
 	switch filepath.Ext(path) {
 	case ".png":
 		width, height, err := pngSize(path)
@@ -234,9 +234,8 @@ func FindWallpapers() (*SearchResults, error) {
 }
 
 // FindImagesAt will find images at the given search path.
-// Extensions will filter for images ending with .png, .jpg etc.
 // Set onlyLarge to true if the images should be large enough for the desktop.
-func FindImagesAt(searchPath string, extensions []string, onlyLarge bool) ([]string, error) {
+func FindImagesAt(searchPath string, onlyLarge bool) ([]string, error) {
 	found := []string{}
 	// A visit function that will be called for every file found by the WalkLimit function below
 	visit := func(path string, f os.FileInfo, err error) error {
