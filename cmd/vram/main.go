@@ -9,63 +9,52 @@ import (
 	"github.com/xyproto/wallutils"
 )
 
+func listGPUs() error {
+	gpus, err := wallutils.GPUs(true)
+	if err != nil {
+		return err
+	}
+	for _, gpu := range gpus {
+		fmt.Printf("[%s] %s, %d MiB\n", gpu.Bus, gpu.Name, gpu.VRAM)
+	}
+	return nil
+}
+
+func getMinimumVRAM(gpus []wallutils.GPU) uint {
+	minimum := uint(0)
+	for _, gpu := range gpus {
+		if (minimum == 0 || gpu.VRAM < minimum) && gpu.VRAM > 0 {
+			minimum = gpu.VRAM
+		}
+	}
+	return minimum
+}
+
 func getVRAMAction(c *cli.Context) error {
 	if c.IsSet("list") {
-		// Retrieve a slice of GPU structs, or exit with an error, including integrated graphic cards ("VGA" in lspci output)
-		gpus, err := wallutils.GPUs(true)
-		if err != nil {
-			return err
-		}
-		for _, gpu := range gpus {
-			fmt.Printf("[%s] %s, %d MiB\n", gpu.Bus, gpu.Name, gpu.VRAM)
-		}
-		return nil
+		return listGPUs()
 	}
 
-	includeIntegrated := c.IsSet("integrated")
-
-	// Retrieve a slice of GPU structs, or exit with an error, by default excluding integrated graphic cards ("VGA" in lspci output)
-	gpus, err := wallutils.GPUs(includeIntegrated)
+	// Get only the non-integrated GPUs (unless the integrated flag is given, then all GPUs are retrieved)
+	gpus, err := wallutils.GPUs(c.IsSet("integrated"))
 	if err != nil {
 		return err
 	}
 
-	if len(gpus) == 0 {
-		if includeIntegrated {
+	// If no non-integrated GPUs, try to also get the integrated GPUs, unless they are already considered
+	if len(gpus) == 0 && !c.IsSet("integrated") {
+		gpus, err = wallutils.GPUs(true)
+		if err != nil {
+			return err
+		}
+		if len(gpus) == 0 {
 			fmt.Fprintln(os.Stderr, "error: could not find any available GPUs")
 			return errors.New("could not find any available GPUs")
 		}
-		allGpus, err := wallutils.GPUs(true)
-		if err != nil {
-			return err
-		}
-		nonIntegratedGpus, err := wallutils.GPUs(false)
-		if err != nil {
-			return err
-		}
-		switch len(allGpus) {
-		case 0:
-			if len(nonIntegratedGpus) == 0 {
-				fmt.Fprintln(os.Stderr, "error: could not find any GPU")
-			} else {
-				fmt.Fprintf(os.Stderr, "error: found no GPUs while at the same time finding %d non-integrated GPUs\n", len(nonIntegratedGpus))
-			}
-		case 1:
-			fmt.Fprintf(os.Stderr, "error: found one GPUs, and %d of them are non-integrated\n", len(nonIntegratedGpus))
-		default:
-			fmt.Fprintf(os.Stderr, "error: found %d GPUs, where %d of them are non-integrated\n", len(allGpus), len(nonIntegratedGpus))
-		}
 	}
 
-	// Output the minimum amount of VRAM in MiB
-	minimum := uint(0)
-	for _, gpu := range gpus {
-		if minimum == 0 || gpu.VRAM < minimum {
-			minimum = gpu.VRAM
-		}
-	}
+	minimum := getMinimumVRAM(gpus)
 
-	// Output the minimum about of VRAM for non-integrated GPUs (if possible), in MiB
 	fmt.Printf("%d MiB\n", minimum)
 	return nil
 }
@@ -92,7 +81,7 @@ func main() {
 		},
 		cli.BoolFlag{
 			Name:  "integrated, i",
-			Usage: "include integrated GPUs when finding the minimum amount of available VRAM",
+			Usage: "find the minimum amount of VRAM for all GPUs, including integrated ones",
 		},
 	}
 
