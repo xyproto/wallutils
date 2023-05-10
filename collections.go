@@ -235,7 +235,7 @@ func FindWallpapers() (*SearchResults, error) {
 
 // FindImagesAt will find images at the given search path.
 // Set onlyLarge to true if the images should be large enough for the desktop.
-func FindImagesAt(searchPath string, onlyLarge bool) ([]string, error) {
+func FindImagesAt(searchPath string, _ []string, onlyLarge bool) ([]string, error) {
 	found := []string{}
 	// A visit function that will be called for every file found by the WalkLimit function below
 	visit := func(path string, f os.FileInfo, err error) error {
