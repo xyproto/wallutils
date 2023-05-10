@@ -32,7 +32,7 @@ Note that some window managers makes it hard to achieve smooth switches of deskt
   * `xinfo` shows detailed information about the current X setup.
   * `xml2stw` for converting GNOME timed wallpapers to the Simple Timed Wallpaper format.
   * `heic2stw` for extracting the timing information from macOS dynamic wallpapers (`.heic` files) to the Simple Timed Wallpaper format.
-  * `vram` for showing the minimum amount of VRAM that is available for non-integrated GPUs (use `-l` to list the bus ID, a description and available VRAM for all GPUs).
+  * `vram` for finding the minimum amount of VRAM available for non-integrated GPUs (use `-l` to list the bus ID, a description and available VRAM for each GPU).
 
 ## Included scripts
 
