@@ -1,6 +1,8 @@
 # vram
 
-Tool for retrieving the average amount of VRAM across all GPUs, or list all available GPUs and the VRAM for each of them.
+Tool for retrieving the minimum amount of available VRAM for all non-integrated GPUs, or list all available GPUs.
+
+If only integrated GPUs are available, the minimum amount of VRAM for those will be outputted instead.
 
 ## Building vram
 
@@ -8,11 +10,11 @@ Tool for retrieving the average amount of VRAM across all GPUs, or list all avai
 
 ## Usage
 
-Retrieve the average VRAM as a number, followed by ` MiB`:
+Retrieve the minimum amount of available VRAM as a number, followed by ` MiB`:
 
     vram
 
-Listing the VRAM for all available GPUs:
+Listing the bus ID, a description and the available VRAM for all GPUs:
 
     vram -l
 

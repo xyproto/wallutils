@@ -2,12 +2,12 @@
 .\"
 .TH "vram" 1 "12 Sep 2023" "vram" "User Commands"
 .SH NAME
-vram \- get the average VRAM for all non-integrated GPUs, or list all GPUs
+vram \- get the minimum amount of VRAM for all non-integrated GPUs, or list all GPUs
 .SH SYNOPSIS
 .B vram
-Display the average VRAM of all available non-integrated GPUs.
+Display the minimum amount of available VRAM of all available non-integrated GPUs.
 .sp
-If only non-integrated GPUs are found, the average VRAM of those is calculated instead.
+If only non-integrated GPUs are found, the minimum amount of VRAM for those is used instead.
 .sp
 .SH DESCRIPTION
 vram can fetch information about all available GPUs.
@@ -16,7 +16,7 @@ vram can fetch information about all available GPUs.
 .sp
 .TP
 .B \-l or \-\-list
-List the VRAM information for all GPUs.
+List the bus ID, a description and available VRAM, for all GPUs.
 .TP
 .B \-h or \-\-help
 Show usage information.
@@ -25,7 +25,7 @@ Show usage information.
 Show the current version.
 .PP
 .SH VERSION
-5.12.5
+5.12.6
 .SH AUTHOR
 .B o
 was written by Alexander F. Rødseth <xyproto@archlinux.org>

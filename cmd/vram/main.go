@@ -16,9 +16,8 @@ func getVRAMAction(c *cli.Context) error {
 		if err != nil {
 			return err
 		}
-
-		for i, gpu := range gpus {
-			fmt.Printf("[%d] %s, %d MiB\n", i, gpu.Name, gpu.VRAM) // in MiB
+		for _, gpu := range gpus {
+			fmt.Printf("[%s] %s, %d MiB\n", gpu.Bus, gpu.Name, gpu.VRAM)
 		}
 		return nil
 	}
@@ -58,18 +57,16 @@ func getVRAMAction(c *cli.Context) error {
 		}
 	}
 
-	// Output the average VRAM in MiB
-	VRAM := uint(0)
+	// Output the minimum amount of VRAM in MiB
+	minimum := uint(0)
 	for _, gpu := range gpus {
-		VRAM += gpu.VRAM
-	}
-	l := uint(len(gpus))
-	if l > 0 {
-		VRAM /= l
+		if minimum == 0 || gpu.VRAM < minimum {
+			minimum = gpu.VRAM
+		}
 	}
 
-	// Output the average about of VRAM for all GPUs, in MiB
-	fmt.Printf("%d MiB\n", VRAM)
+	// Output the minimum about of VRAM for non-integrated GPUs (if possible), in MiB
+	fmt.Printf("%d MiB\n", minimum)
 	return nil
 }
 
@@ -77,7 +74,7 @@ func main() {
 	app := cli.NewApp()
 
 	app.Name = "vram"
-	app.Usage = "get the average VRAM for all available non-integrated GPUs.\n          If only integrated GPUs are available, the average VRAM of these are returned instead."
+	app.Usage = "get the minimum amount of VRAM for all non-integrated GPUs.\n          If only integrated GPUs are available, the minimum amount of VRAM for these are returned instead."
 	app.UsageText = "vram [options]"
 
 	app.Version = wallutils.VersionString
@@ -91,11 +88,11 @@ func main() {
 	app.Flags = []cli.Flag{
 		cli.BoolFlag{
 			Name:  "list, l",
-			Usage: "list the VRAM information for all available GPUs",
+			Usage: "list bus ID, description and the amount of VRAM for each GPU",
 		},
 		cli.BoolFlag{
 			Name:  "integrated, i",
-			Usage: "include integrated GPUs in the calculations",
+			Usage: "include integrated GPUs when finding the minimum amount of available VRAM",
 		},
 	}
 
