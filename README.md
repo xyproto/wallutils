@@ -91,7 +91,7 @@ Hopefully an official package will become available in the future.
 
 ## Installing a single utility
 
-Using Go 1.17 or later, installing the `getdpi` utility:
+Using Go 1.17 or later, install ie. the `getdpi` utility:
 
     go install github.com/xyproto/wallutils/cmd/getdpi@latest
 
