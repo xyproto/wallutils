@@ -1,6 +1,6 @@
 package wallutils
 
-// #cgo LDFLAGS: -lwayland-client
+// #cgo pkg-config: wayland-client
 //#include "include/wayinfo.h"
 import "C"
 
