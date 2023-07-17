@@ -87,8 +87,6 @@ Then with sudo, or as root, install the utilities:
 
     sudo make PREFIX=/usr/local install
 
-Hopefully an official package will become available in the future.
-
 ## Installing a single utility
 
 Using Go 1.17 or later, install ie. the `getdpi` utility:
@@ -97,7 +95,7 @@ Using Go 1.17 or later, install ie. the `getdpi` utility:
 
 ## Wayland or X only
 
-The packages related to X can be removed after building if you only wish to keep the Wayland-related functionality. And the same for X.
+The executables related to X can be removed after building if you only wish to keep the Wayland-related functionality. And the same for X.
 
 ## Example use of `settimed`
 
