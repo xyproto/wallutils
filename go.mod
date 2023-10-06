@@ -7,7 +7,7 @@ require (
 	github.com/fatih/color v1.15.0
 	github.com/stretchr/powerwalk v0.0.0-20151124150408-bceb9d014549
 	github.com/urfave/cli v1.22.5
-	github.com/xyproto/env/v2 v2.0.0
+	github.com/xyproto/env/v2 v2.2.4
 	github.com/xyproto/heic v1.0.0
 )
 
@@ -21,10 +21,10 @@ require (
 	github.com/russross/blackfriday/v2 v2.0.1 // indirect
 	github.com/shurcooL/sanitized_anchor_name v1.0.0 // indirect
 	github.com/stretchr/testify v1.4.0 // indirect
-	golang.org/x/image v0.8.0 // indirect
+	golang.org/x/image v0.13.0 // indirect
 	golang.org/x/net v0.7.0 // indirect
-	golang.org/x/sys v0.9.0 // indirect
-	golang.org/x/text v0.10.0 // indirect
+	golang.org/x/sys v0.13.0 // indirect
+	golang.org/x/text v0.13.0 // indirect
 	gopkg.in/yaml.v2 v2.4.0 // indirect
 	howett.net/plist v0.0.0-20201203080718-1454fab16a06 // indirect
 )
