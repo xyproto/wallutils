@@ -4,7 +4,7 @@ go 1.17
 
 require (
 	github.com/anthonynsimon/bild v0.13.0
-	github.com/fatih/color v1.15.0
+	github.com/fatih/color v1.16.0
 	github.com/stretchr/powerwalk v0.0.0-20151124150408-bceb9d014549
 	github.com/urfave/cli v1.22.5
 	github.com/xyproto/env/v2 v2.2.4
@@ -23,7 +23,7 @@ require (
 	github.com/stretchr/testify v1.4.0 // indirect
 	golang.org/x/image v0.13.0 // indirect
 	golang.org/x/net v0.17.0 // indirect
-	golang.org/x/sys v0.13.0 // indirect
+	golang.org/x/sys v0.14.0 // indirect
 	golang.org/x/text v0.13.0 // indirect
 	gopkg.in/yaml.v2 v2.4.0 // indirect
 	howett.net/plist v0.0.0-20201203080718-1454fab16a06 // indirect
