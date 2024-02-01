@@ -49,7 +49,7 @@ Supported Features
 
 - `a/b` : For each node matching a, add the nodes matching b to the result.
 
-- `a//b` : For each node matching a, add the descendant nodes matching b to the result. 
+- `a//b` : For each node matching a, add the descendant nodes matching b to the result.
 
 - `//b` : Returns elements in the entire document matching b.
 
@@ -57,8 +57,9 @@ Supported Features
 
 - `(a, b, c)` : Evaluates each of its operands and concatenates the resulting sequences, in order, into a single result sequence
 
+- `(a/b)` : Selects all matches nodes as grouping set.
 
-#### Node Axes 
+#### Node Axes
 
 - `child::*` : The child axis selects children of the current node.
 
@@ -72,9 +73,9 @@ Supported Features
 
 - `preceding-sibling::*` : Selects nodes before the current node.
 
-- `following::*` : Selects the first matching node following in document order, excluding descendants. 
+- `following::*` : Selects the first matching node following in document order, excluding descendants.
 
-- `preceding::*` : Selects the first matching node preceding in document order, excluding ancestors. 
+- `preceding::*` : Selects the first matching node preceding in document order, excluding ancestors.
 
 - `parent::*` : Selects the parent if it matches. The '..' pattern from the core is equivalent to 'parent::node()'.
 
@@ -150,6 +151,7 @@ Supported Features
 `round()`| ✓ |
 `starts-with()`| ✓ |
 `string()`| ✓ |
+`string-join()`[^1]| ✓ |
 `string-length()`| ✓ |
 `substring()`| ✓ |
 `substring-after()`| ✓ |
@@ -160,14 +162,4 @@ Supported Features
 `true()`| ✓ |
 `unparsed-entity-url()` | ✗ |
 
-Changelogs
-===
-
-2019-03-19 
-- optimize XPath `|` operation performance. [#33](https://github.com/antchfx/xpath/issues/33). Tips: suggest split into multiple subquery if you have a lot of `|` operations.
-
-2019-01-29
--  improvement `normalize-space` function. [#32](https://github.com/antchfx/xpath/issues/32)
-
-2018-12-07
--  supports XPath 2.0 Sequence expressions. [#30](https://github.com/antchfx/xpath/pull/30) by [@minherz](https://github.com/minherz).
+[^1]: XPath-2.0 expression

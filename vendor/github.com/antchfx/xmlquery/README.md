@@ -15,31 +15,64 @@ data or evaluate from XML documents with an XPath expression.
 XPATH query strings. Enabling caching can avoid recompile XPath expression for 
 each query. 
 
-Change Logs
-===
+You can visit this page to learn about the supported XPath(1.0/2.0) syntax. https://github.com/antchfx/xpath
 
-2020-08-??
-- Add XML stream loading and parsing support.
+[htmlquery](https://github.com/antchfx/htmlquery)	- Package for the HTML document query.
 
-2019-11-11 
-- Add XPath query caching.
+[xmlquery](https://github.com/antchfx/xmlquery)	- Package for the XML document query.
 
-2019-10-05 
-- Add new methods compatible with invalid XPath expression error: `QueryAll` and `Query`.
-- Add `QuerySelector` and `QuerySelectorAll` methods, support for reused query objects.
-- PR [#12](https://github.com/antchfx/xmlquery/pull/12) (Thanks @FrancescoIlario)
-- PR [#11](https://github.com/antchfx/xmlquery/pull/11) (Thanks @gjvnq)
-
-2018-12-23
-- Added XML output including comment nodes. [#9](https://github.com/antchfx/xmlquery/issues/9)
-
-2018-12-03
-- Added support to attribute name with namespace prefix and XML output. [#6](https://github.com/antchfx/xmlquery/issues/6)
+[jsonquery](https://github.com/antchfx/jsonquery)	- Package for the JSON document query.
 
 Installation
 ====
 ```
  $ go get github.com/antchfx/xmlquery
+```
+
+
+Quick Starts
+===
+
+```go
+import (
+	"github.com/antchfx/xmlquery"
+)
+
+func main(){
+	s := `<?xml version="1.0" encoding="UTF-8" ?>
+<rss version="2.0">
+<channel>
+  <title>W3Schools Home Page</title>
+  <link>https://www.w3schools.com</link>
+  <description>Free web building tutorials</description>
+  <item>
+    <title>RSS Tutorial</title>
+    <link>https://www.w3schools.com/xml/xml_rss.asp</link>
+    <description>New RSS tutorial on W3Schools</description>
+  </item>
+  <item>
+    <title>XML Tutorial</title>
+    <link>https://www.w3schools.com/xml</link>
+    <description>New XML tutorial on W3Schools</description>
+  </item>
+</channel>
+</rss>`
+
+	doc, err := xmlquery.Parse(strings.NewReader(s))
+	if err != nil {
+		panic(err)
+	}
+	channel := xmlquery.FindOne(doc, "//channel")
+	if n := channel.SelectElement("title"); n != nil {
+		fmt.Printf("title: %s\n", n.InnerText())
+	}
+	if n := channel.SelectElement("link"); n != nil {
+		fmt.Printf("link: %s\n", n.InnerText())
+	}
+	for i, n := range xmlquery.Find(doc, "//item/title") {
+		fmt.Printf("#%d %s\n", i, n.InnerText())
+	}
+}
 ```
 
 Getting Started
@@ -77,7 +110,7 @@ doc, err := xmlquery.Parse(f)
 #### Parse an XML in a stream fashion (simple case without elements filtering).
 
 ```go
-f, err := os.Open("../books.xml")
+f, _ := os.Open("../books.xml")
 p, err := xmlquery.CreateStreamParser(f, "/bookstore/book")
 for {
 	n, err := p.Read()
@@ -85,15 +118,18 @@ for {
 		break
 	}
 	if err != nil {
-		...
+		panic(err)
 	}
+	fmt.Println(n)
 }
 ```
+
+Notes: `CreateStreamParser()` used for saving memory if your had a large XML file to parse.
 
 #### Parse an XML in a stream fashion (simple case advanced element filtering).
 
 ```go
-f, err := os.Open("../books.xml")
+f, _ := os.Open("../books.xml")
 p, err := xmlquery.CreateStreamParser(f, "/bookstore/book", "/bookstore/book[price>=10]")
 for {
 	n, err := p.Read()
@@ -101,8 +137,9 @@ for {
 		break
 	}
 	if err != nil {
-		...
+		panic(err)
 	}
+	fmt.Println(n)
 }
 ```
 
@@ -153,24 +190,49 @@ expr, err := xpath.Compile("count(//book)")
 price := expr.Evaluate(xmlquery.CreateXPathNavigator(doc)).(float64)
 ```
 
-FAQ
+Advanced Features
 ====
 
-#### `Find()` vs `QueryAll()`, which is better?
+### Parse `UTF-16` XML file with `ParseWithOptions()`.
 
-`Find` and `QueryAll` both do the same thing: searches all of matched XML nodes.
-`Find` panics if provided with an invalid XPath query, while `QueryAll` returns
-an error.
+```go
+f, _ := os.Open(`UTF-16.XML`)
+// Convert UTF-16 XML to UTF-8
+utf16ToUtf8Transformer := unicode.UTF16(unicode.LittleEndian, unicode.IgnoreBOM).NewDecoder()
+utf8Reader := transform.NewReader(f, utf16ToUtf8Transformer)
+// Sets `CharsetReader`
+options := xmlquery.ParserOptions{
+	Decoder: &xmlquery.DecoderOptions{
+		CharsetReader: func(charset string, input io.Reader) (io.Reader, error) {
+			return input, nil
+		},
+	},
+}
+doc, err := xmlquery.ParseWithOptions(utf8Reader, options)
+```
 
-#### Can I save my query expression object for the next query?
+### Query with custom namespace prefix.
 
-Yes, you can. We provide `QuerySelector` and `QuerySelectorAll` methods; they 
-accept your query expression object.
+```go
+s := `<?xml version="1.0" encoding="UTF-8"?>
+<pd:ProcessDefinition xmlns:pd="http://xmlns.xyz.com/process/2003" xmlns:xsl="http://www.w3.org/1999/XSL/Transform" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+<pd:activity name="Invoke Request-Response Service">
+<pd:type>RequestReplyActivity</pd:type>
+<pd:resourceType>OpClientReqActivity</pd:resourceType>
+<pd:x>300</pd:x>
+<pd:y>80</pd:y>
+</pd:activity>
+</pd:ProcessDefinition>`
+nsMap := map[string]string{
+	"q": "http://xmlns.xyz.com/process/2003",
+	"r": "http://www.w3.org/1999/XSL/Transform",
+	"s": "http://www.w3.org/2001/XMLSchema",
+}
+expr, _ := xpath.CompileWithNS("//q:activity", nsMap)
+node := xmlquery.QuerySelector(doc, expr)
+```
 
-Caching a query expression object avoids recompiling the XPath query 
-expression, improving query performance.
-
-#### Create XML document.
+#### Create XML document without call `xml.Marshal`.
 
 ```go
 doc := &xmlquery.Node{
@@ -200,63 +262,34 @@ title_text := &xmlquery.Node{
 }
 title.FirstChild = title_text
 channel.FirstChild = title
+
 fmt.Println(doc.OutputXML(true))
-// <?xml version="1.0"?><rss><channel><title>W3Schools Home Page</title></channel></rss>
+fmt.Println(doc.OutputXMLWithOptions(WithOutputSelf()))
 ```
 
-Quick Tutorial
-===
+Output:
 
-```go
-import (
-	"github.com/antchfx/xmlquery"
-)
-
-func main(){
-	s := `<?xml version="1.0" encoding="UTF-8" ?>
-<rss version="2.0">
-<channel>
-  <title>W3Schools Home Page</title>
-  <link>https://www.w3schools.com</link>
-  <description>Free web building tutorials</description>
-  <item>
-    <title>RSS Tutorial</title>
-    <link>https://www.w3schools.com/xml/xml_rss.asp</link>
-    <description>New RSS tutorial on W3Schools</description>
-  </item>
-  <item>
-    <title>XML Tutorial</title>
-    <link>https://www.w3schools.com/xml</link>
-    <description>New XML tutorial on W3Schools</description>
-  </item>
-</channel>
-</rss>`
-
-	doc, err := xmlquery.Parse(strings.NewReader(s))
-	if err != nil {
-		panic(err)
-	}
-	channel := xmlquery.FindOne(doc, "//channel")
-	if n := channel.SelectElement("title"); n != nil {
-		fmt.Printf("title: %s\n", n.InnerText())
-	}
-	if n := channel.SelectElement("link"); n != nil {
-		fmt.Printf("link: %s\n", n.InnerText())
-	}
-	for i, n := range xmlquery.Find(doc, "//item/title") {
-		fmt.Printf("#%d %s\n", i, n.InnerText())
-	}
-}
+```xml
+<?xml version="1.0"?><rss><channel><title>W3Schools Home Page</title></channel></rss>
 ```
 
-List of supported XPath query packages
-===
-| Name                                              | Description                               |
-| ------------------------------------------------- | ----------------------------------------- |
-| [htmlquery](https://github.com/antchfx/htmlquery) | XPath query package for HTML documents    |
-| [xmlquery](https://github.com/antchfx/xmlquery)   | XPath query package for XML documents     |
-| [jsonquery](https://github.com/antchfx/jsonquery) | XPath query package for JSON documents    |
+FAQ
+====
 
- Questions
+#### `Find()` vs `QueryAll()`, which is better?
+
+`Find` and `QueryAll` both do the same thing: searches all of matched XML nodes.
+`Find` panics if provided with an invalid XPath query, while `QueryAll` returns
+an error.
+
+#### Can I save my query expression object for the next query?
+
+Yes, you can. We provide `QuerySelector` and `QuerySelectorAll` methods; they 
+accept your query expression object.
+
+Caching a query expression object avoids recompiling the XPath query 
+expression, improving query performance.
+
+Questions
 ===
 Please let me know if you have any questions
