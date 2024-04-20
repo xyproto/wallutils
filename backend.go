@@ -6,6 +6,7 @@ package wallutils
 // WMs contains all available backends for changing the wallpaper
 // Some backends may require cgo (sway + x11)
 var WMs = []WM{
+	&Hyprpaper{},
 	&Sway{},
 	&Deepin{},
 	&Xfce4{},
