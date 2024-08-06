@@ -238,7 +238,7 @@ func FindWallpapers() (*SearchResults, error) {
 func FindImagesAt(searchPath string, _ []string, onlyLarge bool) ([]string, error) {
 	found := []string{}
 	// A visit function that will be called for every file found by the WalkLimit function below
-	visit := func(path string, f os.FileInfo, err error) error {
+	visit := func(path string, _ os.FileInfo, _ error) error {
 		switch filepath.Ext(path) {
 		case ".png":
 			if onlyLarge {
