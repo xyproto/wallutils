@@ -3,6 +3,7 @@ package xmlquery
 import (
 	"bufio"
 	"encoding/xml"
+	"errors"
 	"fmt"
 	"io"
 	"net/http"
@@ -52,6 +53,7 @@ func ParseWithOptions(r io.Reader, options ParserOptions) (*Node, error) {
 type parser struct {
 	decoder             *xml.Decoder
 	doc                 *Node
+	space2prefix        map[string]string
 	level               int
 	prev                *Node
 	streamElementXPath  *xpath.Expr   // Under streaming mode, this specifies the xpath to the target element node(s).
@@ -64,26 +66,24 @@ type parser struct {
 func createParser(r io.Reader) *parser {
 	reader := newCachedReader(bufio.NewReader(r))
 	p := &parser{
-		decoder: xml.NewDecoder(reader),
-		doc:     &Node{Type: DocumentNode},
-		level:   0,
-		reader:  reader,
+		decoder:      xml.NewDecoder(reader),
+		doc:          &Node{Type: DocumentNode},
+		space2prefix: make(map[string]string),
+		level:        0,
+		reader:       reader,
 	}
-	if p.decoder.CharsetReader == nil {
-		p.decoder.CharsetReader = charset.NewReaderLabel
-	}
+	// http://www.w3.org/XML/1998/namespace is bound by definition to the prefix xml.
+	p.space2prefix["http://www.w3.org/XML/1998/namespace"] = "xml"
+	p.decoder.CharsetReader = charset.NewReaderLabel
 	p.prev = p.doc
 	return p
 }
 
 func (p *parser) parse() (*Node, error) {
 	var streamElementNodeCounter int
-	space2prefix := map[string]string{"http://www.w3.org/XML/1998/namespace": "xml"}
 
 	for {
-		p.reader.StartCaching()
 		tok, err := p.decoder.Token()
-		p.reader.StopCaching()
 		if err != nil {
 			return nil, err
 		}
@@ -92,40 +92,30 @@ func (p *parser) parse() (*Node, error) {
 		case xml.StartElement:
 			if p.level == 0 {
 				// mising XML declaration
-				attributes := make([]Attr, 1)
-				attributes[0].Name = xml.Name{Local: "version"}
-				attributes[0].Value = "1.0"
-				node := &Node{
-					Type:  DeclarationNode,
-					Data:  "xml",
-					Attr:  attributes,
-					level: 1,
-				}
+				node := &Node{Type: DeclarationNode, Data: "xml", level: 1}
 				AddChild(p.prev, node)
 				p.level = 1
 				p.prev = node
 			}
-
+			// https://www.w3.org/TR/xml-names/#scoping-defaulting
 			for _, att := range tok.Attr {
 				if att.Name.Local == "xmlns" {
-					space2prefix[att.Value] = "" // reset empty if exist the default namespace
-					//	defaultNamespaceURL = att.Value
+					p.space2prefix[att.Value] = ""
 				} else if att.Name.Space == "xmlns" {
-					// maybe there are have duplicate NamespaceURL?
-					space2prefix[att.Value] = att.Name.Local
+					p.space2prefix[att.Value] = att.Name.Local
 				}
 			}
 
-			if space := tok.Name.Space; space != "" {
-				if _, found := space2prefix[space]; !found && p.decoder.Strict {
-					return nil, fmt.Errorf("xmlquery: invalid XML document, namespace %s is missing", space)
+			if tok.Name.Space != "" {
+				if _, found := p.space2prefix[tok.Name.Space]; !found {
+					return nil, errors.New("xmlquery: invalid XML document, namespace is missing")
 				}
 			}
 
 			attributes := make([]Attr, len(tok.Attr))
 			for i, att := range tok.Attr {
 				name := att.Name
-				if prefix, ok := space2prefix[name.Space]; ok {
+				if prefix, ok := p.space2prefix[name.Space]; ok {
 					name.Space = prefix
 				}
 				attributes[i] = Attr{
@@ -138,6 +128,7 @@ func (p *parser) parse() (*Node, error) {
 			node := &Node{
 				Type:         ElementNode,
 				Data:         tok.Name.Local,
+				Prefix:       p.space2prefix[tok.Name.Space],
 				NamespaceURI: tok.Name.Space,
 				Attr:         attributes,
 				level:        p.level,
@@ -152,15 +143,6 @@ func (p *parser) parse() (*Node, error) {
 					p.prev = p.prev.Parent
 				}
 				AddSibling(p.prev.Parent, node)
-			}
-
-			if node.NamespaceURI != "" {
-				if v, ok := space2prefix[node.NamespaceURI]; ok {
-					cached := string(p.reader.Cache())
-					if strings.HasPrefix(cached, fmt.Sprintf("%s:%s", v, node.Data)) || strings.HasPrefix(cached, fmt.Sprintf("<%s:%s", v, node.Data)) {
-						node.Prefix = v
-					}
-				}
 			}
 			// If we're in the streaming mode, we need to remember the node if it is the target node
 			// so that when we finish processing the node's EndElement, we know how/what to return to
@@ -179,6 +161,7 @@ func (p *parser) parse() (*Node, error) {
 			}
 			p.prev = node
 			p.level++
+			p.reader.StartCaching()
 		case xml.EndElement:
 			p.level--
 			// If we're in streaming mode, and we already have a potential streaming
@@ -215,10 +198,11 @@ func (p *parser) parse() (*Node, error) {
 				}
 			}
 		case xml.CharData:
+			p.reader.StopCaching()
 			// First, normalize the cache...
 			cached := strings.ToUpper(string(p.reader.Cache()))
 			nodeType := TextNode
-			if strings.HasPrefix(cached, "<![CDATA[") || strings.HasPrefix(cached, "![CDATA[") {
+			if strings.HasPrefix(cached, "<![CDATA[") {
 				nodeType = CharDataNode
 			}
 
@@ -233,6 +217,7 @@ func (p *parser) parse() (*Node, error) {
 				}
 				AddSibling(p.prev.Parent, node)
 			}
+			p.reader.StartCaching()
 		case xml.Comment:
 			node := &Node{Type: CommentNode, Data: string(tok), level: p.level}
 			if p.level == p.prev.level {
@@ -261,11 +246,6 @@ func (p *parser) parse() (*Node, error) {
 				AddSibling(p.prev, node)
 			} else if p.level > p.prev.level {
 				AddChild(p.prev, node)
-			} else if p.level < p.prev.level {
-				for i := p.prev.level - p.level; i > 1; i-- {
-					p.prev = p.prev.Parent
-				}
-				AddSibling(p.prev.Parent, node)
 			}
 			p.prev = node
 		case xml.Directive:
@@ -327,7 +307,7 @@ type StreamParser struct {
 // streamElementFilter, if provided, cannot be successfully parsed and compiled
 // into a valid xpath query.
 func CreateStreamParser(r io.Reader, streamElementXPath string, streamElementFilter ...string) (*StreamParser, error) {
-	return CreateStreamParserWithOptions(r, ParserOptions{}, streamElementXPath, streamElementFilter...)
+    return CreateStreamParserWithOptions(r, ParserOptions{}, streamElementXPath, streamElementFilter...)
 }
 
 // CreateStreamParserWithOptions is like CreateStreamParser, but with custom options

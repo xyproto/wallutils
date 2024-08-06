@@ -137,10 +137,7 @@ func (p *bplistParser) parseSizedInteger(off offset, nbytes int) (lo uint64, hi 
 	case 16:
 		lo, hi = binary.BigEndian.Uint64(p.buffer[off+8:]), binary.BigEndian.Uint64(p.buffer[off:])
 	default:
-		if nbytes > 8 {
-			panic(errors.New("illegal integer size"))
-		}
-		lo, hi = binary.BigEndian.Uint64(p.buffer[off-(8-offset(nbytes)):]) & ((1<<offset(nbytes*8))-1), 0
+		panic(errors.New("illegal integer size"))
 	}
 	newOffset = off + offset(nbytes)
 	return

@@ -28,9 +28,14 @@ func (n *Node) SelectAttr(name string) string {
 		}
 		return ""
 	}
-	xmlName := newXMLName(name)
+	var local, space string
+	local = name
+	if i := strings.Index(name, ":"); i > 0 {
+		space = name[:i]
+		local = name[i+1:]
+	}
 	for _, attr := range n.Attr {
-		if attr.Name == xmlName {
+		if attr.Name.Local == local && attr.Name.Space == space {
 			return attr.Value
 		}
 	}

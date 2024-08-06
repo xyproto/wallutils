@@ -56,7 +56,7 @@ func (c *contextQuery) Evaluate(iterator) interface{} {
 }
 
 func (c *contextQuery) Clone() query {
-	return &contextQuery{Root: c.Root}
+	return &contextQuery{count: 0, Root: c.Root}
 }
 
 // ancestorQuery is an XPath ancestor node query.(ancestor::*|ancestor-self::*)
@@ -558,8 +558,8 @@ func (f *filterQuery) do(t iterator) bool {
 		pt := getNodePosition(f.Input)
 		return int(val.Float()) == pt
 	default:
-		if f.Predicate != nil {
-			return f.Predicate.Select(t) != nil
+		if q, ok := f.Predicate.(query); ok {
+			return q.Select(t) != nil
 		}
 	}
 	return false
@@ -577,7 +577,7 @@ func (f *filterQuery) Select(t iterator) NodeNavigator {
 
 		node := f.Input.Select(t)
 		if node == nil {
-			return nil
+			return node
 		}
 		node = node.Copy()
 
@@ -676,12 +676,14 @@ type groupQuery struct {
 }
 
 func (g *groupQuery) Select(t iterator) NodeNavigator {
-	node := g.Input.Select(t)
-	if node == nil {
-		return nil
+	for {
+		node := g.Input.Select(t)
+		if node == nil {
+			return nil
+		}
+		g.posit++
+		return node.Copy()
 	}
-	g.posit++
-	return node
 }
 
 func (g *groupQuery) Evaluate(t iterator) interface{} {
@@ -689,7 +691,7 @@ func (g *groupQuery) Evaluate(t iterator) interface{} {
 }
 
 func (g *groupQuery) Clone() query {
-	return &groupQuery{Input: g.Input.Clone()}
+	return &groupQuery{Input: g.Input}
 }
 
 func (g *groupQuery) position() int {
@@ -818,8 +820,6 @@ func (b *booleanQuery) Select(t iterator) NodeNavigator {
 }
 
 func (b *booleanQuery) Evaluate(t iterator) interface{} {
-	n := t.Current().Copy()
-
 	m := b.Left.Evaluate(t)
 	left := asBool(t, m)
 	if b.IsOr && left {
@@ -827,8 +827,6 @@ func (b *booleanQuery) Evaluate(t iterator) interface{} {
 	} else if !b.IsOr && !left {
 		return false
 	}
-
-	t.Current().MoveTo(n)
 	m = b.Right.Evaluate(t)
 	return asBool(t, m)
 }
@@ -892,35 +890,6 @@ func (u *unionQuery) Evaluate(t iterator) interface{} {
 
 func (u *unionQuery) Clone() query {
 	return &unionQuery{Left: u.Left.Clone(), Right: u.Right.Clone()}
-}
-
-type lastQuery struct {
-	buffer  []NodeNavigator
-	counted bool
-
-	Input query
-}
-
-func (q *lastQuery) Select(t iterator) NodeNavigator {
-	return nil
-}
-
-func (q *lastQuery) Evaluate(t iterator) interface{} {
-	if !q.counted {
-		for {
-			node := q.Input.Select(t)
-			if node == nil {
-				break
-			}
-			q.buffer = append(q.buffer, node.Copy())
-		}
-		q.counted = true
-	}
-	return float64(len(q.buffer))
-}
-
-func (q *lastQuery) Clone() query {
-	return &lastQuery{Input: q.Input.Clone()}
 }
 
 func getHashCode(n NodeNavigator) uint64 {
