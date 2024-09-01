@@ -1,14 +1,13 @@
-XPath
-====
+# XPath
+
 [![GoDoc](https://godoc.org/github.com/antchfx/xpath?status.svg)](https://godoc.org/github.com/antchfx/xpath)
 [![Coverage Status](https://coveralls.io/repos/github/antchfx/xpath/badge.svg?branch=master)](https://coveralls.io/github/antchfx/xpath?branch=master)
-[![Build Status](https://travis-ci.org/antchfx/xpath.svg?branch=master)](https://travis-ci.org/antchfx/xpath)
+[![Build Status](https://github.com/antchfx/xpath/actions/workflows/testing.yml/badge.svg)](https://github.com/antchfx/xpath/actions/workflows/testing.yml)
 [![Go Report Card](https://goreportcard.com/badge/github.com/antchfx/xpath)](https://goreportcard.com/report/github.com/antchfx/xpath)
 
 XPath is Go package provides selecting nodes from XML, HTML or other documents using XPath expression.
 
-Implementation
-===
+# Implementation
 
 - [htmlquery](https://github.com/antchfx/htmlquery) - an XPath query package for HTML document
 
@@ -16,8 +15,7 @@ Implementation
 
 - [jsonquery](https://github.com/antchfx/jsonquery) - an XPath query package for JSON document
 
-Supported Features
-===
+# Supported Features
 
 #### The basic XPath patterns.
 
@@ -49,7 +47,7 @@ Supported Features
 
 - `a/b` : For each node matching a, add the nodes matching b to the result.
 
-- `a//b` : For each node matching a, add the descendant nodes matching b to the result. 
+- `a//b` : For each node matching a, add the descendant nodes matching b to the result.
 
 - `//b` : Returns elements in the entire document matching b.
 
@@ -57,24 +55,28 @@ Supported Features
 
 - `(a, b, c)` : Evaluates each of its operands and concatenates the resulting sequences, in order, into a single result sequence
 
+- `(a/b)` : Selects all matches nodes as grouping set.
 
-#### Node Axes 
+#### Node Axes
 
 - `child::*` : The child axis selects children of the current node.
+
+  - `child::node()`: Selects all the children of the context node.
+  - `child::text()`: Selects all text node children of the context node.
 
 - `descendant::*` : The descendant axis selects descendants of the current node. It is equivalent to '//'.
 
 - `descendant-or-self::*` : Selects descendants including the current node.
 
-- `attribute::*` : Selects attributes of the current element. It is equivalent to @*
+- `attribute::*` : Selects attributes of the current element. It is equivalent to @\*
 
 - `following-sibling::*` : Selects nodes after the current node.
 
 - `preceding-sibling::*` : Selects nodes before the current node.
 
-- `following::*` : Selects the first matching node following in document order, excluding descendants. 
+- `following::*` : Selects the first matching node following in document order, excluding descendants.
 
-- `preceding::*` : Selects the first matching node preceding in document order, excluding ancestors. 
+- `preceding::*` : Selects the first matching node preceding in document order, excluding ancestors.
 
 - `parent::*` : Selects the parent if it matches. The '..' pattern from the core is equivalent to 'parent::node()'.
 
@@ -86,27 +88,27 @@ Supported Features
 
 #### Expressions
 
- The gxpath supported three types: number, boolean, string.
+The gxpath supported three types: number, boolean, string.
 
 - `path` : Selects nodes based on the path.
 
 - `a = b` : Standard comparisons.
 
-    * a = b	    True if a equals b.
-    * a != b	True if a is not equal to b.
-    * a < b	    True if a is less than b.
-    * a <= b	True if a is less than or equal to b.
-    * a > b	    True if a is greater than b.
-    * a >= b	True if a is greater than or equal to b.
+  - `a = b` : True if a equals b.
+  - `a != b` : True if a is not equal to b.
+  - `a < b` : True if a is less than b.
+  - `a <= b` : True if a is less than or equal to b.
+  - `a > b` : True if a is greater than b.
+  - `a >= b` : True if a is greater than or equal to b.
 
 - `a + b` : Arithmetic expressions.
 
-    * `- a`	Unary minus
-    * a + b	Add
-    * a - b	Substract
-    * a * b	Multiply
-    * a div b	Divide
-    * a mod b	Floating point mod, like Java.
+  - `- a` Unary minus
+  - `a + b` : Addition
+  - `a - b` : Subtraction
+  - `a * b` : Multiplication
+  - `a div b` : Division
+  - `a mod b` : Modulus (division remainder)
 
 - `a or b` : Boolean `or` operation.
 
@@ -116,58 +118,50 @@ Supported Features
 
 - `fun(arg1, ..., argn)` : Function calls:
 
-| Function | Supported |
-| --- | --- |
-`boolean()`| ✓ |
-`ceiling()`| ✓ |
-`choose()`| ✗ |
-`concat()`| ✓ |
-`contains()`| ✓ |
-`count()`| ✓ |
-`current()`| ✗ |
-`document()`| ✗ |
-`element-available()`| ✗ |
-`ends-with()`| ✓ |
-`false()`| ✓ |
-`floor()`| ✓ |
-`format-number()`| ✗ |
-`function-available()`| ✗ |
-`generate-id()`| ✗ |
-`id()`| ✗ |
-`key()`| ✗ |
-`lang()`| ✗ |
-`last()`| ✓ |
-`local-name()`| ✓ |
-`matches()`| ✓ |
-`name()`| ✓ |
-`namespace-uri()`| ✓ |
-`normalize-space()`| ✓ |
-`not()`| ✓ |
-`number()`| ✓ |
-`position()`| ✓ |
-`replace()`| ✓ |
-`reverse()`| ✓ |
-`round()`| ✓ |
-`starts-with()`| ✓ |
-`string()`| ✓ |
-`string-length()`| ✓ |
-`substring()`| ✓ |
-`substring-after()`| ✓ |
-`substring-before()`| ✓ |
-`sum()`| ✓ |
-`system-property()`| ✗ |
-`translate()`| ✓ |
-`true()`| ✓ |
-`unparsed-entity-url()` | ✗ |
+| Function                | Supported |
+| ----------------------- | --------- |
+| `boolean()`             | ✓         |
+| `ceiling()`             | ✓         |
+| `choose()`              | ✗         |
+| `concat()`              | ✓         |
+| `contains()`            | ✓         |
+| `count()`               | ✓         |
+| `current()`             | ✗         |
+| `document()`            | ✗         |
+| `element-available()`   | ✗         |
+| `ends-with()`           | ✓         |
+| `false()`               | ✓         |
+| `floor()`               | ✓         |
+| `format-number()`       | ✗         |
+| `function-available()`  | ✗         |
+| `generate-id()`         | ✗         |
+| `id()`                  | ✗         |
+| `key()`                 | ✗         |
+| `lang()`                | ✗         |
+| `last()`                | ✓         |
+| `local-name()`          | ✓         |
+| `lower-case()`[^1]      | ✓         |
+| `matches()`             | ✓         |
+| `name()`                | ✓         |
+| `namespace-uri()`       | ✓         |
+| `normalize-space()`     | ✓         |
+| `not()`                 | ✓         |
+| `number()`              | ✓         |
+| `position()`            | ✓         |
+| `replace()`             | ✓         |
+| `reverse()`             | ✓         |
+| `round()`               | ✓         |
+| `starts-with()`         | ✓         |
+| `string()`              | ✓         |
+| `string-join()`[^1]     | ✓         |
+| `string-length()`       | ✓         |
+| `substring()`           | ✓         |
+| `substring-after()`     | ✓         |
+| `substring-before()`    | ✓         |
+| `sum()`                 | ✓         |
+| `system-property()`     | ✗         |
+| `translate()`           | ✓         |
+| `true()`                | ✓         |
+| `unparsed-entity-url()` | ✗         |
 
-Changelogs
-===
-
-2019-03-19 
-- optimize XPath `|` operation performance. [#33](https://github.com/antchfx/xpath/issues/33). Tips: suggest split into multiple subquery if you have a lot of `|` operations.
-
-2019-01-29
--  improvement `normalize-space` function. [#32](https://github.com/antchfx/xpath/issues/32)
-
-2018-12-07
--  supports XPath 2.0 Sequence expressions. [#30](https://github.com/antchfx/xpath/pull/30) by [@minherz](https://github.com/minherz).
+[^1]: XPath-2.0 expression

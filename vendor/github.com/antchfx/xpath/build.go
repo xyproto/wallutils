@@ -7,15 +7,39 @@ import (
 
 type flag int
 
-const (
-	noneFlag flag = iota
-	filterFlag
-)
+var flagsEnum = struct {
+	None      flag
+	SmartDesc flag
+	PosFilter flag
+	Filter    flag
+	Condition flag
+}{
+	None:      0,
+	SmartDesc: 1,
+	PosFilter: 2,
+	Filter:    4,
+	Condition: 8,
+}
+
+type builderProp int
+
+var builderProps = struct {
+	None        builderProp
+	PosFilter   builderProp
+	HasPosition builderProp
+	HasLast     builderProp
+	NonFlat     builderProp
+}{
+	None:        0,
+	PosFilter:   1,
+	HasPosition: 2,
+	HasLast:     4,
+	NonFlat:     8,
+}
 
 // builder provides building an XPath expressions.
 type builder struct {
-	depth      int
-	flag       flag
+	parseDepth int
 	firstInput query
 }
 
@@ -42,8 +66,14 @@ func axisPredicate(root *axisNode) func(NodeNavigator) bool {
 	}
 	nametest := root.LocalName != "" || root.Prefix != ""
 	predicate := func(n NodeNavigator) bool {
-		if typ == n.NodeType() || typ == allNode || typ == TextNode {
+		if typ == n.NodeType() || typ == allNode {
 			if nametest {
+				type namespaceURL interface {
+					NamespaceURL() string
+				}
+				if ns, ok := n.(namespaceURL); ok && root.hasNamespaceURI {
+					return root.LocalName == n.LocalName() && root.namespaceURI == ns.NamespaceURL()
+				}
 				if root.LocalName == n.LocalName() && root.Prefix == n.Prefix() {
 					return true
 				}
@@ -57,23 +87,26 @@ func axisPredicate(root *axisNode) func(NodeNavigator) bool {
 	return predicate
 }
 
-// processAxisNode processes a query for the XPath axis node.
-func (b *builder) processAxisNode(root *axisNode) (query, error) {
+// processAxis processes a query for the XPath axis node.
+func (b *builder) processAxis(root *axisNode, flags flag, props *builderProp) (query, error) {
 	var (
-		err       error
-		qyInput   query
-		qyOutput  query
-		predicate = axisPredicate(root)
+		err      error
+		qyInput  query
+		qyOutput query
 	)
+	b.firstInput = nil
+	predicate := axisPredicate(root)
 
 	if root.Input == nil {
 		qyInput = &contextQuery{}
+		*props = builderProps.None
 	} else {
+		inputFlags := flagsEnum.None
 		if root.AxeType == "child" && (root.Input.Type() == nodeAxis) {
 			if input := root.Input.(*axisNode); input.AxeType == "descendant-or-self" {
 				var qyGrandInput query
 				if input.Input != nil {
-					qyGrandInput, _ = b.processNode(input.Input)
+					qyGrandInput, _ = b.processNode(input.Input, flagsEnum.SmartDesc, props)
 				} else {
 					qyGrandInput = &contextQuery{}
 				}
@@ -88,11 +121,14 @@ func (b *builder) processAxisNode(root *axisNode) (query, error) {
 					}
 					return v
 				}
-				qyOutput = &descendantQuery{Input: qyGrandInput, Predicate: filter, Self: true}
+				qyOutput = &descendantQuery{name: root.LocalName, Input: qyGrandInput, Predicate: filter, Self: false}
+				*props |= builderProps.NonFlat
 				return qyOutput, nil
 			}
+		} else if ((flags & flagsEnum.Filter) == 0) && (root.AxeType == "descendant" || root.AxeType == "descendant-or-self") {
+			inputFlags |= flagsEnum.SmartDesc
 		}
-		qyInput, err = b.processNode(root.Input)
+		qyInput, err = b.processNode(root.Input, inputFlags, props)
 		if err != nil {
 			return nil, err
 		}
@@ -100,11 +136,13 @@ func (b *builder) processAxisNode(root *axisNode) (query, error) {
 
 	switch root.AxeType {
 	case "ancestor":
-		qyOutput = &ancestorQuery{Input: qyInput, Predicate: predicate}
+		qyOutput = &ancestorQuery{name: root.LocalName, Input: qyInput, Predicate: predicate}
+		*props |= builderProps.NonFlat
 	case "ancestor-or-self":
-		qyOutput = &ancestorQuery{Input: qyInput, Predicate: predicate, Self: true}
+		qyOutput = &ancestorQuery{name: root.LocalName, Input: qyInput, Predicate: predicate, Self: true}
+		*props |= builderProps.NonFlat
 	case "attribute":
-		qyOutput = &attributeQuery{Input: qyInput, Predicate: predicate}
+		qyOutput = &attributeQuery{name: root.LocalName, Input: qyInput, Predicate: predicate}
 	case "child":
 		filter := func(n NodeNavigator) bool {
 			v := predicate(n)
@@ -118,19 +156,35 @@ func (b *builder) processAxisNode(root *axisNode) (query, error) {
 			}
 			return v
 		}
-		qyOutput = &childQuery{Input: qyInput, Predicate: filter}
+		if (*props & builderProps.NonFlat) == 0 {
+			qyOutput = &childQuery{name: root.LocalName, Input: qyInput, Predicate: filter}
+		} else {
+			qyOutput = &cachedChildQuery{name: root.LocalName, Input: qyInput, Predicate: filter}
+		}
 	case "descendant":
-		qyOutput = &descendantQuery{Input: qyInput, Predicate: predicate}
+		if (flags & flagsEnum.SmartDesc) != flagsEnum.None {
+			qyOutput = &descendantOverDescendantQuery{name: root.LocalName, Input: qyInput, MatchSelf: false, Predicate: predicate}
+		} else {
+			qyOutput = &descendantQuery{name: root.LocalName, Input: qyInput, Predicate: predicate}
+		}
+		*props |= builderProps.NonFlat
 	case "descendant-or-self":
-		qyOutput = &descendantQuery{Input: qyInput, Predicate: predicate, Self: true}
+		if (flags & flagsEnum.SmartDesc) != flagsEnum.None {
+			qyOutput = &descendantOverDescendantQuery{name: root.LocalName, Input: qyInput, MatchSelf: true, Predicate: predicate}
+		} else {
+			qyOutput = &descendantQuery{name: root.LocalName, Input: qyInput, Predicate: predicate, Self: true}
+		}
+		*props |= builderProps.NonFlat
 	case "following":
 		qyOutput = &followingQuery{Input: qyInput, Predicate: predicate}
+		*props |= builderProps.NonFlat
 	case "following-sibling":
 		qyOutput = &followingQuery{Input: qyInput, Predicate: predicate, Sibling: true}
 	case "parent":
 		qyOutput = &parentQuery{Input: qyInput, Predicate: predicate}
 	case "preceding":
 		qyOutput = &precedingQuery{Input: qyInput, Predicate: predicate}
+		*props |= builderProps.NonFlat
 	case "preceding-sibling":
 		qyOutput = &precedingQuery{Input: qyInput, Predicate: predicate, Sibling: true}
 	case "self":
@@ -144,56 +198,182 @@ func (b *builder) processAxisNode(root *axisNode) (query, error) {
 	return qyOutput, nil
 }
 
-// processFilterNode builds query for the XPath filter predicate.
-func (b *builder) processFilterNode(root *filterNode) (query, error) {
-	b.flag |= filterFlag
+func canBeNumber(q query) bool {
+	if q.ValueType() != xpathResultType.Any {
+		return q.ValueType() == xpathResultType.Number
+	}
+	return true
+}
 
-	qyInput, err := b.processNode(root.Input)
+// processFilterNode builds query for the XPath filter predicate.
+func (b *builder) processFilter(root *filterNode, flags flag, props *builderProp) (query, error) {
+	first := (flags & flagsEnum.Filter) == 0
+
+	qyInput, err := b.processNode(root.Input, (flags | flagsEnum.Filter), props)
 	if err != nil {
 		return nil, err
 	}
-	qyCond, err := b.processNode(root.Condition)
+	firstInput := b.firstInput
+
+	var propsCond builderProp
+	cond, err := b.processNode(root.Condition, flags, &propsCond)
 	if err != nil {
 		return nil, err
 	}
-	qyOutput := &filterQuery{Input: qyInput, Predicate: qyCond}
-	return qyOutput, nil
+
+	// Checking whether is number
+	if canBeNumber(cond) || ((propsCond & (builderProps.HasPosition | builderProps.HasLast)) != 0) {
+		propsCond |= builderProps.HasPosition
+		flags |= flagsEnum.PosFilter
+	}
+
+	if root.Input.Type() != nodeFilter {
+		*props &= ^builderProps.PosFilter
+	}
+
+	if (propsCond & builderProps.HasPosition) != 0 {
+		*props |= builderProps.PosFilter
+	}
+
+	merge := (qyInput.Properties() & queryProps.Merge) != 0
+	if (propsCond & builderProps.HasPosition) != builderProps.None {
+		if (propsCond & builderProps.HasLast) != 0 {
+			// https://github.com/antchfx/xpath/issues/76
+			// https://github.com/antchfx/xpath/issues/78
+			if qyFunc, ok := cond.(*functionQuery); ok {
+				switch qyFunc.Input.(type) {
+				case *filterQuery:
+					cond = &lastQuery{Input: qyFunc.Input}
+				}
+			}
+		}
+	}
+
+	if first && firstInput != nil {
+		if merge && ((*props & builderProps.PosFilter) != 0) {
+			qyInput = &filterQuery{Input: qyInput, Predicate: cond, NoPosition: false}
+
+			var (
+				rootQuery = &contextQuery{}
+				parent    query
+			)
+			switch axisQuery := firstInput.(type) {
+			case *ancestorQuery:
+				if _, ok := axisQuery.Input.(*contextQuery); !ok {
+					parent = axisQuery.Input
+					axisQuery.Input = rootQuery
+				}
+			case *attributeQuery:
+				if _, ok := axisQuery.Input.(*contextQuery); !ok {
+					parent = axisQuery.Input
+					axisQuery.Input = rootQuery
+				}
+			case *childQuery:
+				if _, ok := axisQuery.Input.(*contextQuery); !ok {
+					parent = axisQuery.Input
+					axisQuery.Input = rootQuery
+				}
+			case *cachedChildQuery:
+				if _, ok := axisQuery.Input.(*contextQuery); !ok {
+					parent = axisQuery.Input
+					axisQuery.Input = rootQuery
+				}
+			case *descendantQuery:
+				if _, ok := axisQuery.Input.(*contextQuery); !ok {
+					parent = axisQuery.Input
+					axisQuery.Input = rootQuery
+				}
+			case *followingQuery:
+				if _, ok := axisQuery.Input.(*contextQuery); !ok {
+					parent = axisQuery.Input
+					axisQuery.Input = rootQuery
+				}
+			case *precedingQuery:
+				if _, ok := axisQuery.Input.(*contextQuery); !ok {
+					parent = axisQuery.Input
+					axisQuery.Input = rootQuery
+				}
+			case *parentQuery:
+				if _, ok := axisQuery.Input.(*contextQuery); !ok {
+					parent = axisQuery.Input
+					axisQuery.Input = rootQuery
+				}
+			case *selfQuery:
+				if _, ok := axisQuery.Input.(*contextQuery); !ok {
+					parent = axisQuery.Input
+					axisQuery.Input = rootQuery
+				}
+			case *groupQuery:
+				if _, ok := axisQuery.Input.(*contextQuery); !ok {
+					parent = axisQuery.Input
+					axisQuery.Input = rootQuery
+				}
+			case *descendantOverDescendantQuery:
+				if _, ok := axisQuery.Input.(*contextQuery); !ok {
+					parent = axisQuery.Input
+					axisQuery.Input = rootQuery
+				}
+			}
+			b.firstInput = nil
+			if parent != nil {
+				return &mergeQuery{Input: parent, Child: qyInput}, nil
+			}
+			return qyInput, nil
+		}
+		b.firstInput = nil
+	}
+
+	resultQuery := &filterQuery{
+		Input:      qyInput,
+		Predicate:  cond,
+		NoPosition: (propsCond & builderProps.HasPosition) == 0,
+	}
+	return resultQuery, nil
 }
 
 // processFunctionNode processes query for the XPath function node.
-func (b *builder) processFunctionNode(root *functionNode) (query, error) {
+func (b *builder) processFunction(root *functionNode, props *builderProp) (query, error) {
+	// Reset builder props
+	*props = builderProps.None
+
 	var qyOutput query
 	switch root.FuncName {
+	case "lower-case":
+		arg, err := b.processNode(root.Args[0], flagsEnum.None, props)
+		if err != nil {
+			return nil, err
+		}
+		qyOutput = &functionQuery{Input: arg, Func: lowerCaseFunc}
 	case "starts-with":
-		arg1, err := b.processNode(root.Args[0])
+		arg1, err := b.processNode(root.Args[0], flagsEnum.None, props)
 		if err != nil {
 			return nil, err
 		}
-		arg2, err := b.processNode(root.Args[1])
+		arg2, err := b.processNode(root.Args[1], flagsEnum.None, props)
 		if err != nil {
 			return nil, err
 		}
-		qyOutput = &functionQuery{Input: b.firstInput, Func: startwithFunc(arg1, arg2)}
+		qyOutput = &functionQuery{Func: startwithFunc(arg1, arg2)}
 	case "ends-with":
-		arg1, err := b.processNode(root.Args[0])
+		arg1, err := b.processNode(root.Args[0], flagsEnum.None, props)
 		if err != nil {
 			return nil, err
 		}
-		arg2, err := b.processNode(root.Args[1])
+		arg2, err := b.processNode(root.Args[1], flagsEnum.None, props)
 		if err != nil {
 			return nil, err
 		}
-		qyOutput = &functionQuery{Input: b.firstInput, Func: endwithFunc(arg1, arg2)}
+		qyOutput = &functionQuery{Func: endwithFunc(arg1, arg2)}
 	case "contains":
-		arg1, err := b.processNode(root.Args[0])
+		arg1, err := b.processNode(root.Args[0], flagsEnum.None, props)
 		if err != nil {
 			return nil, err
 		}
-		arg2, err := b.processNode(root.Args[1])
+		arg2, err := b.processNode(root.Args[1], flagsEnum.None, props)
 		if err != nil {
 			return nil, err
 		}
-		qyOutput = &functionQuery{Input: b.firstInput, Func: containsFunc(arg1, arg2)}
+		qyOutput = &functionQuery{Func: containsFunc(arg1, arg2)}
 	case "matches":
 		//matches(string , pattern)
 		if len(root.Args) != 2 {
@@ -203,13 +383,19 @@ func (b *builder) processFunctionNode(root *functionNode) (query, error) {
 			arg1, arg2 query
 			err        error
 		)
-		if arg1, err = b.processNode(root.Args[0]); err != nil {
+		if arg1, err = b.processNode(root.Args[0], flagsEnum.None, props); err != nil {
 			return nil, err
 		}
-		if arg2, err = b.processNode(root.Args[1]); err != nil {
+		if arg2, err = b.processNode(root.Args[1], flagsEnum.None, props); err != nil {
 			return nil, err
 		}
-		qyOutput = &functionQuery{Input: b.firstInput, Func: matchesFunc(arg1, arg2)}
+		// Issue #92, testing the regular expression before.
+		if q, ok := arg2.(*constantQuery); ok {
+			if _, err = getRegexp(q.Val.(string)); err != nil {
+				return nil, fmt.Errorf("matches() got error. %v", err)
+			}
+		}
+		qyOutput = &functionQuery{Func: matchesFunc(arg1, arg2)}
 	case "substring":
 		//substring( string , start [, length] )
 		if len(root.Args) < 2 {
@@ -219,18 +405,18 @@ func (b *builder) processFunctionNode(root *functionNode) (query, error) {
 			arg1, arg2, arg3 query
 			err              error
 		)
-		if arg1, err = b.processNode(root.Args[0]); err != nil {
+		if arg1, err = b.processNode(root.Args[0], flagsEnum.None, props); err != nil {
 			return nil, err
 		}
-		if arg2, err = b.processNode(root.Args[1]); err != nil {
+		if arg2, err = b.processNode(root.Args[1], flagsEnum.None, props); err != nil {
 			return nil, err
 		}
 		if len(root.Args) == 3 {
-			if arg3, err = b.processNode(root.Args[2]); err != nil {
+			if arg3, err = b.processNode(root.Args[2], flagsEnum.None, props); err != nil {
 				return nil, err
 			}
 		}
-		qyOutput = &functionQuery{Input: b.firstInput, Func: substringFunc(arg1, arg2, arg3)}
+		qyOutput = &functionQuery{Func: substringFunc(arg1, arg2, arg3)}
 	case "substring-before", "substring-after":
 		//substring-xxxx( haystack, needle )
 		if len(root.Args) != 2 {
@@ -240,31 +426,30 @@ func (b *builder) processFunctionNode(root *functionNode) (query, error) {
 			arg1, arg2 query
 			err        error
 		)
-		if arg1, err = b.processNode(root.Args[0]); err != nil {
+		if arg1, err = b.processNode(root.Args[0], flagsEnum.None, props); err != nil {
 			return nil, err
 		}
-		if arg2, err = b.processNode(root.Args[1]); err != nil {
+		if arg2, err = b.processNode(root.Args[1], flagsEnum.None, props); err != nil {
 			return nil, err
 		}
 		qyOutput = &functionQuery{
-			Input: b.firstInput,
-			Func:  substringIndFunc(arg1, arg2, root.FuncName == "substring-after"),
+			Func: substringIndFunc(arg1, arg2, root.FuncName == "substring-after"),
 		}
 	case "string-length":
 		// string-length( [string] )
 		if len(root.Args) < 1 {
 			return nil, errors.New("xpath: string-length function must have at least one parameter")
 		}
-		arg1, err := b.processNode(root.Args[0])
+		arg1, err := b.processNode(root.Args[0], flagsEnum.None, props)
 		if err != nil {
 			return nil, err
 		}
-		qyOutput = &functionQuery{Input: b.firstInput, Func: stringLengthFunc(arg1)}
+		qyOutput = &functionQuery{Func: stringLengthFunc(arg1)}
 	case "normalize-space":
 		if len(root.Args) == 0 {
 			return nil, errors.New("xpath: normalize-space function must have at least one parameter")
 		}
-		argQuery, err := b.processNode(root.Args[0])
+		argQuery, err := b.processNode(root.Args[0], flagsEnum.None, props)
 		if err != nil {
 			return nil, err
 		}
@@ -278,16 +463,16 @@ func (b *builder) processFunctionNode(root *functionNode) (query, error) {
 			arg1, arg2, arg3 query
 			err              error
 		)
-		if arg1, err = b.processNode(root.Args[0]); err != nil {
+		if arg1, err = b.processNode(root.Args[0], flagsEnum.None, props); err != nil {
 			return nil, err
 		}
-		if arg2, err = b.processNode(root.Args[1]); err != nil {
+		if arg2, err = b.processNode(root.Args[1], flagsEnum.None, props); err != nil {
 			return nil, err
 		}
-		if arg3, err = b.processNode(root.Args[2]); err != nil {
+		if arg3, err = b.processNode(root.Args[2], flagsEnum.None, props); err != nil {
 			return nil, err
 		}
-		qyOutput = &functionQuery{Input: b.firstInput, Func: replaceFunc(arg1, arg2, arg3)}
+		qyOutput = &functionQuery{Func: replaceFunc(arg1, arg2, arg3)}
 	case "translate":
 		//translate( string , string, string )
 		if len(root.Args) != 3 {
@@ -297,21 +482,21 @@ func (b *builder) processFunctionNode(root *functionNode) (query, error) {
 			arg1, arg2, arg3 query
 			err              error
 		)
-		if arg1, err = b.processNode(root.Args[0]); err != nil {
+		if arg1, err = b.processNode(root.Args[0], flagsEnum.None, props); err != nil {
 			return nil, err
 		}
-		if arg2, err = b.processNode(root.Args[1]); err != nil {
+		if arg2, err = b.processNode(root.Args[1], flagsEnum.None, props); err != nil {
 			return nil, err
 		}
-		if arg3, err = b.processNode(root.Args[2]); err != nil {
+		if arg3, err = b.processNode(root.Args[2], flagsEnum.None, props); err != nil {
 			return nil, err
 		}
-		qyOutput = &functionQuery{Input: b.firstInput, Func: translateFunc(arg1, arg2, arg3)}
+		qyOutput = &functionQuery{Func: translateFunc(arg1, arg2, arg3)}
 	case "not":
 		if len(root.Args) == 0 {
 			return nil, errors.New("xpath: not function must have at least one parameter")
 		}
-		argQuery, err := b.processNode(root.Args[0])
+		argQuery, err := b.processNode(root.Args[0], flagsEnum.None, props)
 		if err != nil {
 			return nil, err
 		}
@@ -325,38 +510,46 @@ func (b *builder) processFunctionNode(root *functionNode) (query, error) {
 			err error
 		)
 		if len(root.Args) == 1 {
-			arg, err = b.processNode(root.Args[0])
+			arg, err = b.processNode(root.Args[0], flagsEnum.None, props)
 			if err != nil {
 				return nil, err
 			}
 		}
 		switch root.FuncName {
 		case "name":
-			qyOutput = &functionQuery{Input: b.firstInput, Func: nameFunc(arg)}
+			qyOutput = &functionQuery{Func: nameFunc(arg)}
 		case "local-name":
-			qyOutput = &functionQuery{Input: b.firstInput, Func: localNameFunc(arg)}
+			qyOutput = &functionQuery{Func: localNameFunc(arg)}
 		case "namespace-uri":
-			qyOutput = &functionQuery{Input: b.firstInput, Func: namespaceFunc(arg)}
+			qyOutput = &functionQuery{Func: namespaceFunc(arg)}
 		}
 	case "true", "false":
 		val := root.FuncName == "true"
 		qyOutput = &functionQuery{
-			Input: b.firstInput,
 			Func: func(_ query, _ iterator) interface{} {
 				return val
 			},
 		}
 	case "last":
-		qyOutput = &functionQuery{Input: b.firstInput, Func: lastFunc}
+		//switch typ := b.firstInput.(type) {
+		//case *groupQuery, *filterQuery:
+		// https://github.com/antchfx/xpath/issues/76
+		// https://github.com/antchfx/xpath/issues/78
+		//qyOutput = &lastQuery{Input: typ}
+		//default:
+		qyOutput = &functionQuery{Func: lastFunc}
+		//}
+		*props |= builderProps.HasLast
 	case "position":
-		qyOutput = &functionQuery{Input: b.firstInput, Func: positionFunc}
+		qyOutput = &functionQuery{Func: positionFunc}
+		*props |= builderProps.HasPosition
 	case "boolean", "number", "string":
-		inp := b.firstInput
+		var inp query
 		if len(root.Args) > 1 {
 			return nil, fmt.Errorf("xpath: %s function must have at most one parameter", root.FuncName)
 		}
 		if len(root.Args) == 1 {
-			argQuery, err := b.processNode(root.Args[0])
+			argQuery, err := b.processNode(root.Args[0], flagsEnum.None, props)
 			if err != nil {
 				return nil, err
 			}
@@ -373,13 +566,10 @@ func (b *builder) processFunctionNode(root *functionNode) (query, error) {
 		}
 		qyOutput = f
 	case "count":
-		//if b.firstInput == nil {
-		//	return nil, errors.New("xpath: expression must evaluate to node-set")
-		//}
 		if len(root.Args) == 0 {
 			return nil, fmt.Errorf("xpath: count(node-sets) function must with have parameters node-sets")
 		}
-		argQuery, err := b.processNode(root.Args[0])
+		argQuery, err := b.processNode(root.Args[0], flagsEnum.None, props)
 		if err != nil {
 			return nil, err
 		}
@@ -388,7 +578,7 @@ func (b *builder) processFunctionNode(root *functionNode) (query, error) {
 		if len(root.Args) == 0 {
 			return nil, fmt.Errorf("xpath: sum(node-sets) function must with have parameters node-sets")
 		}
-		argQuery, err := b.processNode(root.Args[0])
+		argQuery, err := b.processNode(root.Args[0], flagsEnum.None, props)
 		if err != nil {
 			return nil, err
 		}
@@ -397,7 +587,7 @@ func (b *builder) processFunctionNode(root *functionNode) (query, error) {
 		if len(root.Args) == 0 {
 			return nil, fmt.Errorf("xpath: ceiling(node-sets) function must with have parameters node-sets")
 		}
-		argQuery, err := b.processNode(root.Args[0])
+		argQuery, err := b.processNode(root.Args[0], flagsEnum.None, props)
 		if err != nil {
 			return nil, err
 		}
@@ -417,41 +607,65 @@ func (b *builder) processFunctionNode(root *functionNode) (query, error) {
 		}
 		var args []query
 		for _, v := range root.Args {
-			q, err := b.processNode(v)
+			q, err := b.processNode(v, flagsEnum.None, props)
 			if err != nil {
 				return nil, err
 			}
 			args = append(args, q)
 		}
-		qyOutput = &functionQuery{Input: b.firstInput, Func: concatFunc(args...)}
+		qyOutput = &functionQuery{Func: concatFunc(args...)}
 	case "reverse":
 		if len(root.Args) == 0 {
 			return nil, fmt.Errorf("xpath: reverse(node-sets) function must with have parameters node-sets")
 		}
-		argQuery, err := b.processNode(root.Args[0])
+		argQuery, err := b.processNode(root.Args[0], flagsEnum.None, props)
 		if err != nil {
 			return nil, err
 		}
 		qyOutput = &transformFunctionQuery{Input: argQuery, Func: reverseFunc}
+	case "string-join":
+		if len(root.Args) != 2 {
+			return nil, fmt.Errorf("xpath: string-join(node-sets, separator) function requires node-set and argument")
+		}
+		argQuery, err := b.processNode(root.Args[0], flagsEnum.None, props)
+		if err != nil {
+			return nil, err
+		}
+		arg1, err := b.processNode(root.Args[1], flagsEnum.None, props)
+		if err != nil {
+			return nil, err
+		}
+		qyOutput = &functionQuery{Input: argQuery, Func: stringJoinFunc(arg1)}
 	default:
 		return nil, fmt.Errorf("not yet support this function %s()", root.FuncName)
+	}
+
+	if funcQuery, ok := qyOutput.(*functionQuery); ok && funcQuery.Input == nil {
+		funcQuery.Input = b.firstInput
 	}
 	return qyOutput, nil
 }
 
-func (b *builder) processOperatorNode(root *operatorNode) (query, error) {
-	left, err := b.processNode(root.Left)
+func (b *builder) processOperator(root *operatorNode, props *builderProp) (query, error) {
+	var (
+		leftProp  builderProp
+		rightProp builderProp
+	)
+
+	left, err := b.processNode(root.Left, flagsEnum.None, &leftProp)
 	if err != nil {
 		return nil, err
 	}
-	right, err := b.processNode(root.Right)
+	right, err := b.processNode(root.Right, flagsEnum.None, &rightProp)
 	if err != nil {
 		return nil, err
 	}
+	*props = leftProp | rightProp
+
 	var qyOutput query
 	switch root.Op {
 	case "+", "-", "*", "div", "mod": // Numeric operator
-		var exprFunc func(interface{}, interface{}) interface{}
+		var exprFunc func(iterator, interface{}, interface{}) interface{}
 		switch root.Op {
 		case "+":
 			exprFunc = plusFunc
@@ -489,44 +703,50 @@ func (b *builder) processOperatorNode(root *operatorNode) (query, error) {
 		}
 		qyOutput = &booleanQuery{Left: left, Right: right, IsOr: isOr}
 	case "|":
+		*props |= builderProps.NonFlat
 		qyOutput = &unionQuery{Left: left, Right: right}
 	}
 	return qyOutput, nil
 }
 
-func (b *builder) processNode(root node) (q query, err error) {
-	if b.depth = b.depth + 1; b.depth > 1024 {
+func (b *builder) processNode(root node, flags flag, props *builderProp) (q query, err error) {
+	if b.parseDepth = b.parseDepth + 1; b.parseDepth > 1024 {
 		err = errors.New("the xpath expressions is too complex")
 		return
 	}
-
+	*props = builderProps.None
 	switch root.Type() {
 	case nodeConstantOperand:
 		n := root.(*operandNode)
 		q = &constantQuery{Val: n.Val}
 	case nodeRoot:
-		q = &contextQuery{Root: true}
+		q = &absoluteQuery{}
 	case nodeAxis:
-		q, err = b.processAxisNode(root.(*axisNode))
+		q, err = b.processAxis(root.(*axisNode), flags, props)
 		b.firstInput = q
 	case nodeFilter:
-		q, err = b.processFilterNode(root.(*filterNode))
+		q, err = b.processFilter(root.(*filterNode), flags, props)
+		b.firstInput = q
 	case nodeFunction:
-		q, err = b.processFunctionNode(root.(*functionNode))
+		q, err = b.processFunction(root.(*functionNode), props)
 	case nodeOperator:
-		q, err = b.processOperatorNode(root.(*operatorNode))
+		q, err = b.processOperator(root.(*operatorNode), props)
 	case nodeGroup:
-		q, err = b.processNode(root.(*groupNode).Input)
+		q, err = b.processNode(root.(*groupNode).Input, flagsEnum.None, props)
 		if err != nil {
 			return
 		}
 		q = &groupQuery{Input: q}
+		if b.firstInput == nil {
+			b.firstInput = q
+		}
 	}
+	b.parseDepth--
 	return
 }
 
 // build builds a specified XPath expressions expr.
-func build(expr string) (q query, err error) {
+func build(expr string, namespaces map[string]string) (q query, err error) {
 	defer func() {
 		if e := recover(); e != nil {
 			switch x := e.(type) {
@@ -539,7 +759,8 @@ func build(expr string) (q query, err error) {
 			}
 		}
 	}()
-	root := parse(expr)
+	root := parse(expr, namespaces)
 	b := &builder{}
-	return b.processNode(root)
+	props := builderProps.None
+	return b.processNode(root, flagsEnum.None, &props)
 }

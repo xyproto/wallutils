@@ -84,13 +84,13 @@ func (t *NodeIterator) Current() NodeNavigator {
 // MoveNext moves Navigator to the next match node.
 func (t *NodeIterator) MoveNext() bool {
 	n := t.query.Select(t)
-	if n != nil {
-		if !t.node.MoveTo(n) {
-			t.node = n.Copy()
-		}
-		return true
+	if n == nil {
+		return false
 	}
-	return false
+	if !t.node.MoveTo(n) {
+		t.node = n.Copy()
+	}
+	return true
 }
 
 // Select selects a node set using the specified XPath expression.
@@ -141,7 +141,7 @@ func Compile(expr string) (*Expr, error) {
 	if expr == "" {
 		return nil, errors.New("expr expression is nil")
 	}
-	qy, err := build(expr)
+	qy, err := build(expr, nil)
 	if err != nil {
 		return nil, err
 	}
@@ -158,4 +158,19 @@ func MustCompile(expr string) *Expr {
 		return &Expr{s: expr, q: nopQuery{}}
 	}
 	return exp
+}
+
+// CompileWithNS compiles an XPath expression string, using given namespaces map.
+func CompileWithNS(expr string, namespaces map[string]string) (*Expr, error) {
+	if expr == "" {
+		return nil, errors.New("expr expression is nil")
+	}
+	qy, err := build(expr, namespaces)
+	if err != nil {
+		return nil, err
+	}
+	if qy == nil {
+		return nil, fmt.Errorf(fmt.Sprintf("undeclared variable in XPath expression: %s", expr))
+	}
+	return &Expr{s: expr, q: qy}, nil
 }
