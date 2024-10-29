@@ -103,7 +103,9 @@ func (g3 *Gnome3) SetWallpaper(imageFilename string) error {
 		}
 	}
 
-	// Set the desktop wallpaper (also set it if it is already set, in case
-	// the contents have changed)
+	// Set the dark desktop wallpaper (also set it if it is already set)
+	_ = g.Set("picture-uri-dark", "file://"+imageFilename)
+
+	// Set the desktop wallpaper (also set it if it is already set)
 	return g.Set("picture-uri", "file://"+imageFilename)
 }
