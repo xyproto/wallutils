@@ -7,7 +7,7 @@ require (
 	github.com/fatih/color v1.18.0
 	github.com/stretchr/powerwalk v0.0.0-20151124150408-bceb9d014549
 	github.com/urfave/cli v1.22.15
-	github.com/xyproto/env/v2 v2.5.1
+	github.com/xyproto/env/v2 v2.5.2
 	github.com/xyproto/heic v1.0.0
 )
 

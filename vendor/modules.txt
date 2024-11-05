@@ -36,7 +36,7 @@ github.com/stretchr/powerwalk
 # github.com/urfave/cli v1.22.15
 ## explicit; go 1.11
 github.com/urfave/cli
-# github.com/xyproto/env/v2 v2.5.1
+# github.com/xyproto/env/v2 v2.5.2
 ## explicit; go 1.19
 github.com/xyproto/env/v2
 # github.com/xyproto/heic v1.0.0

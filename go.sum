@@ -39,8 +39,8 @@ github.com/stretchr/testify v1.9.0 h1:HtqpIVDClZ4nwg75+f6Lvsy/wHu+3BoSGCbBAcpTsT
 github.com/stretchr/testify v1.9.0/go.mod h1:r2ic/lqez/lEtzL7wO/rwa5dbSLXVDPFyf8C91i36aY=
 github.com/urfave/cli v1.22.15 h1:nuqt+pdC/KqswQKhETJjo7pvn/k4xMUxgW6liI7XpnM=
 github.com/urfave/cli v1.22.15/go.mod h1:wSan1hmo5zeyLGBjRJbzRTNk8gwoYa2B9n4q9dmRIc0=
-github.com/xyproto/env/v2 v2.5.1 h1:vu8A+z5VGp9TGgg7HQlAZPjbnk/Nvzt3gKzUtbt9kbQ=
-github.com/xyproto/env/v2 v2.5.1/go.mod h1:F81ZEzu15s3TWUZJ1uzBl9iNeq9zcfHvxMkQJaLZUl0=
+github.com/xyproto/env/v2 v2.5.2 h1:y0YomXk91TCIQPo58JUn+hqFBH9LhKws7W3RdhPEarM=
+github.com/xyproto/env/v2 v2.5.2/go.mod h1:F81ZEzu15s3TWUZJ1uzBl9iNeq9zcfHvxMkQJaLZUl0=
 github.com/xyproto/heic v1.0.0 h1:42G/y7vACJbMvMfZmT7RmD9tbNixpLJ3Fc8zXOm6N7E=
 github.com/xyproto/heic v1.0.0/go.mod h1:L/7tNatbi076v65zr94V5vGy96T9RusaMfjCS0dFQiU=
 github.com/yuin/goldmark v1.4.13/go.mod h1:6yULJ656Px+3vBD8DxQVa3kxgyrAnzto9xy5taEt/CY=
