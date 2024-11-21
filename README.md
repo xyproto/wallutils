@@ -173,7 +173,7 @@ The XML format from GNOME for specifying wallpaper **collections** is not yet su
 
 Send the `USR1` signal to the `settimed` process:
 
-    pkill settimed -USR1
+    pkill -USR1 settimed
 
 This should refresh the wallpaper.
 
@@ -183,7 +183,7 @@ This should refresh the wallpaper.
 
 ## Setting a wallpaper per monitor
 
-* Setting a wallpaper per monitor is not supported, yet. Currently, a wallpaper is set for all monitors.
+* Setting a wallpaper per monitor is not supported, yet. Right now, a wallpaper is set for all monitors. Pull requests are welcome.
 
 ## General info
 
