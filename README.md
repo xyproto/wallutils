@@ -18,8 +18,8 @@ Note that some window managers makes it hard to achieve smooth switches of deskt
 
 ## Included utilities
 
-  * `getdpi`, for retrieving the average DPI, for all monitors (use `-b` to see the DPI both horizontally and vertically).
-  * `lscollection`, for listing installed wallpaper collections (use `-l` for also listing paths and collection names).
+  * `getdpi`, for retrieving the average DPI, for all monitors (use `-a` or `-l` for all monitors, `-b` to see the DPI both horizontally and vertically).
+  * `lscollection`, for listing installed wallpaper collections (use `-l` for also listing collection type and full path).
   * `timedinfo`, for showing more information about installed timed wallpapers.
   * `lsmon` lists the connected monitors and resolutions that are discovered by the current WM/DE (use `-d` for also listing DPI).
   * `lstimed` for listing installed timed wallpapers (use `-l` for also listing paths).
@@ -32,7 +32,7 @@ Note that some window managers makes it hard to achieve smooth switches of deskt
   * `xinfo` shows detailed information about the current X setup.
   * `xml2stw` for converting GNOME timed wallpapers to the Simple Timed Wallpaper format.
   * `heic2stw` for extracting the timing information from macOS dynamic wallpapers (`.heic` files) to the Simple Timed Wallpaper format.
-  * `vram` for finding the minimum amount of VRAM available for non-integrated GPUs (use `-l` to list the bus ID, a description and available VRAM for each GPU).
+  * `vram` for finding the minimum amount of VRAM available for non-integrated GPUs (use `-l` to list the bus ID, a description and available VRAM for each GPU, `-i` to include integrated GPUs).
 
 ## Included scripts
 
