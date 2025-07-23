@@ -1,4 +1,4 @@
-.PHONY: all clean install
+.PHONY: all clean install install-man
 
 DESTDIR ?=
 PREFIX ?= /usr
@@ -69,6 +69,23 @@ install:
 	-install -Dm755 -t "$(DESTDIR)$(PREFIX)/bin" cmd/xinfo/xinfo
 	install -Dm755 -t "$(DESTDIR)$(PREFIX)/bin" cmd/xml2stw/xml2stw
 	install -Dm755 -t "$(DESTDIR)$(PREFIX)/bin" cmd/vram/vram
+
+install-man:
+	install -Dm644 -t "$(DESTDIR)$(PREFIX)/share/man/man1" cmd/getdpi/getdpi.1
+	install -Dm644 -t "$(DESTDIR)$(PREFIX)/share/man/man1" cmd/heic2stw/heic2stw.1
+	install -Dm644 -t "$(DESTDIR)$(PREFIX)/share/man/man1" cmd/lscollection/lscollection.1
+	install -Dm644 -t "$(DESTDIR)$(PREFIX)/share/man/man1" cmd/lsmon/lsmon.1
+	install -Dm644 -t "$(DESTDIR)$(PREFIX)/share/man/man1" cmd/lstimed/lstimed.1
+	install -Dm644 -t "$(DESTDIR)$(PREFIX)/share/man/man1" cmd/lswallpaper/lswallpaper.1
+	install -Dm644 -t "$(DESTDIR)$(PREFIX)/share/man/man1" cmd/setcollection/setcollection.1
+	install -Dm644 -t "$(DESTDIR)$(PREFIX)/share/man/man1" cmd/setrandom/setrandom.1
+	install -Dm644 -t "$(DESTDIR)$(PREFIX)/share/man/man1" cmd/settimed/settimed.1
+	install -Dm644 -t "$(DESTDIR)$(PREFIX)/share/man/man1" cmd/setwallpaper/setwallpaper.1
+	install -Dm644 -t "$(DESTDIR)$(PREFIX)/share/man/man1" cmd/timedinfo/timedinfo.1
+	install -Dm644 -t "$(DESTDIR)$(PREFIX)/share/man/man1" cmd/vram/vram.1
+	install -Dm644 -t "$(DESTDIR)$(PREFIX)/share/man/man1" cmd/wayinfo/wayinfo.1
+	install -Dm644 -t "$(DESTDIR)$(PREFIX)/share/man/man1" cmd/xinfo/xinfo.1
+	install -Dm644 -t "$(DESTDIR)$(PREFIX)/share/man/man1" cmd/xml2stw/xml2stw.1
 
 clean:
 	(cd cmd/getdpi; go clean)
