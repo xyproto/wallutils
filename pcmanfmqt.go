@@ -2,7 +2,6 @@ package wallutils
 
 import (
 	"fmt"
-	"os"
 )
 
 // PCManFMQt windowmanager detector
@@ -21,10 +20,10 @@ func (pcmq *PCManFMQt) ExecutablesExists() bool {
 	return which("pcmanfm-qt") != ""
 }
 
-// Running examines environment variables to try to figure out if this backend is currently running
+// Running examines if pcmanfm-qt is currently running with --desktop argument
 func (pcmq *PCManFMQt) Running() bool {
-	// Detect LxQt
-	return (os.Getenv("XDG_MENU_PREFIX") == "lxqt-") || (os.Getenv("DESKTOP_SESSION") == "lxqt")
+	running, err := RunningWithArgs("pcmanfm-qt", "--desktop")
+	return err == nil && running
 }
 
 // SetMode will set the current way to display the wallpaper (stretched, tiled etc)
