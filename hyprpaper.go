@@ -11,8 +11,8 @@ import (
 // Hyprpaper compatible windowmanager
 type Hyprpaper struct {
 	mode    string
-	verbose bool
 	sock    string
+	verbose bool
 }
 
 // Name returns the name of this window manager or desktop environment

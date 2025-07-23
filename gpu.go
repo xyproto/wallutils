@@ -11,11 +11,11 @@ import (
 
 // GPU contains an ID and the VRAM in MiB
 type GPU struct {
-	ID   uint   // GPU number, from 0 and up
 	Name string // GPU name
+	Bus  string // ie. 01:00.0
+	ID   uint   // GPU number, from 0 and up
 	VRAM uint   // VRAM, in MiB
 	VGA  bool   // Integrated / shows up as "VGA" with lspci
-	Bus  string // ie. 01:00.0
 }
 
 func collectNVIDIA(gpus *[]GPU) error {

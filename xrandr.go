@@ -13,10 +13,10 @@ import (
 
 // XRandr can contain information that has been extracted by running the xrandr executable
 type XRandr struct {
-	hasOverlap      bool
 	resolutionLines []string
-	verbose         bool
+	hasOverlap      bool
 	hasChecked      bool
+	verbose         bool
 }
 
 // NewXRandr creates a new XRandr struct and fills it with information
