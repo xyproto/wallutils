@@ -63,7 +63,7 @@ func main() {
 	app := cli.NewApp()
 
 	app.Name = "vram"
-	app.Usage = "get the minimum amount of VRAM for all non-integrated GPUs.\n          If only integrated GPUs are available, the minimum amount of VRAM for these are returned instead."
+	app.Usage = "get the minimum amount of VRAM for all non-integrated GPUs.\n          If only integrated GPUs are available, the minimum amount of VRAM for these are returned instead.\n          If an NVIDIA card was expected, but none appeared, try running nvidia-smi first to check."
 	app.UsageText = "vram [options]"
 
 	app.Version = wallutils.VersionString
