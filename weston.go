@@ -3,7 +3,6 @@ package wallutils
 import (
 	"errors"
 	"fmt"
-	"os"
 
 	"github.com/xyproto/env/v2"
 )
@@ -47,7 +46,7 @@ func (*Weston) SetWallpaper(imageFilename string) error {
 		return fmt.Errorf("no such file: %s", imageFilename)
 	}
 
-	fmt.Println("WESTON CONFIG FILE: ", os.Getenv("WESTON_CONFIG_FILE"))
+	fmt.Println("WESTON CONFIG FILE: ", env.Str("WESTON_CONFIG_FILE"))
 
 	// TODO: Add the following to ~/.config/weston.ini
 	//       (or whichever configuration file Weston uses)

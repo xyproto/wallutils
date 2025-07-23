@@ -2,7 +2,8 @@ package wallutils
 
 import (
 	"fmt"
-	"os"
+
+	"github.com/xyproto/env/v2"
 )
 
 // Gnome2 windowmanager detector
@@ -23,7 +24,7 @@ func (g2 *Gnome2) ExecutablesExists() bool {
 
 // Running examines environment variables to try to figure out if this backend is currently running
 func (g2 *Gnome2) Running() bool {
-	return (os.Getenv("GDMSESSION") == "gnome") || (os.Getenv("DESKTOP_SESSION") == "gnome")
+	return (env.Str("GDMSESSION") == "gnome") || (env.Str("DESKTOP_SESSION") == "gnome")
 }
 
 // SetMode will set the current way to display the wallpaper (stretched, tiled etc)
