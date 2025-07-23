@@ -3,6 +3,7 @@ package wallutils
 import (
 	"fmt"
 	"net"
+	"os/user"
 	"path"
 
 	"github.com/xyproto/env/v2"
@@ -22,14 +23,35 @@ func (sb *Hyprpaper) Name() string {
 
 // ExecutablesExists checks if executables associated with this backend exists in the PATH
 func (sb *Hyprpaper) ExecutablesExists() bool {
-	return which("hyprpaper") != ""
+	return which("hyprpaper") != "" // && which("hyprctl") != ""
 }
 
-// Running examines environment variables to try to figure out if this backend is currently running
+// Running examines environment variables to try to figure out if this backend is currently running.
+// Also sets sb.sock to an empty string or to a UNIX socket file.
 func (sb *Hyprpaper) Running() bool {
+	sb.sock = ""
+
 	inst := env.Str("HYPRLAND_INSTANCE_SIGNATURE")
-	sb.sock = path.Join("/tmp/hypr", inst, ".hyprpaper.sock")
-	return exists(sb.sock)
+	if inst == "" {
+		return false // HYPRLAND_INSTANCE_SIGNATURE is not set
+	}
+
+	currentUser, err := user.Current()
+	if err != nil || currentUser.Uid == "" {
+		return false // could not get the user ID of the current user
+	}
+
+	if sock := path.Join("/run/user/" + currentUser.Uid + "/hypr/" + inst + "/.hyprpaper.sock"); exists(sock) {
+		sb.sock = sock
+		return true
+	}
+
+	if sock := path.Join("/tmp/hypr", inst, ".hyprpaper.sock"); exists(sock) {
+		sb.sock = sock
+		return true
+	}
+
+	return false // env.Contains("XDG_SESSION_DESKTOP", "Hyprland") || env.Contains("DESKTOP_SESSION", "hyprland")
 }
 
 // SetMode will set the current way to display the wallpaper (stretched, tiled etc)
