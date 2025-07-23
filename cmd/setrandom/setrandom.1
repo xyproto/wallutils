@@ -1,0 +1,35 @@
+.\"             -*-Nroff-*-
+.\"
+.TH "setrandom" 1 "23 Jul 2025" "setrandom" "User Commands"
+.SH NAME
+setrandom \- choose a random wallpaper and set it
+.SH SYNOPSIS
+.B setrandom
+[options] [directory with images]
+.sp
+.SH DESCRIPTION
+setrandom randomly selects a wallpaper image from the specified directory (or default wallpaper directories) and sets it as the desktop background.
+.sp
+.SH OPTIONS
+.sp
+.TP
+.B \-v or \-\-verbose
+Enable verbose output showing detailed information about the operation.
+.TP
+.B \-r or \-\-recursive
+Search recursively through subdirectories for images.
+.TP
+.B \-l or \-\-onlylarge
+Only consider images that are at least 640x480 pixels in size.
+.TP
+.B \-m or \-\-mode
+Set wallpaper mode: stretch, center, tile, scale, plus modes specific to the currently running desktop environment or window manager. Default is "stretch".
+.TP
+.B \-V or \-\-version
+Show the current version.
+.PP
+.SH VERSION
+5.13.0
+.SH AUTHOR
+.B setrandom
+was written by Alexander F. Rødseth <xyproto@archlinux.org>

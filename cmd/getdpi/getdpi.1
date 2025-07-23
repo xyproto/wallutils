@@ -1,8 +1,8 @@
 .\"             -*-Nroff-*-
 .\"
-.TH "getdpi" 1 "17 Jan 2025" "getdpi" "User Commands"
+.TH "getdpi" 1 "23 Jul 2025" "getdpi" "User Commands"
 .SH NAME
-getdpi \- get the DPI for the current monitor setup
+getdpi \- get the average horizontal DPI
 .SH SYNOPSIS
 .B getdpi
 Display the average DPI of all connected monitors.
@@ -13,14 +13,11 @@ getdpi can fetch information about all connected monitors, for X or Wayland, and
 .SH OPTIONS
 .sp
 .TP
-.B \-a or \-\-all
+.B \-a, \-l or \-\-all
 Output DPI information for all available monitors.
 .TP
 .B \-b or \-\-both
 Output both the horizontal and vertical average DPI.
-.TP
-.B \-h or \-\-help
-Show usage information.
 .TP
 .B \-V or \-\-version
 Show the current version.

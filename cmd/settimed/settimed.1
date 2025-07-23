@@ -1,0 +1,29 @@
+.\"             -*-Nroff-*-
+.\"
+.TH "settimed" 1 "23 Jul 2025" "settimed" "User Commands"
+.SH NAME
+settimed \- start an event loop for a timed wallpaper
+.SH SYNOPSIS
+.B settimed
+[options] [path to a GNOME timed wallpaper or Simple Timed Wallpaper file]
+.sp
+.SH DESCRIPTION
+settimed starts an event loop that automatically changes the desktop wallpaper according to a timed wallpaper configuration file. It supports both GNOME timed wallpaper XML files and Simple Timed Wallpaper (STW) format files.
+.sp
+.SH OPTIONS
+.sp
+.TP
+.B \-s or \-\-silent
+Suppress output messages during operation.
+.TP
+.B \-m or \-\-mode
+Set wallpaper mode: stretch, center, tile, scale, plus modes specific to the currently running desktop environment or window manager. Default is "stretch".
+.TP
+.B \-V or \-\-version
+Show the current version.
+.PP
+.SH VERSION
+5.13.0
+.SH AUTHOR
+.B settimed
+was written by Alexander F. Rødseth <xyproto@archlinux.org>
