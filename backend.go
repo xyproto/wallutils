@@ -7,6 +7,7 @@ package wallutils
 // Some backends may require cgo (sway + x11)
 var WMs = []WM{
 	&Hyprpaper{},
+	//&Hyprctl{},
 	&Sway{},
 	&Deepin{},
 	&Xfce4{},

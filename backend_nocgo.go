@@ -7,6 +7,7 @@ package wallutils
 // Only backends that do not require cgo should be included here.
 var WMs = []WM{
 	&Hyprpaper{},
+	//&Hyprctl{},
 	//&Sway{},
 	&Deepin{},
 	&Xfce4{},

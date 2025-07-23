@@ -17,19 +17,19 @@ type Hyprpaper struct {
 }
 
 // Name returns the name of this window manager or desktop environment
-func (sb *Hyprpaper) Name() string {
+func (hp *Hyprpaper) Name() string {
 	return "Hyprpaper"
 }
 
 // ExecutablesExists checks if executables associated with this backend exists in the PATH
-func (sb *Hyprpaper) ExecutablesExists() bool {
+func (hp *Hyprpaper) ExecutablesExists() bool {
 	return which("hyprpaper") != "" // && which("hyprctl") != ""
 }
 
 // Running examines environment variables to try to figure out if this backend is currently running.
-// Also sets sb.sock to an empty string or to a UNIX socket file.
-func (sb *Hyprpaper) Running() bool {
-	sb.sock = ""
+// Also sets hp.sock to an empty string or to a UNIX socket file.
+func (hp *Hyprpaper) Running() bool {
+	hp.sock = ""
 
 	inst := env.Str("HYPRLAND_INSTANCE_SIGNATURE")
 	if inst == "" {
@@ -42,38 +42,38 @@ func (sb *Hyprpaper) Running() bool {
 	}
 
 	if sock := path.Join("/run/user/" + currentUser.Uid + "/hypr/" + inst + "/.hyprpaper.sock"); exists(sock) {
-		sb.sock = sock
+		hp.sock = sock
 		return true
 	}
 
 	if sock := path.Join("/tmp/hypr", inst, ".hyprpaper.sock"); exists(sock) {
-		sb.sock = sock
+		hp.sock = sock
 		return true
 	}
 
-	return false // env.Contains("XDG_SESSION_DESKTOP", "Hyprland") || env.Contains("DESKTOP_SESSION", "hyprland")
+	return false
 }
 
 // SetMode will set the current way to display the wallpaper (stretched, tiled etc)
-func (sb *Hyprpaper) SetMode(mode string) {
-	sb.mode = mode
+func (hp *Hyprpaper) SetMode(mode string) {
+	hp.mode = mode
 }
 
 // SetVerbose can be used for setting the verbose field to true or false.
 // This will cause this backend to output information about what is is doing on stdout.
-func (sb *Hyprpaper) SetVerbose(verbose bool) {
-	sb.verbose = verbose
+func (hp *Hyprpaper) SetVerbose(verbose bool) {
+	hp.verbose = verbose
 }
 
 // SetWallpaper sets the desktop wallpaper, given an image filename.
 // The image must exist and be readable.
-func (sb *Hyprpaper) SetWallpaper(imageFilename string) error {
+func (hp *Hyprpaper) SetWallpaper(imageFilename string) error {
 	if !exists(imageFilename) {
 		return fmt.Errorf("no such file: %s", imageFilename)
 	}
 
 	// Connect to the Hyprpaper socket
-	sock, err := net.DialUnix("unix", nil, &net.UnixAddr{Name: sb.sock, Net: "unix"})
+	sock, err := net.DialUnix("unix", nil, &net.UnixAddr{Name: hp.sock, Net: "unix"})
 
 	if err != nil {
 		return err
@@ -88,8 +88,8 @@ func (sb *Hyprpaper) SetWallpaper(imageFilename string) error {
 
 	// Set the wallpaper mode
 	mode := defaultMode
-	if sb.mode != "" {
-		mode = sb.mode
+	if hp.mode != "" {
+		mode = hp.mode
 	}
 
 	switch mode {
