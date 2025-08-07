@@ -54,7 +54,7 @@ This will change the wallpaper to `/usr/share/wallpapers/morning.jpg` at `10:00`
 
 It is up to the implementation how often the wallpaper should be updated in the transition period from `10:00` to `12:00`. The recommendation is 10 times, regardless of the length of the time interval.
 
-Format description:
+Transition description:
 
 * The line must start with `@` followed by two digits which is the hour number.
 * Then comes a colon `:` and two digits which is the minute number.
