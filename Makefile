@@ -13,6 +13,8 @@ else
 BUILDFLAGS ?= -mod=vendor -trimpath
 endif
 
+GOEXPERIMENT := greenteagc
+
 # build all utilities, but allow heic2stw to fail if the wrong version of libheif is installed
 all:
 	go build ${BUILDFLAGS}
