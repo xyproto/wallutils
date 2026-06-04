@@ -1,5 +1,4 @@
 //go:build go1.7
-// +build go1.7
 
 /*
  * GO interface to libheif
@@ -27,6 +26,6 @@ import (
 	"runtime"
 )
 
-func keepAlive(x interface{}) {
+func keepAlive(x any) {
 	runtime.KeepAlive(x)
 }

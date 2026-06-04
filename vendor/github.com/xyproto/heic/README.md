@@ -15,9 +15,9 @@ if len(metadataIDs) > 0 {
 }
 ```
 
-Take a look at 
+Take a look at `metadata_test.go` for a full example.
 
 ## General info
 
-* Version: 1.0.0
+* Version: 1.1.0
 * License: LGPL3
