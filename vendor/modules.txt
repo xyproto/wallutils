@@ -4,8 +4,8 @@ github.com/antchfx/xmlquery
 # github.com/antchfx/xpath v1.3.6
 ## explicit; go 1.14
 github.com/antchfx/xpath
-# github.com/anthonynsimon/bild v0.15.0
-## explicit; go 1.26
+# github.com/anthonynsimon/bild v0.14.0
+## explicit; go 1.21
 github.com/anthonynsimon/bild/blend
 github.com/anthonynsimon/bild/clone
 github.com/anthonynsimon/bild/fcolor
