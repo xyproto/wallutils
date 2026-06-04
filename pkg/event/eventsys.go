@@ -142,7 +142,7 @@ func (sys *EventSys) ClockEvent(h, m int, f func() error) {
 
 // EveryMinute will trigger an event every minute for n minutes, starting from h:m
 func (sys *EventSys) EveryMinute(h, m, n int, f func() error) {
-	for i := 0; i < n; i++ {
+	for range n {
 		sys.Register(NewClockEvent(h, m, f))
 		m++
 		if m >= 60 {

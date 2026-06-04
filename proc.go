@@ -3,6 +3,7 @@ package wallutils
 import (
 	"os"
 	"os/exec"
+	"slices"
 	"strings"
 )
 
@@ -46,10 +47,8 @@ func checkProcFSForArgs(command, args string) (bool, error) {
 		}
 		// Check if it's the target command with the specified args
 		if strings.Contains(cmdArgs[0], command) {
-			for _, arg := range cmdArgs[1:] {
-				if arg == args {
-					return true, nil
-				}
+			if slices.Contains(cmdArgs[1:], args) {
+				return true, nil
 			}
 		}
 	}

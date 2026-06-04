@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"os"
 	"path/filepath"
+	"slices"
 	"strings"
 	"time"
 )
@@ -47,12 +48,7 @@ func dFmt(d time.Duration) string {
 
 // has checks if a string slice has the given element
 func has(sl []string, e string) bool {
-	for _, s := range sl {
-		if s == e {
-			return true
-		}
-	}
-	return false
+	return slices.Contains(sl, e)
 }
 
 // unique removes all repeated elements from a slice of strings

@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"os"
 	"path/filepath"
+	"slices"
 	"text/tabwriter"
 
 	"github.com/urfave/cli"
@@ -12,12 +13,7 @@ import (
 
 // has checks if the given string slice contains the given string
 func has(sl []string, s string) bool {
-	for _, e := range sl {
-		if e == s {
-			return true
-		}
-	}
-	return false
+	return slices.Contains(sl, s)
 }
 
 func listWallpaperCollectionAction(c *cli.Context) error {

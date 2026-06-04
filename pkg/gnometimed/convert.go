@@ -48,7 +48,7 @@ func GnomeToSimpleString(gtw *Wallpaper) (string, error) {
 
 	// First, only gather all the image filenames
 	var filenames []string
-	for i := 0; i < totalElements; i++ {
+	for i := range totalElements {
 		// Get an element, by index. This is an interface{} and is expected to be a GStatic or a GTransition
 		eInterface, err := gtw.Config.Get(i)
 		if err != nil {
@@ -70,7 +70,7 @@ func GnomeToSimpleString(gtw *Wallpaper) (string, error) {
 	sb.WriteString("format: " + commonPrefix + "%s" + commonSuffix + "\n")
 
 	// Then output the timing information, for static images and for transitions
-	for i := 0; i < totalElements; i++ {
+	for i := range totalElements {
 		// The duration of the event is specified in the XML file, but not when it should start
 
 		// Get an element, by index. This is an interface{} and is expected to be a GStatic or a GTransition

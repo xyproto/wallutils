@@ -105,7 +105,7 @@ func (gb *GBackground) StaticOrder(i int) (int, error) {
 
 // Get either a GStatic or a GTransition, given a total position.
 // Will return nil and an error if nothing is found.
-func (gb *GBackground) Get(i int) (interface{}, error) {
+func (gb *GBackground) Get(i int) (any, error) {
 	for k, v := range gb.staticOrder {
 		if v == i {
 			// Found it
@@ -156,7 +156,7 @@ func findOrder(XMLData []byte) (StaticMap, TransitionMap, error) {
 	// create a simple map of increasing indexes and exit early
 	if transitionCount == 0 {
 		// No transition tags, only static tags
-		for i := 0; i < staticCount; i++ {
+		for i := range staticCount {
 			staticOrder[i] = i
 		}
 		return staticOrder, transitionOrder, nil

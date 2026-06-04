@@ -48,7 +48,7 @@ func (x *XRandr) CheckOverlap() {
 	}
 	xrandrOutput := output("xrandr", []string{}, x.verbose)
 	rects := make([]image.Rectangle, 0)
-	for _, line := range strings.Split(xrandrOutput, "\n") {
+	for line := range strings.SplitSeq(xrandrOutput, "\n") {
 		words := strings.Fields(line)
 		if len(words) < 3 {
 			continue

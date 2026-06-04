@@ -9,8 +9,8 @@ import (
 
 func clockSystem() *event.EventSys {
 	sys := event.NewSystem(1 * time.Second)
-	for hour := 0; hour < 24; hour++ {
-		for minute := 0; minute < 60; minute++ {
+	for hour := range 24 {
+		for minute := range 60 {
 			// Create new variables that can be closed over by the new function below
 			hour := hour
 			minute := minute

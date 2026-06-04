@@ -5,24 +5,15 @@ import (
 	"os"
 	"os/exec"
 	"path/filepath"
+	"slices"
 	"strings"
 )
-
-// has checks if a string slice has the given element
-func hasS(xs []string, x string) bool {
-	for _, e := range xs {
-		if e == x {
-			return true
-		}
-	}
-	return false
-}
 
 // unique removes all repeated elements from a slice of strings
 func unique(sl []string) []string {
 	var nl []string
 	for _, s := range sl {
-		if !hasS(nl, s) {
+		if !slices.Contains(nl, s) {
 			nl = append(nl, s)
 		}
 	}

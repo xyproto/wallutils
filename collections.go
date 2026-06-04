@@ -159,7 +159,7 @@ func (sr *SearchResults) visit(path string, _ os.FileInfo, _ error) error {
 // sortWallpapers sorts the found wallpapers
 func (sr *SearchResults) sortWallpapers() {
 	var collected []*Wallpaper
-	sr.wallpapers.Range(func(_, value interface{}) bool {
+	sr.wallpapers.Range(func(_, value any) bool {
 		wp, ok := value.(*Wallpaper)
 		if !ok {
 			// internal error
@@ -181,7 +181,7 @@ func (sr *SearchResults) sortWallpapers() {
 // sortGnomeTimedWallpapers sorts the Found gnome Timed Wallpapers
 func (sr *SearchResults) sortGnomeTimedWallpapers() {
 	var collected []*gnometimed.Wallpaper
-	sr.gnomeWallpapers.Range(func(_, value interface{}) bool {
+	sr.gnomeWallpapers.Range(func(_, value any) bool {
 		gw, ok := value.(*gnometimed.Wallpaper)
 		if !ok {
 			// internal error
@@ -200,7 +200,7 @@ func (sr *SearchResults) sortGnomeTimedWallpapers() {
 // sortSimpleTimedWallpapers sorts the found Simple Timed Wallpapers
 func (sr *SearchResults) sortSimpleTimedWallpapers() {
 	var collected []*simpletimed.Wallpaper
-	sr.simpleTimedWallpapers.Range(func(_, value interface{}) bool {
+	sr.simpleTimedWallpapers.Range(func(_, value any) bool {
 		stw, ok := value.(*simpletimed.Wallpaper)
 		if !ok {
 			// internal error

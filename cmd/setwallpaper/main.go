@@ -113,7 +113,7 @@ func downloadDirectory() string {
 	// Check if XDG_DOWNLOAD_DIR is defined in ~/.config/user-dirs.dirs
 	dirfileContents, err := os.ReadFile(expanduser("~/.config/user-dirs.dirs"))
 	if err == nil {
-		for _, line := range strings.Split(string(dirfileContents), "\n") {
+		for line := range strings.SplitSeq(string(dirfileContents), "\n") {
 			if strings.HasPrefix(line, "XDG_DOWNLOAD_DIR") {
 				elements := strings.SplitN(line, "=", 2)
 				path = strings.TrimSpace(elements[1])

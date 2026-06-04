@@ -54,9 +54,9 @@ func (stw *Wallpaper) UntilNext(et time.Time) (time.Duration, time.Time) {
 
 // NextEvent finds the next event, given a timestamp.
 // Returns an interface{} that is either a static or transition event.
-func (stw *Wallpaper) NextEvent(et time.Time) (interface{}, time.Time, error) {
+func (stw *Wallpaper) NextEvent(et time.Time) (any, time.Time, error) {
 	// Create a map, from timestamps to wallpaper events
-	events := make(map[time.Time]interface{})
+	events := make(map[time.Time]any)
 	for _, t := range stw.Transitions {
 		events[t.From] = t
 	}
@@ -68,7 +68,7 @@ func (stw *Wallpaper) NextEvent(et time.Time) (interface{}, time.Time, error) {
 	}
 
 	// Using all the collected hours&minutes, create a list of times both today and tomorrow that uses those hours&minutes
-	allTimes := make(map[time.Time]interface{})
+	allTimes := make(map[time.Time]any)
 	now := time.Now()
 	for t, e := range events {
 		today := time.Date(now.Year(), now.Month(), now.Day(), t.Hour(), t.Minute(), 0, 0, now.Location())
@@ -80,7 +80,7 @@ func (stw *Wallpaper) NextEvent(et time.Time) (interface{}, time.Time, error) {
 	// Now we have all possible start times, now to find the ones that are both positive and smallest
 	mindiff := h24
 	when := now
-	var eventHappening interface{}
+	var eventHappening any
 	for t, e := range allTimes {
 		if eventHappening == nil {
 			eventHappening = e
@@ -98,9 +98,9 @@ func (stw *Wallpaper) NextEvent(et time.Time) (interface{}, time.Time, error) {
 
 // PrevEvent finds the previous event, given a timestamp.
 // Returns an interface{} that is either a static or transition event.
-func (stw *Wallpaper) PrevEvent(et time.Time) (interface{}, time.Time, error) {
+func (stw *Wallpaper) PrevEvent(et time.Time) (any, time.Time, error) {
 	// Create a map, from timestamps to wallpaper events
-	events := make(map[time.Time]interface{})
+	events := make(map[time.Time]any)
 	for _, t := range stw.Transitions {
 		events[t.From] = t
 	}
@@ -111,7 +111,7 @@ func (stw *Wallpaper) PrevEvent(et time.Time) (interface{}, time.Time, error) {
 		return nil, et, errors.New("can not find next event: got no events")
 	}
 	// Using all the collected hours&minutes, create a list of times both today and tomorrow that uses those hours&minutes
-	allTimes := make(map[time.Time]interface{})
+	allTimes := make(map[time.Time]any)
 	now := time.Now()
 	for t, e := range events {
 		today := time.Date(now.Year(), now.Month(), now.Day(), t.Hour(), t.Minute(), 0, 0, now.Location())
@@ -125,7 +125,7 @@ func (stw *Wallpaper) PrevEvent(et time.Time) (interface{}, time.Time, error) {
 
 	mindiff := h24
 	when := now
-	var eventHappening interface{}
+	var eventHappening any
 	for t, e := range allTimes {
 		if eventHappening == nil {
 			eventHappening = e

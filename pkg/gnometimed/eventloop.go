@@ -72,7 +72,7 @@ func (gtw *Wallpaper) EventLoop(verbose bool, setWallpaperFunc func(string) erro
 	// Keep track of the total time. It is increased every time a new element duration is encountered.
 	eventTime := startTime
 
-	for i := 0; i < totalElements; i++ {
+	for i := range totalElements {
 		// The duration of the event is specified in the XML file, but not when it should start
 
 		// Get an element, by index. This is an interface{} and is expected to be a GStatic or a GTransition
