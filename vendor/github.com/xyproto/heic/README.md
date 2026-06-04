@@ -17,7 +17,11 @@ if len(metadataIDs) > 0 {
 
 Take a look at `metadata_test.go` for a full example.
 
+## Requirements
+
+* libheif >= 1.22.2
+
 ## General info
 
-* Version: 1.1.0
+* Version: 1.1.1
 * License: LGPL3

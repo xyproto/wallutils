@@ -4,8 +4,8 @@ github.com/antchfx/xmlquery
 # github.com/antchfx/xpath v1.3.6
 ## explicit; go 1.14
 github.com/antchfx/xpath
-# github.com/anthonynsimon/bild v0.14.0
-## explicit; go 1.21
+# github.com/anthonynsimon/bild v0.15.0
+## explicit; go 1.26
 github.com/anthonynsimon/bild/blend
 github.com/anthonynsimon/bild/clone
 github.com/anthonynsimon/bild/fcolor
@@ -39,7 +39,7 @@ github.com/urfave/cli
 # github.com/xyproto/env/v2 v2.5.6
 ## explicit; go 1.19
 github.com/xyproto/env/v2
-# github.com/xyproto/heic v1.1.0
+# github.com/xyproto/heic v1.1.1
 ## explicit; go 1.25.0
 github.com/xyproto/heic
 # golang.org/x/image v0.41.0

@@ -8,7 +8,7 @@ require (
 	github.com/stretchr/powerwalk v0.0.0-20151124150408-bceb9d014549
 	github.com/urfave/cli v1.22.17
 	github.com/xyproto/env/v2 v2.5.6
-	github.com/xyproto/heic v1.1.0
+	github.com/xyproto/heic v1.1.1
 )
 
 require (

@@ -501,9 +501,9 @@ func (c *Context) convertEncoderDescriptor(d *C.struct_heif_encoder_descriptor) 
 }
 
 func (c *Context) NewEncoder(compression Compression) (*Encoder, error) {
-	const max = 1
-	descriptors := make([]*C.struct_heif_encoder_descriptor, max)
-	num := int(C.heif_context_get_encoder_descriptors(c.context, C.enum_heif_compression_format(compression), nil, &descriptors[0], C.int(max)))
+	const maxdesc = 1
+	descriptors := make([]*C.struct_heif_encoder_descriptor, maxdesc)
+	num := int(C.heif_context_get_encoder_descriptors(c.context, C.heif_compression_format(compression), nil, &descriptors[0], C.int(maxdesc)))
 	keepAlive(c)
 	if num == 0 {
 		return nil, fmt.Errorf("no encoder for compression %v", compression)
@@ -704,7 +704,7 @@ type Image struct {
 
 func NewImage(width, height int, colorspace Colorspace, chroma Chroma) (*Image, error) {
 	var image Image
-	err := C.heif_image_create(C.int(width), C.int(height), C.enum_heif_colorspace(colorspace), C.enum_heif_chroma(chroma), &image.image)
+	err := C.heif_image_create(C.int(width), C.int(height), C.heif_colorspace(colorspace), C.heif_chroma(chroma), &image.image)
 	if err := convertHeifError(err); err != nil {
 		return nil, err
 	}
@@ -725,7 +725,7 @@ func (h *ImageHandle) DecodeImage(colorspace Colorspace, chroma Chroma, options 
 		opt = options.options
 	}
 
-	err := C.heif_decode_image(h.handle, &image.image, C.enum_heif_colorspace(colorspace), C.enum_heif_chroma(chroma), opt)
+	err := C.heif_decode_image(h.handle, &image.image, C.heif_colorspace(colorspace), C.heif_chroma(chroma), opt)
 	keepAlive(h)
 	if err := convertHeifError(err); err != nil {
 		return nil, err
@@ -748,25 +748,25 @@ func (img *Image) GetChromaFormat() Chroma {
 }
 
 func (img *Image) GetWidth(channel Channel) int {
-	i := int(C.heif_image_get_width(img.image, C.enum_heif_channel(channel)))
+	i := int(C.heif_image_get_width(img.image, C.heif_channel(channel)))
 	keepAlive(img)
 	return i
 }
 
 func (img *Image) GetHeight(channel Channel) int {
-	i := int(C.heif_image_get_height(img.image, C.enum_heif_channel(channel)))
+	i := int(C.heif_image_get_height(img.image, C.heif_channel(channel)))
 	keepAlive(img)
 	return i
 }
 
 func (img *Image) GetBitsPerPixel(channel Channel) int {
-	i := int(C.heif_image_get_bits_per_pixel(img.image, C.enum_heif_channel(channel)))
+	i := int(C.heif_image_get_bits_per_pixel(img.image, C.heif_channel(channel)))
 	keepAlive(img)
 	return i
 }
 
 func (img *Image) GetBitsPerPixelRange(channel Channel) int {
-	i := int(C.heif_image_get_bits_per_pixel_range(img.image, C.enum_heif_channel(channel)))
+	i := int(C.heif_image_get_bits_per_pixel_range(img.image, C.heif_channel(channel)))
 	keepAlive(img)
 	return i
 }
@@ -1154,14 +1154,14 @@ func (i *ImageAccess) setData(data []byte, stride int) {
 }
 
 func (img *Image) GetPlane(channel Channel) (*ImageAccess, error) {
-	height := C.heif_image_get_height(img.image, C.enum_heif_channel(channel))
+	height := C.heif_image_get_height(img.image, C.heif_channel(channel))
 	keepAlive(img)
 	if height == -1 {
 		return nil, fmt.Errorf("No such channel %v", channel)
 	}
 
 	var stride C.int
-	plane := C.heif_image_get_plane(img.image, C.enum_heif_channel(channel), &stride)
+	plane := C.heif_image_get_plane(img.image, C.heif_channel(channel), &stride)
 	keepAlive(img)
 	if plane == nil {
 		return nil, fmt.Errorf("No such channel %v", channel)
@@ -1180,7 +1180,7 @@ func (img *Image) GetPlane(channel Channel) (*ImageAccess, error) {
 }
 
 func (img *Image) NewPlane(channel Channel, width, height, depth int) (*ImageAccess, error) {
-	err := C.heif_image_add_plane(img.image, C.enum_heif_channel(channel), C.int(width), C.int(height), C.int(depth))
+	err := C.heif_image_add_plane(img.image, C.heif_channel(channel), C.int(width), C.int(height), C.int(depth))
 	keepAlive(img)
 	if err := convertHeifError(err); err != nil {
 		return nil, err
@@ -1224,10 +1224,10 @@ func freeHeifEncodingOptions(options *EncodingOptions) {
 }
 
 func imageFromRGBA(i *image.RGBA) (*Image, error) {
-	min := i.Bounds().Min
-	max := i.Bounds().Max
-	w := max.X - min.X
-	h := max.Y - min.Y
+	imin := i.Bounds().Min
+	imax := i.Bounds().Max
+	w := imax.X - imin.X
+	h := imax.Y - imin.Y
 
 	out, err := NewImage(w, h, ColorspaceRGB, ChromaInterleavedRGBA)
 	if err != nil {
@@ -1253,10 +1253,10 @@ func imageFromRGBA(i *image.RGBA) (*Image, error) {
 }
 
 func imageFromRGBA64(i *image.RGBA64) (*Image, error) {
-	min := i.Bounds().Min
-	max := i.Bounds().Max
-	w := max.X - min.X
-	h := max.Y - min.Y
+	imin := i.Bounds().Min
+	imax := i.Bounds().Max
+	w := imax.X - imin.X
+	h := imax.Y - imin.Y
 
 	out, err := NewImage(w, h, ColorspaceRGB, ChromaInterleavedRRGGBBAA_BE)
 	if err != nil {
@@ -1302,10 +1302,10 @@ func imageFromRGBA64(i *image.RGBA64) (*Image, error) {
 }
 
 func imageFromGray(i *image.Gray) (*Image, error) {
-	min := i.Bounds().Min
-	max := i.Bounds().Max
-	w := max.X - min.X
-	h := max.Y - min.Y
+	imin := i.Bounds().Min
+	imax := i.Bounds().Max
+	w := imax.X - imin.X
+	h := imax.Y - imin.Y
 
 	out, err := NewImage(w, h, ColorspaceYCbCr, ChromaMonochrome)
 	if err != nil {
@@ -1331,10 +1331,10 @@ func imageFromGray(i *image.Gray) (*Image, error) {
 }
 
 func imageFromYCbCr(i *image.YCbCr) (*Image, error) {
-	min := i.Bounds().Min
-	max := i.Bounds().Max
-	w := max.X - min.X
-	h := max.Y - min.Y
+	imin := i.Bounds().Min
+	imax := i.Bounds().Max
+	w := imax.X - imin.X
+	h := imax.Y - imin.Y
 
 	var cm Chroma
 	switch sr := i.SubsampleRatio; sr {
