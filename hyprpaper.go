@@ -1,10 +1,14 @@
 package wallutils
 
 import (
+	"errors"
 	"fmt"
+	"io"
 	"net"
 	"os/user"
 	"path"
+	"strings"
+	"time"
 
 	"github.com/xyproto/env/v2"
 )
@@ -112,22 +116,21 @@ func (hp *Hyprpaper) SetWallpaper(imageFilename string) error {
 }
 
 func runHyprCmd(sock *net.UnixConn, cmd string) error {
-	_, err := sock.Write([]byte(cmd))
-
-	if err != nil {
+	if _, err := sock.Write([]byte(cmd)); err != nil {
 		return err
 	}
 
-	buf := [32]byte{}
+	sock.SetReadDeadline(time.Now().Add(2 * time.Second))
 
-	n, err := sock.Read(buf[:])
-
+	data, err := io.ReadAll(sock)
 	if err != nil {
-		return err
+		var ne net.Error
+		if !(errors.As(err, &ne) && ne.Timeout()) {
+			return err
+		}
 	}
 
-	res := string(buf[:n])
-
+	res := strings.TrimSpace(string(data))
 	if res != "ok" {
 		return fmt.Errorf("cmd %q failed: %s", cmd, res)
 	}
