@@ -32,10 +32,13 @@
 #include <wayland-client.h>
 
 /* This file uses a buffer that is estimated to be large enough to collect all
- * required information.
+ * required information. Output that does not fit is truncated.
  */
 
-#define BUF buf + strlen(buf)
+/* BUF expands to the end of the text in buf and the space left after it, for
+ * use as the first two arguments to snprintf.
+ */
+#define BUF buf + strlen(buf), sizeof(buf) - strlen(buf)
 #define RETBUF                                                                 \
     char* str = calloc(strlen(buf) + 1, sizeof(char));                         \
     strcpy(str, buf);                                                          \
@@ -112,7 +115,7 @@ void sprint_global_info(void* data)
 {
     struct global_info* global = data;
 
-    sprintf(BUF, "interface: '%s', version: %u, name: %u\n", global->interface, global->version,
+    snprintf(BUF, "interface: '%s', version: %u, name: %u\n", global->interface, global->version,
         global->id);
 }
 
@@ -191,26 +194,26 @@ void sprint_output_info(void* data)
         break;
     }
 
-    sprintf(BUF, "\tx: %d, y: %d,\n", output->geometry.x, output->geometry.y);
-    sprintf(BUF, "\tphysical_width: %d mm, physical_height: %d mm,\n",
+    snprintf(BUF, "\tx: %d, y: %d,\n", output->geometry.x, output->geometry.y);
+    snprintf(BUF, "\tphysical_width: %d mm, physical_height: %d mm,\n",
         output->geometry.physical_width, output->geometry.physical_height);
-    sprintf(BUF, "\tmake: '%s', model: '%s',\n", output->geometry.make, output->geometry.model);
-    sprintf(BUF, "\tsubpixel_orientation: %s, output_transform: %s,\n", subpixel_orientation,
+    snprintf(BUF, "\tmake: '%s', model: '%s',\n", output->geometry.make, output->geometry.model);
+    snprintf(BUF, "\tsubpixel_orientation: %s, output_transform: %s,\n", subpixel_orientation,
         transform);
 
     wl_list_for_each(mode, &output->modes, link)
     {
-        sprintf(BUF, "\tmode:\n");
-        sprintf(BUF, "\t\twidth: %d px, height: %d px, refresh: %.f Hz,\n", mode->width,
+        snprintf(BUF, "\tmode:\n");
+        snprintf(BUF, "\t\twidth: %d px, height: %d px, refresh: %.f Hz,\n", mode->width,
             mode->height, (float)mode->refresh / 1000);
-        sprintf(BUF, "\t\tflags:");
+        snprintf(BUF, "\t\tflags:");
         if (mode->flags & WL_OUTPUT_MODE_CURRENT) {
-            sprintf(BUF, " current");
+            snprintf(BUF, " current");
         }
         if (mode->flags & WL_OUTPUT_MODE_PREFERRED) {
-            sprintf(BUF, " preferred");
+            snprintf(BUF, " preferred");
         }
-        sprintf(BUF, "\n");
+        snprintf(BUF, "\n");
     }
 }
 
@@ -220,12 +223,12 @@ void sprint_shm_info(void* data)
     struct shm_format* format;
 
     sprint_global_info(data);
-    sprintf(BUF, "%s", "\tformats:");
+    snprintf(BUF, "%s", "\tformats:");
 
     wl_list_for_each(format, &shm->formats, link)
-        sprintf(BUF, " %s", (format->format == WL_SHM_FORMAT_ARGB8888) ? "ARGB8888" : "XRGB8888");
+        snprintf(BUF, " %s", (format->format == WL_SHM_FORMAT_ARGB8888) ? "ARGB8888" : "XRGB8888");
 
-    sprintf(BUF, "\n");
+    snprintf(BUF, "\n");
 }
 
 void sprint_seat_info(void* data)
@@ -233,19 +236,19 @@ void sprint_seat_info(void* data)
     struct seat_info* seat = data;
 
     sprint_global_info(data);
-    sprintf(BUF, "%s", "\tcapabilities:");
+    snprintf(BUF, "%s", "\tcapabilities:");
 
     if (seat->capabilities & WL_SEAT_CAPABILITY_POINTER) {
-        sprintf(BUF, " pointer");
+        snprintf(BUF, " pointer");
     }
     if (seat->capabilities & WL_SEAT_CAPABILITY_KEYBOARD) {
-        sprintf(BUF, " keyboard");
+        snprintf(BUF, " keyboard");
     }
     if (seat->capabilities & WL_SEAT_CAPABILITY_TOUCH) {
-        sprintf(BUF, " touch");
+        snprintf(BUF, " touch");
     }
 
-    sprintf(BUF, "\n");
+    snprintf(BUF, "\n");
 }
 
 static void seat_handle_capabilities(
@@ -403,7 +406,7 @@ char* WaylandInfoString()
 
     info.display = wl_display_connect(NULL);
     if (!info.display) {
-        sprintf(BUF, "wayland plugin info string: wayland is not in use right now\n");
+        snprintf(BUF, "wayland plugin info string: wayland is not in use right now\n");
         RETBUF;
     }
 

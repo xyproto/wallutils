@@ -8,6 +8,7 @@ import (
 	"errors"
 	"strconv"
 	"strings"
+	"unsafe"
 )
 
 // XCanConnect checks if an X server is up and running
@@ -20,7 +21,9 @@ func XInfo() (string, error) {
 	if !XCanConnect() {
 		return "", errors.New("XInfo(): not connected over X11")
 	}
-	infoString := C.GoString(C.X11InfoString())
+	cInfoString := C.X11InfoString()
+	defer C.free(unsafe.Pointer(cInfoString))
+	infoString := C.GoString(cInfoString)
 	return infoString, nil
 }
 

@@ -9,6 +9,7 @@ import (
 	"log"
 	"strconv"
 	"strings"
+	"unsafe"
 )
 
 // WaylandCanConnect checks if a Wayland server is up and running
@@ -21,7 +22,9 @@ func WaylandInfo() (string, error) {
 	if !WaylandCanConnect() {
 		return "", errors.New("WaylandInfo(): not connected over Wayland")
 	}
-	infoString := C.GoString(C.WaylandInfoString())
+	cInfoString := C.WaylandInfoString()
+	defer C.free(unsafe.Pointer(cInfoString))
+	infoString := C.GoString(cInfoString)
 	return infoString, nil
 }
 
