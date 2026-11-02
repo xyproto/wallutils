@@ -187,6 +187,6 @@ This should refresh the wallpaper.
 
 ## General info
 
-* Version: 5.14.4
+* Version: 5.14.5
 * License: BSD-3
 * Author: Alexander F. Rødseth &lt;xyproto@archlinux.org&gt;
