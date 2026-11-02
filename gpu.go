@@ -102,12 +102,16 @@ func collectLSPCI(gpus *[]GPU) error {
 					gpu.VGA = true
 				}
 				fields = strings.SplitN(fields[1], ":", 2)
-				description := strings.TrimSpace(fields[1])
-				if strings.Contains(description, "(") {
-					fields = strings.SplitN(description, "(", 2)
-					description = strings.TrimSpace(fields[0])
+				if len(fields) = 0 {
+					gpu.Name = "-"
+				} else {
+					description := strings.TrimSpace(fields[1])
+					if strings.Contains(description, "(") {
+						fields = strings.SplitN(description, "(", 2)
+						description = strings.TrimSpace(fields[0])
+					}
+					gpu.Name = description
 				}
-				gpu.Name = description
 				alreadyThere = busIndex(gpus, gpu.Bus) != -1
 				lookForMemory = true
 			} else if lookForMemory && strings.HasPrefix(trimmedLine, "Memory at") && !alreadyThere {
