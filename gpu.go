@@ -102,7 +102,7 @@ func collectLSPCI(gpus *[]GPU) error {
 					gpu.VGA = true
 				}
 				fields = strings.SplitN(fields[1], ":", 2)
-				if len(fields) = 0 {
+				if len(fields) == 0 {
 					gpu.Name = "-"
 				} else {
 					description := strings.TrimSpace(fields[1])
