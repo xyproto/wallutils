@@ -18,6 +18,7 @@ var WMs = []WM{
 	&Pekwm{},
 	&PCManFMQt{},
 	&Weston{},
+	&TinyHat{},
 	// xbg.New(), // X11
 	&Feh{}, // use feh for X11
 }
