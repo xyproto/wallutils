@@ -10,7 +10,7 @@ Get information about monitors, resolutions, wallpapers, animated wallpapers, DP
 
 Pull requests are welcome.
 
-[![Packaging status](https://repology.org/badge/vertical-allrepos/wallutils.svg)](https://repology.org/project/wallutils/versions)
+[![Packaging status](https://repology.org/badge/vertical-allrepos/wallutils.svg?columns=3)](https://repology.org/project/wallutils/versions)
 
 ## Timed Wallpapers
 
