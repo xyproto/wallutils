@@ -1,12 +1,16 @@
 # Wallutils [![Build](https://github.com/xyproto/wallutils/actions/workflows/build.yml/badge.svg)](https://github.com/xyproto/wallutils/actions/workflows/build.yml) [![GoDoc](https://godoc.org/github.com/xyproto/wallutils?status.svg)](http://godoc.org/github.com/xyproto/wallutils) [![License](http://img.shields.io/badge/license-BSD-green.svg?style=flat)](https://raw.githubusercontent.com/xyproto/wallutils/main/LICENSE)
 
-[![Packaging status](https://repology.org/badge/vertical-allrepos/wallutils.svg)](https://repology.org/project/wallutils/versions)
+Get information about monitors, resolutions, wallpapers, animated wallpapers, DPI and VRAM. Convert and set wallpapers or animated wallpapers.
 
 * Detect monitor resolutions and set the desktop wallpaper, for any window manager (please file an issue if your window manager is not supported yet).
 * Supports GNOME timed wallpapers, and includes a utility that can run an event loop for changing them (also supports cross fading).
 * Introduces a new file format for timed wallpapers: The **Simple Timed Wallpaper** format: [Markdown](https://github.com/xyproto/wallutils/blob/main/pkg/simpletimed/stw-1.0.0.md) | [PDF](https://raw.githubusercontent.com/xyproto/wallutils/main/pkg/simpletimed/stw-1.0.0.pdf).
 * GNOME timed wallpapers can be converted to the Simple Timed Wallpaper format with the `xml2stw` utility.
 * macOS dynamic wallpapers (in the HEIF format with the `.heic` extension) can be installed with `heic-install` and used with `lstimed` and `settimed`. This extracts the metadata with `heic2stw` (only timing information, not the azimuth and elevation for the sun, yet) and extracts the images with `convert` that comes with ImageMagick.
+
+Pull requests are welcome.
+
+[![Packaging status](https://repology.org/badge/vertical-allrepos/wallutils.svg)](https://repology.org/project/wallutils/versions)
 
 ## Timed Wallpapers
 
